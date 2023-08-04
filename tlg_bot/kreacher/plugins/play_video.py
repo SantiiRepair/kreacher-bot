@@ -50,9 +50,21 @@ async def _(event):
     await event.delete()
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
+@kreacher.on(events.callbackquery.CallbackQuery(data="pause_callback"))
 async def _(event):
-    await event.delete()
+    await call_py.set_pause(True)
+
+
+@kreacher.on(events.callbackquery.CallbackQuery(data="resume_callback"))
+async def _(event):
+    await call_py.set_pause(False)
+
+
+@kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
+async def _(event):
+    await call_py.stop_media()
+
+
 btnn = [[Button.inline("cʟᴏꜱᴇ", data="cls")]]
 
 ctrl = [
@@ -65,7 +77,7 @@ ctrl = [
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
     msg = await event.reply("🔄 <i>Processing ...</i>", parse_mode="HTML")
-    chat_id = event.chat.id
+    chat = await event.get_chat()
     media = await event.get_reply_message()
     if not media and not ' ' in event.message.message:
         await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
@@ -102,6 +114,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
+            await call_py.start(chat.id)
             await call_py.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -126,6 +139,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
+            await call_py.start(chat.id)
             await call_py.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
