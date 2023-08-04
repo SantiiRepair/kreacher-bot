@@ -19,8 +19,7 @@ def save_voice_chats(voice_chats):
 
 
 async def create_voice_chat(chat_id):
-    _factory = GroupCallFactory(
-        client, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
+    _factory = GroupCallFactory(client, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
     voice_chat = _factory.get_group_call()
 
     voice_chats = load_voice_chats()
