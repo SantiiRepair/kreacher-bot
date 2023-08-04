@@ -76,7 +76,7 @@ ctrl = [
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
-    msg = await event.reply("🔄 <i>Processing ...</i>", parse_mode="HTML")
+    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     chat = await event.get_chat()
     media = await event.get_reply_message()
     if not media and not ' ' in event.message.message:
@@ -89,8 +89,10 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
+        await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+        await call_py.start(chat.id)
         if match:
-            await msg.edit("🔄 `Starting YouTube Video Stream ...`")
+            await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
                 meta = ydl().extract_info(url=url, download=False)
                 formats = meta.get('formats', [meta])
@@ -114,7 +116,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.start(chat.id)
             await call_py.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -139,7 +140,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.start(chat.id)
             await call_py.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
