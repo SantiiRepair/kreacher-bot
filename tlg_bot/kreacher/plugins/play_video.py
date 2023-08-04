@@ -149,6 +149,7 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
+            print(e)
             return await call_py.stop()
 
     else:
