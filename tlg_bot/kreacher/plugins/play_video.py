@@ -80,7 +80,7 @@ async def play_video(event):
         if match:
             await msg.edit("🔄 `Starting YouTube Video Stream ...`")
             try:
-                meta = ydl.extract_info(self=self, url=url, download=False)
+                meta = ydl().extract_info(url=url, download=False)
                 formats = meta.get('formats', [meta])
                 for f in formats:
                     ytstreamlink = f['url']
