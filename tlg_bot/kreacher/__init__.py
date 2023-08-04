@@ -16,6 +16,3 @@ _bot = TelegramClient(None, api_id=config.API_ID, api_hash=config.API_HASH)
 kreacher = _bot.start(bot_token=config.BOT_TOKEN)
 client = TelegramClient(None, config.API_ID, config.API_HASH)
 client.start()
-_call_factory_py = GroupCallFactory(
-    client, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
-call_py = _call_factory_py.get_group_call()

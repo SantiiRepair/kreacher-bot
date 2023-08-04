@@ -1,5 +1,4 @@
 QUEUE = {}
-GROUP_CALLS = {}
 active = []
 
 

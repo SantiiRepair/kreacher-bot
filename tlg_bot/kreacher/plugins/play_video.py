@@ -1,7 +1,8 @@
 import re
 from youtubesearchpython import VideosSearch
-from kreacher import call_py, kreacher
+from kreacher import kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
+from kreacher.helpers.voice_chats import create_voice_chat, get_voice_chat, stop_voice_chat
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL as ydl
@@ -16,23 +17,30 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="pause_callback"))
 async def _(event):
+    chat = await event.get_chat()
+    call_py = await get_voice_chat(chat.id)
     await call_py.set_pause(True)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="resume_callback"))
 async def _(event):
+    chat = await event.get_chat()
+    call_py = await get_voice_chat(chat.id)
     await call_py.set_pause(False)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
+    chat = await event.get_chat()
+    call_py = await get_voice_chat(chat.id)
     await call_py.stop_media()
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
-    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     chat = await event.get_chat()
+    call_py = await get_voice_chat(chat.id)
+    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     media = await event.get_reply_message()
     if not media and not ' ' in event.message.message:
         await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
@@ -44,9 +52,9 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        # if call_py.is_connected:
-        await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-        await call_py.start(chat.id)
+        if call_py is None:
+            await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+            await create_voice_chat(chat.id)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
@@ -62,8 +70,10 @@ async def play_video(event):
                 split = thumbid.split("?")
                 thumb = split[0].strip()
             except Exception as e:
-                return await msg.edit(f"❌ **YouTube Download Error !** \n\n`{e}`")
+                await msg.edit(f"❌ **YouTube Download Error !** \n\n`{e}`")
                 print(e)
+                await stop_voice_chat(chat.id)
+                return await call_py.stop()
 
         else:
             await msg.edit("🔄 `Starting Live Video Stream ...`")
@@ -85,6 +95,7 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
+            await stop_voice_chat(chat.id)
             return await call_py.stop()
 
     elif media.video or media.file:
@@ -114,6 +125,7 @@ async def play_video(event):
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
             print(e)
+            await stop_voice_chat(chat.id)
             return await call_py.stop()
 
     else:
@@ -162,7 +174,7 @@ async def pause(event, perm):
         return
     if chat_id in QUEUE:
         try:
-            await call_py.pause_stream(chat_id)
+            #await call_py.pause_stream(chat_id)
             await event.reply("**Streaming Paused**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
@@ -181,7 +193,7 @@ async def vc_resume(event, perm):
         return
     if chat_id in QUEUE:
         try:
-            await call_py.resume_stream(chat_id)
+            #await call_py.resume_stream(chat_id)
             await event.reply("**Streaming Started Back 🔙**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
