@@ -13,7 +13,6 @@ ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
     chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
     msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     media = await event.get_reply_message()
     if not media and not ' ' in event.message.message:
@@ -26,7 +25,8 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        if call_py is None:
+        call_py = await get_voice_chat(chat.id)
+        if call_py is None or call_py is False:
             await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
             await create_voice_chat(chat.id)
         if match:

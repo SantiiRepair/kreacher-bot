@@ -8,6 +8,8 @@ async def join_handler(event):
     try:
         chat = await event.get_chat()
         call_py = await get_voice_chat(chat.id)
+        if call_py is not None:
+            raise Exception("Streaming is active")
         await call_py.start(chat.id)
         await event.reply("<i>Master, what do you need? \n\nVoice Chat joined successfully.</i>", parse_mode="HTML")
     except Exception as e:
