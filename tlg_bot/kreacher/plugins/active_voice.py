@@ -3,7 +3,7 @@ from kreacher import kreacher
 from kreacher.helpers.queues import get_active_chats
 
 
-@kreacher.on(events.NewMessage(pattern="^/active_voice"))
+@kreacher.on(events.NewMessage(pattern="[!?/]active_voice"))
 async def activevc(message):
     mystic = await message.reply("Getting active voice chats.. Please hold")
     served_chats = await get_active_chats()

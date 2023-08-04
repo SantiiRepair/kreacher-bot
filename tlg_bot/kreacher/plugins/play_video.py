@@ -1,5 +1,6 @@
+import re
 from youtubesearchpython import VideosSearch
-from kreacher import call_py, kreacher
+from kreacher import call_py, kreacher, client
 from kreacher.helpers.queues import QUEUE, get_queue
 from kreacher.helpers.yt_dlp import bash
 from telethon import Button, events
@@ -66,7 +67,7 @@ async def play_video(event):
         if not 'http' in query:
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-        match = match(regex, query)
+        match = re.match(regex, query)
         if match:
             await msg.edit("🔄 `Starting YouTube Video Stream ...`")
             try:
