@@ -10,32 +10,6 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
-async def _(event):
-    await event.delete()
-
-
-@kreacher.on(events.callbackquery.CallbackQuery(data="pause_callback"))
-async def _(event):
-    chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.set_pause(True)
-
-
-@kreacher.on(events.callbackquery.CallbackQuery(data="resume_callback"))
-async def _(event):
-    chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.set_pause(False)
-
-
-@kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
-async def _(event):
-    chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.stop_media()
-
-
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
     chat = await event.get_chat()
