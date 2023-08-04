@@ -7,7 +7,6 @@ import logging
 from termcolor import colored
 from kreacher import kreacher
 from kreacher import client
-from kreacher.plugins.autoleave import leave_from_inactive_call
 
 
 logging.basicConfig(
@@ -29,7 +28,6 @@ async def start_bot():
     botme = await client.get_me()
     botid = telethon.utils.get_peer_id(botme)
     print(f'{colored("[INFO]", "blue")}: ASSISTANT ID {botid}')
-    await asyncio.create_task(leave_from_inactive_call())
 
 
 loop = asyncio.get_event_loop()

@@ -89,8 +89,9 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-        await call_py.start(chat.id)
+        if call_py.is_connected:
+            await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+            await call_py.start(chat.id)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
