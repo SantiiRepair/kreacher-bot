@@ -1,6 +1,6 @@
 import re
 from youtubesearchpython import VideosSearch
-from kreacher import call_py, kreacher, client
+from kreacher import call_py, kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
 from kreacher.helpers.yt_dlp import bash
 from telethon import Button, events
@@ -49,14 +49,16 @@ async def skip_item(chat_id: int, x: int):
 async def _(event):
     await event.delete()
 
+
 @kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
 async def _(event):
     await event.delete()
 btnn = [[Button.inline("cʟᴏꜱᴇ", data="cls")]]
 
 ctrl = [
-    [Button.inline("ᴀᴅᴍɪɴ", data="admin"), Button.inline("ᴘʟᴀʏ", data="play")],
-    [Button.inline("ʜᴏᴍᴇ", data="start")],
+    [Button.inline("⏸", data="pause_callback"),
+     Button.inline("▶️", data="resume_callback")],
+    [Button.inline("⏹️", data="end_callback")],
 ]
 
 
@@ -70,20 +72,20 @@ async def play_video(event):
 
     elif ' ' in event.message.message:
         text = event.message.message.split(' ', 1)
-        query = text[1]
-        if not 'http' in query:
+        url = text[1]
+        if not 'http' in url:
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-        match = re.match(regex, query)
+        match = re.match(regex, url)
         if match:
             await msg.edit("🔄 `Starting YouTube Video Stream ...`")
             try:
-                meta = ydl.extract_info(query, download=False)
+                meta = ydl.extract_info(self=self, url=url, download=False)
                 formats = meta.get('formats', [meta])
                 for f in formats:
                     ytstreamlink = f['url']
                 link = ytstreamlink
-                search = VideosSearch(query, limit=1)
+                search = VideosSearch(url, limit=1)
                 opp = search.result()["result"]
                 oppp = opp[0]
                 thumbid = oppp["thumbnails"][0]["url"]
@@ -95,7 +97,7 @@ async def play_video(event):
 
         else:
             await msg.edit("🔄 `Starting Live Video Stream ...`")
-            link = query
+            link = url
             thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
         try:
@@ -103,26 +105,10 @@ async def play_video(event):
             await call_py.join(chat_id)
             await call_py.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
-            await event(
-                photo=thumb,
-                caption=f"▶️ **Started [Video Streaming]({query}) In {m.chat.title} !**",
-                reply_markup=InlineKeyboardMarkup(
-                    [
-                        [
-                            InlineKeyboardButton(
-                                text="⏸",
-                                callback_data="pause_callback",
-                            ),
-                            InlineKeyboardButton(
-                                text="▶️",
-                                callback_data="resume_callback",
-                            ),
-                            InlineKeyboardButton(
-                                text="⏹️",
-                                callback_data="end_callback",
-                            ),
-                        ],
-                    ]),
+            await event.reply(
+                f"▶️ **Started [Video Streaming]({url})!**",
+                file=thumb,
+                buttons=ctrl,
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
@@ -145,46 +131,16 @@ async def play_video(event):
             await call_py.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
+                f"▶️ **Started [Video Streaming](https://t.me/AsmSafone)!**",
                 file=thumb,
-                caption=f"▶️ **Started [Video Streaming](https://t.me/AsmSafone) In {m.chat.title} !**",
-                reply_markup=InlineKeyboardMarkup(
-                    [
-                        [
-                            InlineKeyboardButton(
-                                text="⏸",
-                                callback_data="pause_callback",
-                            ),
-                            InlineKeyboardButton(
-                                text="▶️",
-                                callback_data="resume_callback",
-                            ),
-                            InlineKeyboardButton(
-                                text="⏹️",
-                                callback_data="end_callback",
-                            ),
-                        ],
-                    ]),
+                buttons=ctrl,
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
             return await call_py.stop()
 
     else:
-        await msg.edit(
-            "💁🏻‍♂️ Do you want to search for a YouTube video?",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            "✅ Yes", switch_inline_query_current_chat=""
-                        ),
-                        InlineKeyboardButton(
-                            "No ❌", callback_data="close"
-                        )
-                    ]
-                ]
-            )
-        )
+        await msg.edit("💁🏻‍♂️ Do you want to search for a YouTube video?")
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
