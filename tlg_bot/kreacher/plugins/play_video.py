@@ -2,47 +2,11 @@ import re
 from youtubesearchpython import VideosSearch
 from kreacher import call_py, kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
-from kreacher.helpers.yt_dlp import bash
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL as ydl
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
-
-
-def ytsearch(query: str):
-    try:
-        search = VideosSearch(query, limit=1).result()
-        data = search["result"][0]
-        songname = data["title"]
-        url = data["link"]
-        duration = data["duration"]
-        thumbnail = f"https://i.ytimg.com/vi/{data['id']}/hqdefault.jpg"
-        videoid = data["id"]
-        return [songname, url, duration, thumbnail, videoid]
-    except Exception as e:
-        print(e)
-        return 0
-
-
-async def ytdl(format: str, link: str):
-    stdout, stderr = await bash(f'yt-dlp -g -f "{format}" {link}')
-    if stdout:
-        return 1, stdout.split("\n")[0]
-    return 0, stderr
-
-
-async def skip_item(chat_id: int, x: int):
-    if chat_id not in QUEUE:
-        return 0
-    chat_queue = get_queue(chat_id)
-    try:
-        songname = chat_queue[x][0]
-        chat_queue.pop(x)
-        return songname
-    except Exception as e:
-        print(e)
-        return 0
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
@@ -63,15 +27,6 @@ async def _(event):
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
     await call_py.stop_media()
-
-
-btnn = [[Button.inline("cʟᴏꜱᴇ", data="cls")]]
-
-ctrl = [
-    [Button.inline("⏸", data="pause_callback"),
-     Button.inline("▶️", data="resume_callback")],
-    [Button.inline("⏹️", data="end_callback")],
-]
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
@@ -122,7 +77,11 @@ async def play_video(event):
             await event.reply(
                 f"▶️ **Started [Video Streaming]({url})!**",
                 file=thumb,
-                buttons=ctrl,
+                buttons=[
+                    [Button.inline("⏸", data="pause_callback"),
+                     Button.inline("▶️", data="resume_callback")],
+                    [Button.inline("⏹️", data="end_callback")],
+                ],
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
@@ -146,7 +105,11 @@ async def play_video(event):
             await event.reply(
                 f"▶️ **Started [Video Streaming](https://t.me/AsmSafone)!**",
                 file=thumb,
-                buttons=ctrl,
+                buttons=[
+                    [Button.inline("⏸", data="pause_callback"),
+                     Button.inline("▶️", data="resume_callback")],
+                    [Button.inline("⏹️", data="end_callback")],
+                ]
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
