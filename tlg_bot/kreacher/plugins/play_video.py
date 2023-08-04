@@ -49,13 +49,20 @@ async def skip_item(chat_id: int, x: int):
 async def _(event):
     await event.delete()
 
-
+@kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
+async def _(event):
+    await event.delete()
 btnn = [[Button.inline("cʟᴏꜱᴇ", data="cls")]]
+
+ctrl = [
+    [Button.inline("ᴀᴅᴍɪɴ", data="admin"), Button.inline("ᴘʟᴀʏ", data="play")],
+    [Button.inline("ʜᴏᴍᴇ", data="start")],
+]
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
 async def play_video(event):
-    msg = await event.reply("🔄 `Processing ...`")
+    msg = await event.reply("🔄 <i>Processing ...</i>", parse_mode="HTML")
     chat_id = event.chat.id
     media = await event.get_reply_message()
     if not media and not ' ' in event.message.message:

@@ -21,7 +21,7 @@ async def help(event):
                 [
                     Button.url(
                         "Help and Commands!",
-                        "t.me/{}?start=help".format(Config().BOT_USERNAME),
+                        "t.me/{}?start=help".format(config.BOT_USERNAME),
                     )
                 ]
             ],

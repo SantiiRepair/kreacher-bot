@@ -1,5 +1,5 @@
 from telethon import events
-from kreacher import *
+from kreacher import kreacher
 import asyncio
 import speedtest
 
@@ -22,7 +22,7 @@ msg_running = """<i>Kreacher is here to serve you.
 Running Speedtest...</i> \U0001F4F6"""
 
 
-@kreacher.on(events.NewMessage(pattern="^/speedtest"))
+@kreacher.on(events.NewMessage(pattern="[!?/]speedtest"))
 async def speedtest_function(message):
     m = await message.reply(msg_running, parse_mode="HTML")
     loop = asyncio.get_event_loop()
