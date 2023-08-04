@@ -102,7 +102,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.join(chat_id)
             await call_py.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -127,7 +126,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.join(chat_id)
             await call_py.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
