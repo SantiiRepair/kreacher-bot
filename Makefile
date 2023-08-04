@@ -4,7 +4,7 @@ create_env:
 
 # install deps required to run this project
 install:
-	pip3 install --no-deps -U pytgcalls==3.0.0.dev21 tgcalls && pip3 install -r requirements.txt
+	pip3 install --no-deps -U pytgcalls==3.0.0.dev21 tgcalls==3.0.0.dev5 && pip3 install -r requirements.txt
 
 # format files in the project
 format:
