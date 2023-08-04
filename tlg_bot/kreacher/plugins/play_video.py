@@ -66,7 +66,7 @@ async def play_video(event):
         if not 'http' in query:
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-        match = regex.match(regex, query)
+        match = match(regex, query)
         if match:
             await msg.edit("🔄 `Starting YouTube Video Stream ...`")
             try:

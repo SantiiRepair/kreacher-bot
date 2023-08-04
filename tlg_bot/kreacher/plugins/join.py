@@ -1,4 +1,4 @@
-from kreacher import kreacher, call_py, client
+from kreacher import  call_py, client
 from telethon import events
 
 
