@@ -1,8 +1,8 @@
 import re
 from youtubesearchpython import VideosSearch
 from kreacher import client, ins, kreacher
-from kreacher.helpers.queues import QUEUE, get_queue
-from kreacher.dicts.dicts import VOICE_CHATS
+from kreacher.helpers.queues import get_queue
+from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL

@@ -1,10 +1,9 @@
 from asyncio import sleep
 from kreacher import kreacher
-from kreacher.dicts.dicts import VOICE_CHATS
+from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import events, Button
-from play_video import thumb
 from kreacher.helpers.queues_handler import next_item, skip_current
-from kreacher.helpers.queues import QUEUE
+thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
@@ -54,7 +53,7 @@ async def _(event):
 async def _(event):
     chat = await event.get_chat()
     if len(event.text.split()) < 2:
-        op = await skip_current(chat.id)
+        op = await skip_current(chat)
         if op == 0:
             await event.reply("**Nothing Is Streaming**")
         elif op == 1:
@@ -73,7 +72,7 @@ async def _(event):
             items.sort(reverse=True)
             for x in items:
                 if x != 0:
-                    hm = await next_item(chat.id, x)
+                    hm = await next_item(chat, x)
                     if hm != 0:
                         DELQUE = DELQUE + "\n" + f"**#{x}** - {hm}"
             await event.reply(DELQUE)
@@ -86,4 +85,5 @@ async def _(event):
     QUEUE.pop(chat.id)
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()
+    VOICE_CHATS.pop(chat.id)
     return await sleep(3)

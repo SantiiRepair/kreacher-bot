@@ -1,9 +1,8 @@
 from asyncio import sleep
 from kreacher.helpers.thumbnail import gen_thumb
 from telethon import Button, events
-from kreacher.dicts.dicts import VOICE_CHATS
+from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
 from kreacher.helpers.queues import (
-    QUEUE,
     add_to_queue,
     clear_queue,
     get_queue,
@@ -73,18 +72,18 @@ async def play_song(event):
                 "**Can't Find Song** Try searching with More Specific Title"
             )
         else:
-            songname = search[0]
+            name = search[0]
             title = search[0]
-            url = search[1]
+            ref = search[1]
             duration = search[2]
             videoid = search[4]
             thumb = await gen_thumb(videoid)
             format = "best[height<=?720][width<=?1280]"
-            hm, ytlink = await ytdl(format, url)
+            hm, url = await ytdl(format, url)
             if hm == 0:
                 await msg.edit(f"`{ytlink}`")
             elif chat.id in QUEUE:
-                pos = add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
+                pos = add_to_queue(chat, name, url, ref, "audio")
                 caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                 await msg.delete()
                 await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
@@ -93,7 +92,7 @@ async def play_song(event):
                     await ins.join(chat.id)
                     await ins.start_audio(ytlink, repeat=False)
                     VOICE_CHATS[chat.id] = ins
-                    add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
+                    add_to_queue(chat, name, ytlink, url, "Audio", 0)
                     caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                     await msg.delete()
                     await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
@@ -108,11 +107,11 @@ async def play_song(event):
         dl = await replied.download_media()
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
-            songname = "Telegram Music Player"
+            name = "Audio File"
         elif replied.voice:
-            songname = "Voice Note"
+            name = "Voice Note"
         if chat.id in QUEUE:
-            pos = add_to_queue(chat.id, songname, dl, link, "Audio", 0)
+            pos = add_to_queue(chat, name, url, ref, "audio")
             caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
             await event.client.send_file(chat.id, ngantri, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             await msg.delete()
@@ -121,16 +120,17 @@ async def play_song(event):
                 await ins.join(chat.id)
                 await ins.start_audio(dl, repeat=False)
                 VOICE_CHATS[chat.id] = ins
-                add_to_queue(chat.id, songname, dl, link, "Audio", 0)
+                add_to_queue(chat, name, url, ref, "audio")
                 caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{songname}]({link})\n <b>Requested by: </b> {from_user}"
-                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons= buttons=[
+                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=buttons=[
                     [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
-                     Button.inline("\U0001F501 ᴘᴀᴜsᴇ", data="pause_or_resume_callback"),
+                     Button.inline("\U0001F501 ᴘᴀᴜsᴇ",
+                                   data="pause_or_resume_callback"),
                      Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback")
                      ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
-                parse_mode="HTML")
+                    parse_mode="HTML")
                 await msg.delete()
             except Exception as ep:
                 clear_queue(chat.id)

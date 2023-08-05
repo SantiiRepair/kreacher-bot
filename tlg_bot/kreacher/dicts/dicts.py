@@ -1,1 +1,2 @@
+QUEUE = {}
 VOICE_CHATS = {}

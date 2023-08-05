@@ -1,8 +1,8 @@
 from kreacher import ins
 from pytgcalls.types import Update
 from kreacher.helpers.queues_handler import skip_current
+from kreacher.dicts.dicts import QUEUE
 from kreacher.helpers.queues import (
-    QUEUE,
     clear_queue,
     active,
 )

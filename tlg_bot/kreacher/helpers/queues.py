@@ -1,4 +1,4 @@
-QUEUE = {}
+from kreacher.dicts.dicts import QUEUE
 active = []
 
 
@@ -6,20 +6,20 @@ async def get_active_chats() -> list:
     return active
 
 
-def add_to_queue(chat_id, songname, link, ref, type, quality):
-    if chat_id in QUEUE:
-        chat_queue = QUEUE[chat_id]
-        chat_queue.append([songname, link, ref, type, quality])
+def add_to_queue(chat, name, url, ref, type, quality):
+    if chat.id in QUEUE:
+        chat_queue = QUEUE[chat.id]
+        chat_queue.append([name, url, ref, type])
         return int(len(chat_queue) - 1)
-    if chat_id not in active:
-        active.append(chat_id)
+    if chat.id not in active:
+        active.append(chat.id)
 
-    QUEUE[chat_id] = [[songname, link, ref, type, quality]]
+    QUEUE[chat.id] = [[name, url, ref, type]]
 
 
-def get_queue(chat_id):
-    if chat_id in QUEUE:
-        return QUEUE[chat_id]
+def get_queue(chat):
+    if chat.id in QUEUE:
+        return QUEUE[chat.id]
     return 0
 
 
@@ -31,10 +31,10 @@ def pop_an_item(chat_id):
     return 1
 
 
-def clear_queue(chat_id: int):
-    if chat_id not in QUEUE:
+def clear_queue(chat):
+    if chat.id not in QUEUE:
         return 0
-    QUEUE.pop(chat_id)
-    if chat_id in active:
-        active.remove(chat_id)
+    QUEUE.pop(chat.id)
+    if chat.id in active:
+        active.remove(chat.id)
     return 1
