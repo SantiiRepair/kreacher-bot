@@ -33,9 +33,14 @@ async def play_video(event):
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
         if chat.id not in VOICE_CHATS:
-            await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-            await ins.start(chat.id)
-            VOICE_CHATS[chat.id] = ins
+            try:
+                await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+                await ins.start(chat.id)
+                VOICE_CHATS[chat.id] = ins
+            except Exception as e:
+                await msg.edit(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
+                VOICE_CHATS.pop(chat.id)
+                return await VOICE_CHATS[chat.id].stop()
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
