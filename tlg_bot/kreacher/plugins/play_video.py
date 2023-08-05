@@ -2,7 +2,7 @@ import re
 from youtubesearchpython import VideosSearch
 from kreacher import ins, kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
-from kreacher.helpers.voice_chats import start_voice_chat, get_voice_chat, stop_voice_chat
+from kreacher.helpers.voice_chats import VOICE_CHATS
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL
@@ -32,10 +32,8 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        proto = get_voice_chat(chat)
-        if proto is None:
+        if VOICE_CHATS[chat.id] is None:
             await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-            start_voice_chat(chat, ins)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
@@ -53,8 +51,8 @@ async def play_video(event):
             except Exception as e:
                 await msg.edit(f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
                 print(e)
-                stop_voice_chat(chat)
-                return await proto.stop()
+                VOICE_CHATS.pop(chat.id)
+                return await VOICE_CHATS[chat.id].stop()
 
         else:
             await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
@@ -64,6 +62,7 @@ async def play_video(event):
         try:
             await sleep(2)
             await ins.start(chat.id)
+            VOICE_CHATS[chat.id] = ins
             await ins.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -78,8 +77,8 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
-            stop_voice_chat(chat)
-            return await proto.stop()
+            VOICE_CHATS.pop(chat.id)
+            return await VOICE_CHATS[chat.id].stop()
 
     elif media.video or media.file:
         await msg.edit("🔄 `Downloading ...`")
@@ -95,6 +94,7 @@ async def play_video(event):
         try:
             await sleep(2)
             await ins.start(chat.id)
+            VOICE_CHATS[chat.id] = ins
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -110,8 +110,8 @@ async def play_video(event):
         except Exception as e:
             await msg.edit(f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
             print(e)
-            await stop_voice_chat(chat)
-            return await proto.stop()
+            VOICE_CHATS.pop(chat.id)
+            return await VOICE_CHATS[chat.id].stop()
 
     else:
         await msg.edit("<code>\U0001F9D9 Do you want to search for a YouTube video?</code>", parse_mode="HTML")
@@ -158,9 +158,8 @@ async def pause(event, perm):
         )
         return
     if chat.id in QUEUE:
-        proto = get_voice_chat(chat)
         try:
-            await proto.pause_stream(chat.id)
+            await VOICE_CHATS[chat.id].pause_stream(chat.id)
             await event.reply("**Streaming Paused**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
@@ -178,9 +177,8 @@ async def resume(event, perm):
         )
         return
     if chat.id in QUEUE:
-        proto = get_voice_chat(chat)
         try:
-            await proto.resume_stream(chat.id)
+            await VOICE_CHATS[chat.id].resume_stream(chat.id)
             await event.reply("**Streaming Started Back 🔙**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
