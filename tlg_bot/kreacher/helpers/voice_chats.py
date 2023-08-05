@@ -9,5 +9,5 @@ def start_voice_chat(chat, instance):
     VOICE_CHATS[chat.id] = instance
 
 
-async def stop_voice_chat(chat):
+def stop_voice_chat(chat):
     VOICE_CHATS.pop(chat.id)
