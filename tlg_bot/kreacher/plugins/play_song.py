@@ -126,7 +126,7 @@ async def play_song(event):
         or not replied
         and not title
     ):
-        return await event.client.send_file(chat.id, Config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("✯ cʟᴏꜱᴇ ✯", data="cls")]])
+        return await event.client.send_file(chat.id, Config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
     elif replied and not replied.audio and not replied.voice or not replied:
         botman = await event.reply("🔎")
         query = event.text.split(maxsplit=1)[1]
@@ -150,7 +150,7 @@ async def play_song(event):
                 pos = add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
                 caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                 await botman.delete()
-                await event.client.send_file(chat.id, thumb, caption=caption, buttons=btnn)
+                await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             else:
                 try:
                     await ins.join(
@@ -163,7 +163,7 @@ async def play_song(event):
                     add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
                     caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                     await botman.delete()
-                    await event.client.send_file(chat.id, thumb, caption=caption, buttons=btnn)
+                    await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
                 except Exception as ep:
                     clear_queue(chat.id)
                     await botman.edit(f"`{ep}`")
@@ -179,7 +179,7 @@ async def play_song(event):
         if chat.id in QUEUE:
             pos = add_to_queue(chat.id, songname, dl, link, "Audio", 0)
             caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-            await event.client.send_file(chat.id, ngantri, caption=caption, buttons=btnn)
+            await event.client.send_file(chat.id, ngantri, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             await botman.delete()
         else:
             try:
@@ -192,7 +192,7 @@ async def play_song(event):
                 )
                 add_to_queue(chat.id, songname, dl, link, "Audio", 0)
                 caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({link})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=btnn)
+                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
                 await botman.delete()
             except Exception as ep:
                 clear_queue(chat.id)
