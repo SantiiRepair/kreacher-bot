@@ -30,7 +30,7 @@ async def skip_current(chat):
     return [songname, link, type]
 
 
-async def skip_item(chat, x: int):
+async def next_item(chat, x: int):
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat.id)
