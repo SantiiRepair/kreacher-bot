@@ -1,3 +1,4 @@
+from asyncio import sleep
 from kreacher.helpers.thumbnail import gen_thumb
 from telethon import Button, events
 from kreacher.dicts.dicts import VOICE_CHATS
@@ -9,8 +10,6 @@ from kreacher.helpers.queues import (
 )
 from kreacher.helpers.yt_dlp import bash
 from kreacher import config, ins, kreacher
-from pytgcalls import StreamType
-from pytgcalls.types.input_stream import AudioPiped
 from telethon.tl import types
 from telethon.utils import get_display_name
 from youtubesearchpython import VideosSearch
@@ -79,11 +78,11 @@ async def play_song(event):
     ):
         return await event.client.send_file(chat.id, config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
     elif replied and not replied.audio and not replied.voice or not replied:
-        botman = await event.reply("🔎")
+        msg = await event.reply("🔎")
         query = event.text.split(maxsplit=1)[1]
         search = ytsearch(query)
         if search == 0:
-            await botman.edit(
+            await msg.edit(
                 "**Can't Find Song** Try searching with More Specific Title"
             )
         else:
@@ -96,31 +95,29 @@ async def play_song(event):
             format = "best[height<=?720][width<=?1280]"
             hm, ytlink = await ytdl(format, url)
             if hm == 0:
-                await botman.edit(f"`{ytlink}`")
+                await msg.edit(f"`{ytlink}`")
             elif chat.id in QUEUE:
                 pos = add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
                 caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                await botman.delete()
+                await msg.delete()
                 await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             else:
                 try:
-                    await ins.join(
-                        chat.id,
-                        AudioPiped(
-                            ytlink,
-                        ),
-                        stream_type=StreamType().pulse_stream,
-                    )
+                    await ins.join(chat.id)
+                    await ins.start_audio(ytlink, repeat=False)
+                    VOICE_CHATS[chat.id] = ins
                     add_to_queue(chat.id, songname, ytlink, url, "Audio", 0)
                     caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                    await botman.delete()
+                    await msg.delete()
                     await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
                 except Exception as ep:
                     clear_queue(chat.id)
-                    await botman.edit(f"`{ep}`")
+                    VOICE_CHATS.pop(chat.id)
+                    await msg.edit(f"`{ep}`")
+                    return await sleep(3)
 
     else:
-        botman = await event.edit("➕ Downloading File...")
+        msg = await event.edit("➕ Downloading File...")
         dl = await replied.download_media()
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
@@ -131,20 +128,18 @@ async def play_song(event):
             pos = add_to_queue(chat.id, songname, dl, link, "Audio", 0)
             caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
             await event.client.send_file(chat.id, ngantri, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
-            await botman.delete()
+            await msg.delete()
         else:
             try:
-                await ins.join(
-                    chat.id,
-                    AudioPiped(
-                        dl,
-                    ),
-                    stream_type=StreamType().pulse_stream,
-                )
+                await ins.join(chat.id)
+                await ins.start_audio(dl, repeat=False)
+                VOICE_CHATS[chat.id] = ins
                 add_to_queue(chat.id, songname, dl, link, "Audio", 0)
                 caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({link})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                 await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
-                await botman.delete()
+                await msg.delete()
             except Exception as ep:
                 clear_queue(chat.id)
-                await botman.edit(f"`{ep}`")
+                VOICE_CHATS.pop(chat.id)
+                await msg.edit(f"`{ep}`")
+                return await sleep(3)
