@@ -20,7 +20,7 @@ Have a... tolerable... day! \U0001F52E</i>
     )
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]start$"))
+@kreacher.on(events.NewMessage(pattern="[!?/]start"))
 async def start(event):
     if config.MANAGEMENT_MODE == "ENABLE":
         return

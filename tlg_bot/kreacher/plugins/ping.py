@@ -27,7 +27,7 @@ async def _human_time_duration(seconds):
     return ", ".join(parts)
 
 
-@kreacher.on(events.NewMessage(pattern="^/ping"))
+@kreacher.on(events.NewMessage(pattern="[!?/]ping"))
 async def _(event):
     start = time()
     current_time = datetime.utcnow()

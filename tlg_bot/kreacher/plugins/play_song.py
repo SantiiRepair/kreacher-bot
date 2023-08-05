@@ -63,7 +63,7 @@ async def skip_item(chat_id: int, x: int):
         return 0
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]play_song"))
+@kreacher.on(events.NewMessage(pattern="[!?/]play_song"))
 async def play_song(event):
     title = ' '.join(event.text[5:])
     replied = await event.get_reply_message()

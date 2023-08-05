@@ -17,7 +17,7 @@ ydl_opts = {
 ydl = YoutubeDL(ydl_opts)
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
+@kreacher.on(events.NewMessage(pattern="[!?/]play_video"))
 async def play_video(event):
     chat = await event.get_chat()
     msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
