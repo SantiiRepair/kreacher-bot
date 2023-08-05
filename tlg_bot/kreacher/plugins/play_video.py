@@ -32,8 +32,10 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        if VOICE_CHATS[chat.id] is None:
+        if chat.id not in VOICE_CHATS[chat.id]:
             await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+            await ins.start(chat.id)
+            VOICE_CHATS[chat.id] = ins
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
@@ -61,8 +63,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.start(chat.id)
-            VOICE_CHATS[chat.id] = ins
             await ins.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -93,8 +93,6 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.start(chat.id)
-            VOICE_CHATS[chat.id] = ins
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
