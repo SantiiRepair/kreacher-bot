@@ -10,9 +10,9 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 
 ydl_opts = {
-        "quiet": True,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
+    "quiet": True,
+    "geo_bypass": True,
+    "nocheckcertificate": True,
 }
 ydl = YoutubeDL(ydl_opts)
 
@@ -32,10 +32,10 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        if chat.id not in VOICE_CHATS:
+        if VOICE_CHATS.get(chat.id) is None:
             try:
                 await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-                await ins.start(chat.id)
+                await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
             except Exception as e:
                 await msg.edit(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
@@ -48,8 +48,7 @@ async def play_video(event):
                 formats = meta.get('formats', [meta])
                 for f in formats:
                     ytstreamlink = f['url']
-                link = ytstreamlink
-                search = VideosSearch(url, limit=1)
+                search = VideosSearch(ytstreamlink, limit=1)
                 opp = search.result()["result"]
                 oppp = opp[0]
                 thumbid = oppp["thumbnails"][0]["url"]
@@ -58,8 +57,9 @@ async def play_video(event):
             except Exception as e:
                 await msg.edit(f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
                 print(e)
+                await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
-                return await VOICE_CHATS[chat.id].stop()
+                return await sleep(3)
 
         else:
             await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
@@ -81,15 +81,16 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
+            await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await VOICE_CHATS[chat.id].stop()
+            return await sleep(3)
 
     elif media.video or media.file:
         await msg.edit("🔄 `Downloading ...`")
         if media.video and media.video.thumbs:
-            lol = media.video.thumbs[0]
-            lel = await kreacher.download_media(lol['file_id'])
-            thumb = lel
+            mt = media.video.thumbs[0]
+            md = await kreacher.download_media(mt['file_id'])
+            thumb = md
         else:
             thumb = "https://telegra.ph/file/62e86d8aadde9a8cbf9c2.jpg"
 
@@ -112,8 +113,9 @@ async def play_video(event):
         except Exception as e:
             await msg.edit(f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
             print(e)
+            await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await VOICE_CHATS[chat.id].stop()
+            return await sleep(3)
 
     else:
         await msg.edit("<code>\U0001F9D9 Do you want to search for a YouTube video?</code>", parse_mode="HTML")

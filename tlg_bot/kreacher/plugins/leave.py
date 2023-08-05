@@ -7,7 +7,7 @@ from telethon import events
 async def leave_handler(event):
     try:
         chat = await event.get_chat()
-        if chat.id not in VOICE_CHATS:
+        if VOICE_CHATS.get(chat.id) is None:
             raise Exception("Streaming is not active")
         await VOICE_CHATS[chat.id].leave_current_group_call()
         VOICE_CHATS.pop(chat.id)
