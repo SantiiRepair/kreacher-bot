@@ -1,5 +1,5 @@
 from kreacher import kreacher
-from kreacher.helpers.voice_chats import VOICE_CHATS
+from kreacher.dicts.dicts import VOICE_CHATS
 from telethon import events
 
 
