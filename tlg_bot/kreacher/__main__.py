@@ -6,7 +6,6 @@ from kreacher.utils import load_plugins
 import logging
 from termcolor import colored
 from kreacher import kreacher
-from kreacher import client
 
 
 logging.basicConfig(
@@ -25,7 +24,7 @@ for name in files:
 
 async def start_bot():
     print(f'{colored("[INFO]", "blue")}: LOADING ASSISTANT DETAILS')
-    botme = await client.get_me()
+    botme = await kreacher.get_me()
     botid = telethon.utils.get_peer_id(botme)
     print(f'{colored("[INFO]", "blue")}: ASSISTANT ID {botid}')
 

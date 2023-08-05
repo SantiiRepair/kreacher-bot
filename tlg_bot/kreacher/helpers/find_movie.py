@@ -1,5 +1,4 @@
-from Config import Config
-from kreacher import client, kreacher
+from kreacher import config, kreacher
 from telethon import events
 from telethon.tl.functions.messages import SearchRequest
 from telethon.tl.types import InputMessagesFilterVideo
@@ -9,11 +8,11 @@ import uuid
 query = "ejemplo"
 
 
-@kreacher.on(events.NewMessage(chats=Config().MOVIES_CHANNEL))
+@kreacher.on(events.NewMessage(chats=config.MOVIES_CHANNEL))
 async def find_movie(event, q):
-    messages = await client(
+    messages = await kreacher(
         SearchRequest(
-            peer=Config().MOVIES_CHANNEL,
+            peer=config.MOVIES_CHANNEL,
             q=q,
             filter=InputMessagesFilterVideo(),
             max_id=0,
@@ -30,7 +29,7 @@ async def find_movie(event, q):
         video_message = messages.messages[0]
 
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            await client.download_media(video_message.video, temp_file)
+            await kreacher.download_media(video_message.video, temp_file)
             video_path = temp_file.name
 
         file_name = f"{uuid.uuid4()}.mp4"
