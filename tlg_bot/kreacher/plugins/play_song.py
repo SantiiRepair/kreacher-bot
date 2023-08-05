@@ -1,5 +1,4 @@
 from kreacher.helpers.thumbnail import gen_thumb
-from Config import Config
 from telethon import Button, events
 from kreacher.dicts.dicts import VOICE_CHATS
 from kreacher.helpers.queues import (
@@ -7,24 +6,11 @@ from kreacher.helpers.queues import (
     add_to_queue,
     clear_queue,
     get_queue,
-    pop_an_item,
-    active,
 )
 from kreacher.helpers.yt_dlp import bash
-from kreacher import ins, kreacher
+from kreacher import config, ins, kreacher
 from pytgcalls import StreamType
-from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
-from pytgcalls.types.input_stream.quality import (
-    HighQualityAudio,
-    HighQualityVideo,
-    LowQualityVideo,
-    MediumQualityVideo,
-)
-from pytgcalls.exceptions import (
-    NoActiveGroupCall,
-    NotInGroupCallError
-)
-from kreacher.status import g
+from pytgcalls.types.input_stream import AudioPiped
 from telethon.tl import types
 from telethon.utils import get_display_name
 from youtubesearchpython import VideosSearch
@@ -77,41 +63,6 @@ async def skip_item(chat_id: int, x: int):
         return 0
 
 
-async def skip_current_song(chat):
-    if chat.id not in QUEUE:
-        return 0
-    chat_queue = get_queue(chat.id)
-    if len(chat_queue) == 1:
-        await VOICE_CHATS[chat.id].leave_group_call(chat.id)
-        clear_queue(chat.id)
-        active.remove(chat.id)
-        return 1
-    songname = chat_queue[1][0]
-    url = chat_queue[1][1]
-    link = chat_queue[1][2]
-    type = chat_queue[1][3]
-    RESOLUSI = chat_queue[1][4]
-    if type == "Audio":
-        await VOICE_CHATS[chat.id].change_stream(
-            chat.id,
-            AudioPiped(
-                url,
-            ),
-        )
-    elif type == "Video":
-        if RESOLUSI == 720:
-            hm = HighQualityVideo()
-        elif RESOLUSI == 480:
-            hm = MediumQualityVideo()
-        elif RESOLUSI == 360:
-            hm = LowQualityVideo()
-        await VOICE_CHATS[chat.id].change_stream(
-            chat.id, AudioVideoPiped(url, HighQualityAudio(), hm)
-        )
-    pop_an_item(chat.id)
-    return [songname, link, type]
-
-
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_song"))
 async def play_song(event):
     title = ' '.join(event.text[5:])
@@ -126,7 +77,7 @@ async def play_song(event):
         or not replied
         and not title
     ):
-        return await event.client.send_file(chat.id, Config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+        return await event.client.send_file(chat.id, config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
     elif replied and not replied.audio and not replied.voice or not replied:
         botman = await event.reply("🔎")
         query = event.text.split(maxsplit=1)[1]

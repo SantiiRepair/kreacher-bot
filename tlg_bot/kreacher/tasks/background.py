@@ -1,5 +1,6 @@
 from kreacher import ins
 from pytgcalls.types import Update
+from kreacher.helpers.queues_handler import skip_current
 from kreacher.helpers.queues import (
     QUEUE,
     clear_queue,
@@ -10,8 +11,7 @@ from kreacher.helpers.queues import (
 @ins.on_stream_end()
 async def stream_end_handler(_, u: Update):
     chat = u.get_chat()
-    print(chat.id)
-    await skip_current_song(chat.id)
+    await skip_current(chat.id)
 
 
 @ins.on_closed_voice_chat()
