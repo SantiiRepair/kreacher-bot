@@ -8,6 +8,7 @@ from asyncio import sleep
 from yt_dlp import YoutubeDL
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
+thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
 ydl_opts = {
     "quiet": True,
@@ -65,19 +66,20 @@ async def play_video(event):
 
         else:
             await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
-            thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
         try:
             await sleep(2)
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                f"▶️ <i>Started [Video Streaming]({url})!</i>",
+                f"\U00002378 <i>Started Video Streaming!</i>",
                 file=thumb,
                 buttons=[
-                    [Button.inline("⏸ Pause", data="pause_callback"),
-                     Button.inline("▶️ Resume", data="resume_callback")],
-                    [Button.inline("⏹️ Stop", data="end_callback")],
+                    [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
+                     Button.inline("\U0001F501 ʀᴇsᴜᴍᴇ", data="pause_or_resume_callback"),
+                     Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback")
+                     ],
+                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
                 parse_mode="HTML"
             )
@@ -89,7 +91,7 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 <i>Downloading...</i>", parse_mode="HTML")
-        video = await client.download_media(media)
+        video = await client.download_media(media, file="")
 
         try:
             await sleep(2)
@@ -99,9 +101,11 @@ async def play_video(event):
                 f"▶️ <i>Started [Video Streaming](https://t.me/AsmSafone)!</i>",
                 file=thumb,
                 buttons=[
-                    [Button.inline("⏸ Pause", data="pause_callback"),
-                     Button.inline("▶️ Resume", data="resume_callback")],
-                    [Button.inline("⏹️ Stop", data="end_callback")],
+                    [Button.inline("\U000023ee Back", data="back_callback"),
+                     Button.inline("\U00002378 Pause", data="pause_or_resume_callback"),
+                     Button.inline("\U000023ED Next", data="next_callback")
+                     ],
+                    [Button.inline("\U00002379 Stop", data="end_callback")],
                 ],
                 parse_mode="HTML"
             )

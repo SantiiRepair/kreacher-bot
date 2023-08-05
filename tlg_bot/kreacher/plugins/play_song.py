@@ -49,19 +49,6 @@ async def ytdl(format: str, link: str):
     return 0, stderr
 
 
-async def skip_item(chat_id: int, x: int):
-    if chat_id not in QUEUE:
-        return 0
-    chat_queue = get_queue(chat_id)
-    try:
-        songname = chat_queue[x][0]
-        chat_queue.pop(x)
-        return songname
-    except Exception as e:
-        print(e)
-        return 0
-
-
 @kreacher.on(events.NewMessage(pattern="[!?/]play_song"))
 async def play_song(event):
     title = ' '.join(event.text[5:])
@@ -135,8 +122,15 @@ async def play_song(event):
                 await ins.start_audio(dl, repeat=False)
                 VOICE_CHATS[chat.id] = ins
                 add_to_queue(chat.id, songname, dl, link, "Audio", 0)
-                caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({link})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+                caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{songname}]({link})\n <b>Requested by: </b> {from_user}"
+                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons= buttons=[
+                    [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
+                     Button.inline("\U0001F501 ᴘᴀᴜsᴇ", data="pause_or_resume_callback"),
+                     Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback")
+                     ],
+                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                ],
+                parse_mode="HTML")
                 await msg.delete()
             except Exception as ep:
                 clear_queue(chat.id)
