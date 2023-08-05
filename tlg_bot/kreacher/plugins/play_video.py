@@ -35,7 +35,7 @@ async def play_video(event):
         proto = get_voice_chat(chat)
         if proto is None:
             await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-            start_voice_chat(chat.id, ins)
+            start_voice_chat(chat, ins)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
@@ -63,7 +63,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.join(chat.id)
+            await ins.start(chat.id)
             await ins.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -78,7 +78,7 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
-            stop_voice_chat(chat.id)
+            stop_voice_chat(chat)
             return await proto.stop()
 
     elif media.video or media.file:
@@ -94,7 +94,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.join(chat.id)
+            await ins.start(chat.id)
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
@@ -110,7 +110,7 @@ async def play_video(event):
         except Exception as e:
             await msg.edit(f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
             print(e)
-            await stop_voice_chat(chat.id)
+            await stop_voice_chat(chat)
             return await proto.stop()
 
     else:
