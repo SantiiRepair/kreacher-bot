@@ -51,13 +51,13 @@ async def play_video(event):
                 split = thumbid.split("?")
                 thumb = split[0].strip()
             except Exception as e:
-                await msg.edit(f"❌ **YouTube Download Error !** \n\n`{e}`")
+                await msg.edit(f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
                 print(e)
                 stop_voice_chat(chat)
                 return await proto.stop()
 
         else:
-            await msg.edit("🔄 `Starting Live Video Stream ...`")
+            await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
             link = url
             thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
@@ -67,13 +67,14 @@ async def play_video(event):
             await ins.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                f"▶️ **Started [Video Streaming]({url})!**",
+                f"▶️ <i>Started [Video Streaming]({url})!</i>",
                 file=thumb,
                 buttons=[
                     [Button.inline("⏸ Pause", data="pause_callback"),
                      Button.inline("▶️ Resume", data="resume_callback")],
                     [Button.inline("⏹️ Stop", data="end_callback")],
-                ]
+                ],
+                parse_mode="HTML"
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
@@ -97,22 +98,23 @@ async def play_video(event):
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                f"▶️ **Started [Video Streaming](https://t.me/AsmSafone)!**",
+                f"▶️ <i>Started [Video Streaming](https://t.me/AsmSafone)!</i>",
                 file=thumb,
                 buttons=[
                     [Button.inline("⏸ Pause", data="pause_callback"),
                      Button.inline("▶️ Resume", data="resume_callback")],
                     [Button.inline("⏹️ Stop", data="end_callback")],
-                ]
+                ],
+                parse_mode="HTML"
             )
         except Exception as e:
-            await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
+            await msg.edit(f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
             print(e)
             await stop_voice_chat(chat.id)
             return await proto.stop()
 
     else:
-        await msg.edit("💁🏻‍♂️ Do you want to search for a YouTube video?")
+        await msg.edit("<code>\U0001F9D9 Do you want to search for a YouTube video?</code>", parse_mode="HTML")
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
