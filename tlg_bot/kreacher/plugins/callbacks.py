@@ -11,19 +11,19 @@ async def _(event):
 @kreacher.on(events.callbackquery.CallbackQuery(data="pause_callback"))
 async def _(event):
     chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.set_pause(True)
+    proto = get_voice_chat(chat)
+    await proto.set_pause(True)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="resume_callback"))
 async def _(event):
     chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.set_pause(False)
+    proto = get_voice_chat(chat)
+    await proto.set_pause(False)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
     chat = await event.get_chat()
-    call_py = await get_voice_chat(chat.id)
-    await call_py.stop_media()
+    proto = get_voice_chat(chat)
+    await proto.stop_media()

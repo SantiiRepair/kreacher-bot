@@ -1,5 +1,5 @@
-from kreacher import kreacher
-from kreacher.helpers.voice_chats import get_voice_chat, create_voice_chat
+from kreacher import ins, kreacher
+from kreacher.helpers.voice_chats import get_voice_chat, start_voice_chat
 from telethon import events
 
 
@@ -7,11 +7,11 @@ from telethon import events
 async def join_handler(event):
     try:
         chat = await event.get_chat()
-        call_py = await get_voice_chat(chat.id)
-        if call_py is not None:
+        proto = get_voice_chat(chat)
+        if proto is not None:
             raise Exception("Streaming is active")
-        await create_voice_chat(chat.id)
-        await call_py.start(chat.id)
+        start_voice_chat(chat, ins)
+        await proto.join(chat)
         await event.reply("<i>Master, what do you need? \n\nVoice Chat joined successfully.</i>", parse_mode="HTML")
     except Exception as e:
         return await event.reply(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")

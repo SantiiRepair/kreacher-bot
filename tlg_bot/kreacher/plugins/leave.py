@@ -7,10 +7,10 @@ from telethon import events
 async def leave_handler(event):
     try:
         chat = await event.get_chat()
-        call_py = await get_voice_chat(chat.id)
-        if call_py is None or call_py is False:
+        proto = get_voice_chat(chat)
+        if proto is None:
             raise Exception("Streaming is not active")
-        await call_py.leave_current_group_call()
+        await proto.leave_current_group_call()
         await event.reply("<i>Goodbye master, just call me if you need me. \n\nVoice Chat left successfully.</i>", parse_mode="HTML")
     except Exception as e:
         return await event.reply(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")

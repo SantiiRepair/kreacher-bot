@@ -1,13 +1,20 @@
 import re
 from youtubesearchpython import VideosSearch
-from kreacher import kreacher
+from kreacher import ins, kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
-from kreacher.helpers.voice_chats import create_voice_chat, get_voice_chat, stop_voice_chat
+from kreacher.helpers.voice_chats import start_voice_chat, get_voice_chat, stop_voice_chat
 from telethon import Button, events
 from asyncio import sleep
-from yt_dlp import YoutubeDL as ydl
+from yt_dlp import YoutubeDL
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
+
+ydl_opts = {
+        "quiet": True,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+}
+ydl = YoutubeDL(ydl_opts)
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]play_video"))
@@ -25,14 +32,14 @@ async def play_video(event):
             return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
-        call_py = await get_voice_chat(chat.id)
-        if call_py is None or call_py is False:
+        proto = get_voice_chat(chat)
+        if proto is None:
             await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
-            await create_voice_chat(chat.id)
+            start_voice_chat(chat.id, ins)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
-                meta = ydl().extract_info(url=url, download=False)
+                meta = ydl.extract_info(url=url, download=False)
                 formats = meta.get('formats', [meta])
                 for f in formats:
                     ytstreamlink = f['url']
@@ -46,8 +53,8 @@ async def play_video(event):
             except Exception as e:
                 await msg.edit(f"❌ **YouTube Download Error !** \n\n`{e}`")
                 print(e)
-                await stop_voice_chat(chat.id)
-                return await call_py.stop()
+                stop_voice_chat(chat)
+                return await proto.stop()
 
         else:
             await msg.edit("🔄 `Starting Live Video Stream ...`")
@@ -56,21 +63,22 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.start_video(link, with_audio=True, repeat=False)
+            await ins.join(chat.id)
+            await ins.start_video(link, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
                 f"▶️ **Started [Video Streaming]({url})!**",
                 file=thumb,
                 buttons=[
-                    [Button.inline("⏸", data="pause_callback"),
-                     Button.inline("▶️", data="resume_callback")],
-                    [Button.inline("⏹️", data="end_callback")],
-                ],
+                    [Button.inline("⏸ Pause", data="pause_callback"),
+                     Button.inline("▶️ Resume", data="resume_callback")],
+                    [Button.inline("⏹️ Stop", data="end_callback")],
+                ]
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
-            await stop_voice_chat(chat.id)
-            return await call_py.stop()
+            stop_voice_chat(chat.id)
+            return await proto.stop()
 
     elif media.video or media.file:
         await msg.edit("🔄 `Downloading ...`")
@@ -85,22 +93,23 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await call_py.start_video(video, with_audio=True, repeat=False)
+            await ins.join(chat.id)
+            await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
                 f"▶️ **Started [Video Streaming](https://t.me/AsmSafone)!**",
                 file=thumb,
                 buttons=[
-                    [Button.inline("⏸", data="pause_callback"),
-                     Button.inline("▶️", data="resume_callback")],
-                    [Button.inline("⏹️", data="end_callback")],
+                    [Button.inline("⏸ Pause", data="pause_callback"),
+                     Button.inline("▶️ Resume", data="resume_callback")],
+                    [Button.inline("⏹️ Stop", data="end_callback")],
                 ]
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
             print(e)
             await stop_voice_chat(chat.id)
-            return await call_py.stop()
+            return await proto.stop()
 
     else:
         await msg.edit("💁🏻‍♂️ Do you want to search for a YouTube video?")
@@ -108,15 +117,15 @@ async def play_video(event):
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
 async def playlist(event, perm):
-    chat_id = event.chat_id
+    chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
-    if chat_id in QUEUE:
-        chat_queue = get_queue(chat_id)
+    if chat.id in QUEUE:
+        chat_queue = get_queue(chat.id)
         if len(chat_queue) == 1:
             await event.reply(
                 f"**�PlAYLIST:**\n• [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
@@ -139,16 +148,17 @@ async def playlist(event, perm):
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]pause"))
 async def pause(event, perm):
-    chat_id = event.chat_id
+    chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
-    if chat_id in QUEUE:
+    if chat.id in QUEUE:
+        proto = get_voice_chat(chat)
         try:
-            #await call_py.pause_stream(chat_id)
+            await proto.pause_stream(chat.id)
             await event.reply("**Streaming Paused**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
@@ -157,17 +167,18 @@ async def pause(event, perm):
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]resume"))
-async def vc_resume(event, perm):
-    chat_id = event.chat_id
+async def resume(event, perm):
+    chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
-    if chat_id in QUEUE:
+    if chat.id in QUEUE:
+        proto = get_voice_chat(chat)
         try:
-            #await call_py.resume_stream(chat_id)
+            await proto.resume_stream(chat.id)
             await event.reply("**Streaming Started Back 🔙**")
         except Exception as e:
             await event.reply(f"**ERROR:** `{e}`")
