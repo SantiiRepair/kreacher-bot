@@ -39,8 +39,9 @@ async def play_video(event):
                 VOICE_CHATS[chat.id] = ins
             except Exception as e:
                 await msg.edit(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
+                await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
-                return await VOICE_CHATS[chat.id].stop()
+                return await sleep(3)
         if match:
             await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
             try:
