@@ -58,12 +58,11 @@ async def play_video(event):
 
         else:
             await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
-            link = url
             thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
         try:
             await sleep(2)
-            await ins.start_video(link, with_audio=True, repeat=False)
+            await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
                 f"▶️ <i>Started [Video Streaming]({url})!</i>",

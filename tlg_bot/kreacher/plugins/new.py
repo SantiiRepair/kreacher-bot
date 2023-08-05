@@ -7,8 +7,7 @@ from telethon import events
 async def new_handler(event):
     try:
         chat = await event.get_chat()
-        proto = VOICE_CHATS[chat.id]
-        if proto is not None:
+        if chat.id not in VOICE_CHATS:
             raise Exception("Streaming is active")
         await ins.start(chat.id)
         VOICE_CHATS[chat.id] = ins
