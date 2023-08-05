@@ -1,6 +1,6 @@
 import re
 from youtubesearchpython import VideosSearch
-from kreacher import ins, kreacher
+from kreacher import client, ins, kreacher
 from kreacher.helpers.queues import QUEUE, get_queue
 from kreacher.dicts.dicts import VOICE_CHATS
 from telethon import Button, events
@@ -37,6 +37,7 @@ async def play_video(event):
                 await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
                 await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
+                await sleep(3)
             except Exception as e:
                 await msg.edit(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
                 await VOICE_CHATS[chat.id].stop()
@@ -87,15 +88,8 @@ async def play_video(event):
             return await sleep(3)
 
     elif media.video or media.file:
-        await msg.edit("🔄 `Downloading ...`")
-        if media.video and media.video.thumbs:
-            mt = media.video.thumbs[0]
-            md = await kreacher.download_media(mt['file_id'])
-            thumb = md
-        else:
-            thumb = "https://telegra.ph/file/62e86d8aadde9a8cbf9c2.jpg"
-
-        video = await kreacher.download_media(media)
+        await msg.edit("🔄 <i>Downloading...</i>", parse_mode="HTML")
+        video = await client.download_media(media)
 
         try:
             await sleep(2)
@@ -123,7 +117,7 @@ async def play_video(event):
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
-async def playlist(event, perm):
+async def playlist(event):
     chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
@@ -154,7 +148,7 @@ async def playlist(event, perm):
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]pause"))
-async def pause(event, perm):
+async def pause(event):
     chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
@@ -173,7 +167,7 @@ async def pause(event, perm):
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]resume"))
-async def resume(event, perm):
+async def resume(event):
     chat = event.get_chat()
     user = event.get_sender()
     if not user.is_admin:
