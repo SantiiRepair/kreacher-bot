@@ -1,4 +1,4 @@
-import pickle
+import _pickle as pickle
 from kreacher import client
 from pytgcalls import GroupCallFactory
 
@@ -14,6 +14,7 @@ except (FileNotFoundError, EOFError):
 async def create_voice_chat(chat_id):
     factory = GroupCallFactory(client, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
     voice_chat = factory.get_group_call()
+    print(dir(voice_chat))
     get = VOICE_CHATS.get(chat_id)
     if get is not None:
         raise Exception("I'm joined in the Voice Chat")
