@@ -9,7 +9,7 @@ config = Config()
 dir = os.path.dirname(os.path.abspath(__file__))
 path = os.path.join(dir, "logs/logs.txt")
 if os.path.exists(path) is False:
-    with open(path, "w"):
+    with open(path, "x"):
         print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
 
 logging.basicConfig(
