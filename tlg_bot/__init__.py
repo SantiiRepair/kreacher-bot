@@ -1,4 +1,4 @@
-from config import Config
+from tlg_bot.config import Config
 from telethon.sync import TelegramClient
 import logging
 from pytgcalls import GroupCallFactory
