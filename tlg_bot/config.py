@@ -7,7 +7,6 @@ class Config(object):
         dir = os.path.dirname(os.path.abspath(__file__))
         path = os.path.join(dir, ".env")
         load_dotenv(path)
-        print(os.getenv("API_HASH"))
         self.API_HASH = os.getenv("API_HASH")
         self.API_ID = os.getenv("API_ID")
         self.ASSISTANT_ID = os.getenv("ASSISTANT_ID")
