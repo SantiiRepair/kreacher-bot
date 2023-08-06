@@ -1,6 +1,6 @@
 import os
+import uuid
 from asyncio import sleep
-
 # from tlg_bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
 from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
@@ -139,7 +139,7 @@ async def play_song(event):
 
     else:
         await msg.edit("➕ __Downloading...__")
-        dl = await replied.download_media(file=downloads_dir)
+        dl = await replied.download_media(file=f"{downloads_dir} {str(uuid.uuid4())}")
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
             name = "Audio File"

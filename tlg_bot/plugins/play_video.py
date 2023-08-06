@@ -1,11 +1,13 @@
 import os
 import re
+import uuid
+from asyncio import sleep
 from youtubesearchpython import VideosSearch
 from tlg_bot import client, ins, kreacher
 from tlg_bot.helpers.queues import get_queue
 from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import Button, events
-from asyncio import sleep
+
 from yt_dlp import YoutubeDL
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -109,7 +111,7 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 __Downloading...__")
-        video = await client.download_media(media, file=downloads_dir)
+        video = await client.download_media(media, file=f"{downloads_dir} {str(uuid.uuid4())}")
 
         try:
             await sleep(2)
