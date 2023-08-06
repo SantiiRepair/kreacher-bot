@@ -167,6 +167,7 @@ async def play_song(event):
             )
         else:
             try:
+                await sleep(3)
                 await ins.start_audio(dl, repeat=False)
                 await msg.edit(
                     f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
