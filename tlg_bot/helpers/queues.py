@@ -14,24 +14,37 @@ async def get_active_chats() -> list:
 
 
 def add_to_queue(chat, name, url, ref, type):
-    await dbq.add({"id": chat.id})
-    if dbq.getBy(chat.id):
-        chat_queue = QUEUE[chat.id]
-        await dbq.updateById(
-            chat.id, {"name": name, "url": url, "ref": ref, "type": type}
-        )
-        chat_queue.append([name, url, ref, type])
-        return int(len(chat_queue) - 1)
-    if chat.id not in active:
-        active.append(chat.id)
+    queue = dbq.getByQuery({"chat_id": chat.id})
+    try:
+        if queue is not None:
+            dbq.updateByQuery(
+                {"chat_id": chat.id},
+                queue.append({}),
+            )
+            return int(len(queue[0].get("chat_id")) - 1)
+        if chat.id not in active:
+            active.append(chat.id)
+            dbq.add(
+                {
+                    "chat_id": chat.id,
+                    "name": name,
+                    "url": url,
+                    "ref": ref,
+                    "type": type,
+                }
+            )
+    except Exception as e:
+        raise e
 
     QUEUE[chat.id] = [[name, url, ref, type]]
 
 
 def get_queue(chat):
-    if chat.id in QUEUE:
-        return QUEUE[chat.id]
-    return 0
+    queue = dbq.getByQuery({"chat_id": chat.id})
+    if queue[0] is not None:
+        if queue in QUEUE:
+            return QUEUE[chat.id]
+        return 0
 
 
 def pop_an_item(chat):

@@ -2,7 +2,75 @@
    "data": [
       {
          "chat_id": 1234,
-         "id": 261700356171159570
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 195019475303298213
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 315934606094638437
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 130633375121465524
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 259428658424065973
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 290685380183799814
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 476639704125811359
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 117290433108950113
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 286009744676329530
+      },
+      {
+         "chat_id": 1234,
+         "name": "name",
+         "url": "url",
+         "ref": "ref",
+         "type": "type",
+         "id": 570151287751608371
       }
    ]
 }
