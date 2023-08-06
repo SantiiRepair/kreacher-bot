@@ -1,5 +1,6 @@
 import os
 from asyncio import sleep
+
 # from tlg_bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
 from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
@@ -55,7 +56,7 @@ async def play_song(event):
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
     dir = os.path.dirname(os.path.abspath(__file__))
-    downloads_dir = os.path.join(dir, "../downloads/songs")
+    downloads_dir = os.path.join(dir, "../downloads/songs/")
     from_user = vcmention(event.sender)
     if (
         replied
@@ -113,7 +114,7 @@ async def play_song(event):
                     add_to_queue(chat, name, url, ref, "audio")
                     await sleep(3)
                     await msg.edit(
-                        f"**__Started Streaming\n\n Title__**: [{name}]({url})\n **__Duration:__** {duration} **__Minutes\n Requested by:__** {from_user}",
+                        f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** {from_user}",
                         # file=thumb,
                         buttons=[
                             [
@@ -145,9 +146,9 @@ async def play_song(event):
         elif replied.voice:
             name = "Voice Note"
         if chat.id in QUEUE:
-            pos = add_to_queue(chat, name, url, ref, "audio")
+            # pos = add_to_queue(chat, name, url, ref, "audio")
             await msg.edit(
-                f"**__Added to queue at__** {pos}\n\n **__Title:__** [{name}]({url})\n **__Requested by:__** {from_user}",
+                f"**__Added to queue at__** \n\n **Title:** [{name}]({url})\n **Requested by:** {from_user}",
                 file=ngantri,
                 buttons=[
                     [
@@ -164,7 +165,7 @@ async def play_song(event):
             try:
                 await ins.start_audio(dl, repeat=False)
                 await msg.edit(
-                    f"**__Started Streaming\n\n Title: __** [{name}]({link})\n **__Requested by:**__ {from_user}",
+                    f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
                     file=fotoplay,
                     buttons=[
                         [

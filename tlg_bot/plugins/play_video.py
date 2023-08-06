@@ -26,7 +26,7 @@ async def play_video(event):
     media = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     dir = os.path.dirname(os.path.abspath(__file__))
-    downloads_dir = os.path.join(dir, "../downloads/videos")
+    downloads_dir = os.path.join(dir, "../downloads/videos/")
     if not media and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
