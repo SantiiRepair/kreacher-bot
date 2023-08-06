@@ -62,14 +62,13 @@ async def play_song(event):
         or not replied
         and not title
     ):
-        return await event.client.send_file(
-            chat.id,
-            config.CMD_IMG,
-            caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`",
+        return await msg.edit(
+            "<b>Give me your query which you want to play\n\n Example:</b> <code>/play Nira Ishq Bass boosted</code>",
+            file=config.CMD_IMG,
             buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+            parse_mode="HTML",
         )
     elif replied and not replied.audio and not replied.voice or not replied:
-        msg = await event.reply("🔎")
         query = event.text.split(maxsplit=1)[1]
         search = ytsearch(query)
         if search == 0:
@@ -114,11 +113,10 @@ async def play_song(event):
                 try:
                     await ins.start_audio(url, repeat=False)
                     add_to_queue(chat, name, url, ref, "audio")
-                    caption = f"<b>Started Streaming\n\n Title: [{name}]({url})\n Duration: {duration} Minutes\n Requested by: {from_user}</b>"
                     await sleep(3)
                     await msg.edit(
+                        f"<b>Started Streaming\n\n Title: [{name}]({url})\n Duration: {duration} Minutes\n Requested by: {from_user}</b>",
                         file=thumb,
-                        caption=caption,
                         buttons=[
                             [
                                 Button.inline("\u23EA", data="back_callback"),
