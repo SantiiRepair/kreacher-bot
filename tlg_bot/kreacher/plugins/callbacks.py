@@ -17,7 +17,7 @@ async def _(event):
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(True)
         await kreacher.edit_message(event.sender_id, event.message_id,
-            f"\U00002378 <i>Started Video Streaming!</i>",
+            "\U00002378 <i>Started Video Streaming!</i>",
             file=thumb,
             buttons=[
                 [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
@@ -30,7 +30,7 @@ async def _(event):
         return await sleep(3)
     await VOICE_CHATS[chat.id].set_pause(True)
     await kreacher.edit_message(event.sender_id, event.message_id,
-        f"\U00002378 <i>Started Video Streaming!</i>",
+        "\U00002378 <i>Started Video Streaming!</i>",
         file=thumb,
         buttons=[
             [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),

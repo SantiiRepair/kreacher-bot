@@ -79,21 +79,21 @@ async def play_song(event):
             videoid = search[4]
             thumb = await gen_thumb(videoid)
             format = "best[height<=?720][width<=?1280]"
-            hm, url = await ytdl(format, url)
+            hm, url = await ytdl(format, ref)
             if hm == 0:
-                await msg.edit(f"`{ytlink}`")
+                await msg.edit(f"`{url}`")
             elif chat.id in QUEUE:
                 pos = add_to_queue(chat, name, url, ref, "audio")
-                caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
+                caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                 await msg.delete()
                 await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             else:
                 try:
                     await ins.join(chat.id)
-                    await ins.start_audio(ytlink, repeat=False)
+                    await ins.start_audio(url, repeat=False)
                     VOICE_CHATS[chat.id] = ins
-                    add_to_queue(chat, name, ytlink, url, "Audio", 0)
-                    caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{songname}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
+                    add_to_queue(chat, name, url, ref, "audio")
+                    caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                     await msg.delete()
                     await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
                 except Exception as ep:
@@ -112,7 +112,7 @@ async def play_song(event):
             name = "Voice Note"
         if chat.id in QUEUE:
             pos = add_to_queue(chat, name, url, ref, "audio")
-            caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{songname}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
+            caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
             await event.client.send_file(chat.id, ngantri, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
             await msg.delete()
         else:
@@ -121,8 +121,8 @@ async def play_song(event):
                 await ins.start_audio(dl, repeat=False)
                 VOICE_CHATS[chat.id] = ins
                 add_to_queue(chat, name, url, ref, "audio")
-                caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{songname}]({link})\n <b>Requested by: </b> {from_user}"
-                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=buttons=[
+                caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{name}]({link})\n <b>Requested by: </b> {from_user}"
+                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=[
                     [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
                      Button.inline("\U0001F501 ᴘᴀᴜsᴇ",
                                    data="pause_or_resume_callback"),
