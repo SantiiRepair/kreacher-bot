@@ -87,7 +87,7 @@ async def play_video(event):
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await msg.edit(
-                "\U00002378 <i>Started video streaming!</i>",
+                "\U00002378 __Started video streaming!__",
                 file=thumb,
                 buttons=[
                     [
@@ -99,12 +99,10 @@ async def play_video(event):
                     ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
-                parse_mode="HTML",
             )
         except Exception as e:
             await msg.edit(
-                f"❌ <b>An error occoured !</b> \n\n<code>Error: {e}</code>",
-                parse_mode="HTML",
+                f"❌ **An error occoured!** \n\n`Error: {e}`",
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
@@ -119,7 +117,7 @@ async def play_video(event):
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                "▶️ <i>Started video streaming!</i>",
+                "▶️ __Started video streaming!__",
                 file=thumb,
                 buttons=[
                     [
@@ -131,12 +129,10 @@ async def play_video(event):
                     ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
-                parse_mode="HTML",
             )
         except Exception as e:
             await msg.edit(
                 f"❌ **An error occoured!** \n\n`Error: {e}`",
-                parse_mode="HTML",
             )
             print(e)
             await VOICE_CHATS[chat.id].stop()
