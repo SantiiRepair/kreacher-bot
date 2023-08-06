@@ -1,6 +1,12 @@
+import os
+from pysondb import db
 from tlg_bot.dicts.dicts import QUEUE
 
 active = []
+
+dir = os.path.dirname(os.path.abspath(__file__))
+path = os.path.join(dir, "../dbs/queues.json")
+dbq = db.getDb(path)
 
 
 async def get_active_chats() -> list:
@@ -8,7 +14,8 @@ async def get_active_chats() -> list:
 
 
 def add_to_queue(chat, name, url, ref, type):
-    if chat.id in QUEUE:
+    await dbq.add({"id": chat.id})
+    if chat.id in dbq.find(chat.id):
         chat_queue = QUEUE[chat.id]
         chat_queue.append([name, url, ref, type])
         return int(len(chat_queue) - 1)
