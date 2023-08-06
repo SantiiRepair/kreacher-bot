@@ -18,17 +18,17 @@ async def _(event):
 async def _(event):
     chat = await event.get_chat()
     if VOICE_CHATS[chat.id].is_video_paused:
-        await VOICE_CHATS[chat.id].set_pause(True)
+        await VOICE_CHATS[chat.id].set_pause(False)
         await event.edit(
             "\U00002378 <i>Started Video Streaming!</i>",
             file=thumb,
             buttons=[
                 [
-                    Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
+                    Button.inline("\u23EA", data="back_callback"),
                     Button.inline(
-                        "\U00002378 ᴘᴀᴜsᴇ", data="pause_or_resume_callback"
+                        "\u25B6\uFE0F", data="pause_or_resume_callback"
                     ),
-                    Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback"),
+                    Button.inline("\u23ED\uFE0F", data="next_callback"),
                 ],
                 [Button.inline("cʟᴏꜱᴇ", data="cls")],
             ],
@@ -41,11 +41,9 @@ async def _(event):
         file=thumb,
         buttons=[
             [
-                Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
-                Button.inline(
-                    "\U0001F501 ʀᴇsᴜᴍᴇ", data="pause_or_resume_callback"
-                ),
-                Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback"),
+                Button.inline("\u23EA", data="back_callback"),
+                Button.inline("\u23F8\uFE0F", data="pause_or_resume_callback"),
+                Button.inline("\u23ED\uFE0F", data="next_callback"),
             ],
             [Button.inline("cʟᴏꜱᴇ", data="cls")],
         ],

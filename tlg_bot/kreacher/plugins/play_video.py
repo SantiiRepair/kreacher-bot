@@ -93,12 +93,11 @@ async def play_video(event):
                 file=thumb,
                 buttons=[
                     [
-                        Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
+                        Button.inline("\u23EA", data="back_callback"),
                         Button.inline(
-                            "\U0001F501 ʀᴇsᴜᴍᴇ",
-                            data="pause_or_resume_callback",
+                            "\u23F8\uFE0F", data="pause_or_resume_callback"
                         ),
-                        Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback"),
+                        Button.inline("\u23ED\uFE0F", data="next_callback"),
                     ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
@@ -123,13 +122,13 @@ async def play_video(event):
                 file=thumb,
                 buttons=[
                     [
-                        Button.inline("\U000023ee Back", data="back_callback"),
+                        Button.inline("\u23EA", data="back_callback"),
                         Button.inline(
-                            "\U00002378 Pause", data="pause_or_resume_callback"
+                            "\u23F8\uFE0F", data="pause_or_resume_callback"
                         ),
-                        Button.inline("\U000023ED Next", data="next_callback"),
+                        Button.inline("\u23ED\uFE0F", data="next_callback"),
                     ],
-                    [Button.inline("\U00002379 Stop", data="end_callback")],
+                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
                 parse_mode="HTML",
             )
