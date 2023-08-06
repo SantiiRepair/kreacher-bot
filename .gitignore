@@ -8,3 +8,9 @@ kreacher.session
 kreacher_env
 my_env
 .env
+tester.py
+
+# dbs
+queues.json.lock
+users.json.lock
+vcs.json.lock

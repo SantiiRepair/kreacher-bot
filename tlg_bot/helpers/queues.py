@@ -17,6 +17,9 @@ def add_to_queue(chat, name, url, ref, type):
     await dbq.add({"id": chat.id})
     if dbq.getBy(chat.id):
         chat_queue = QUEUE[chat.id]
+        await dbq.updateById(
+            chat.id, {"name": name, "url": url, "ref": ref, "type": type}
+        )
         chat_queue.append([name, url, ref, type])
         return int(len(chat_queue) - 1)
     if chat.id not in active:
