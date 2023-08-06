@@ -34,7 +34,8 @@ async def play_video(event):
         url = text[1]
         if not "http" in url:
             return await msg.edit(
-                "❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__"
+                "❗ <i>Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!</i>",
+                parse_mode="HTML",
             )
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
