@@ -1,3 +1,4 @@
+import os
 import re
 from youtubesearchpython import VideosSearch
 from kreacher import client, ins, kreacher
@@ -19,14 +20,16 @@ ydl_opts = {
 ydl = YoutubeDL(ydl_opts)
 
 
-@kreacher.on(events.NewMessage(pattern="[!?/]play_video"))
+@kreacher.on(events.NewMessage(pattern="^[!?/]play_video"))
 async def play_video(event):
     chat = await event.get_chat()
-    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     media = await event.get_reply_message()
+    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
+    dir = os.path.dirname(os.path.abspath(__file__))
+    downloads_dir = os.path.join(dir, "../db/config.json")
     if not media and not " " in event.message.message:
         await msg.edit(
-            "❗ Master, try with an: \n\nLive Stream link.\n\nYouTube video link.\n\nReply to an video to start video Streaming!__",
+            "❗ Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
             parse_mode="HTML",
         )
 
@@ -83,7 +86,7 @@ async def play_video(event):
 
         else:
             await msg.edit(
-                "🔄 <i>Starting live video Stream...</i>", parse_mode="HTML"
+                "🔄 <i>Starting live video stream...</i>", parse_mode="HTML"
             )
 
         try:
@@ -91,7 +94,7 @@ async def play_video(event):
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await msg.edit(
-                "\U00002378 <i>Started video Streaming!</i>",
+                "\U00002378 <i>Started video streaming!</i>",
                 file=thumb,
                 buttons=[
                     [
@@ -116,14 +119,14 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 <i>Downloading...</i>", parse_mode="HTML")
-        video = await client.download_media(media)
+        video = await client.download_media(media, file=downloads_dir)
 
         try:
             await sleep(2)
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                "▶️ <i>Started Video Streaming!</i>",
+                "▶️ <i>Started video streaming!</i>",
                 file=thumb,
                 buttons=[
                     [
@@ -152,6 +155,7 @@ async def play_video(event):
             "<i>\U0001F9D9 Do you want to search for a YouTube video?</i>",
             parse_mode="HTML",
         )
+        return await sleep(3)
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
