@@ -139,7 +139,7 @@ async def play_song(event):
                     return await sleep(3)
 
     else:
-        await msg.edit("➕ <i>Downloading...</i>", parsed_mode="HTML")
+        await msg.edit("➕ <i>Downloading...</i>", parse_mode="HTML")
         dl = await replied.download_media()
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
