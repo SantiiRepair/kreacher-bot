@@ -1,6 +1,6 @@
 import os
 from asyncio import sleep
-from tlg_bot.helpers.thumbnail import gen_thumb
+# from tlg_bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
 from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
 from tlg_bot.helpers.queues import (
@@ -83,7 +83,7 @@ async def play_song(event):
             ref = search[1]
             duration = search[2]
             videoid = search[4]
-            thumb = await gen_thumb(videoid)
+            # thumb = await gen_thumb(videoid)
             format = "best[height<=?720][width<=?1280]"
             hm, url = await ytdl(format, ref)
             if hm == 0:
@@ -92,7 +92,7 @@ async def play_song(event):
                 pos = add_to_queue(chat, name, url, ref, "audio")
                 await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ {from_user}",
-                    file=thumb,
+                    # file=thumb,
                     buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
                 )
             elif VOICE_CHATS.get(chat.id) is None:
@@ -114,7 +114,7 @@ async def play_song(event):
                     await sleep(3)
                     await msg.edit(
                         f"**__Started Streaming\n\n Title__**: [{name}]({url})\n **__Duration:__** {duration} **__Minutes\n Requested by:__** {from_user}",
-                        file=thumb,
+                        # file=thumb,
                         buttons=[
                             [
                                 Button.inline("\u23EA", data="back_callback"),

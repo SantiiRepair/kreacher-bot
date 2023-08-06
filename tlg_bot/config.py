@@ -1,10 +1,12 @@
 import os
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 
 
 class Config(object):
     def __init__(self):
-        load_dotenv(find_dotenv())
+        dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(dir, ".env")
+        load_dotenv(path)
         print(os.getenv("API_HASH"))
         self.API_HASH = os.getenv("API_HASH")
         self.API_ID = os.getenv("API_ID")
