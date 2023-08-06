@@ -61,7 +61,7 @@ async def play_video(event):
                 return await sleep(3)
         if match:
             await msg.edit(
-                "🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML"
+                "🔄 <i>Starting YouTube video stream...</i>", parse_mode="HTML"
             )
             try:
                 meta = ydl.extract_info(url=url, download=False)
@@ -158,7 +158,7 @@ async def play_video(event):
         return await sleep(3)
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))
+@kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(event):
     chat = event.get_chat()
     user = event.get_sender()
@@ -189,7 +189,7 @@ async def playlist(event):
         await event.reply("**Ntg is Streaming**")
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]pause"))
+@kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
 async def pause(event):
     chat = event.get_chat()
     user = event.get_sender()
@@ -208,7 +208,7 @@ async def pause(event):
         await event.reply("**Nothing Is Playing**")
 
 
-@kreacher.on(events.NewMessage(pattern="^[?!/]resume"))
+@kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
 async def resume(event):
     chat = event.get_chat()
     user = event.get_sender()
