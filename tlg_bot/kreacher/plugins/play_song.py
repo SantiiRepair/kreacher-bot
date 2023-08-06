@@ -109,7 +109,21 @@ async def play_song(event):
                         chat.id,
                         thumb,
                         caption=caption,
-                        buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+                        buttons=[
+                            [
+                                Button.inline(
+                                    "\U000023ee ʙᴀᴄᴋ", data="back_callback"
+                                ),
+                                Button.inline(
+                                    "\U0001F501 ʀᴇsᴜᴍᴇ",
+                                    data="pause_or_resume_callback",
+                                ),
+                                Button.inline(
+                                    "\U000023ED ɴᴇxᴛ", data="next_callback"
+                                ),
+                            ],
+                            [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                        ],
                     )
                 except Exception as ep:
                     clear_queue(chat)
@@ -152,7 +166,7 @@ async def play_song(event):
                                 "\U000023ee ʙᴀᴄᴋ", data="back_callback"
                             ),
                             Button.inline(
-                                "\U0001F501 ᴘᴀᴜsᴇ",
+                                "\U0001F501 ʀᴇsᴜᴍᴇ",
                                 data="pause_or_resume_callback",
                             ),
                             Button.inline(
