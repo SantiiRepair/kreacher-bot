@@ -1,5 +1,5 @@
 from telethon import events, Button
-from kreacher import kreacher, config
+from tlg_bot import kreacher, config
 
 
 @kreacher.on(events.NewMessage(pattern="[!?/]help"))

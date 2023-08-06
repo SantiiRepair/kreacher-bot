@@ -1,6 +1,5 @@
 from telethon import events, Button
-from kreacher import kreacher
-from kreacher.status import *
+from tlg_bot import kreacher
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="admin"))

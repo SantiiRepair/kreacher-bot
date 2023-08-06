@@ -1,12 +1,12 @@
-from kreacher import kreacher, config
+from tlg_bot import kreacher, config
 from telethon import events, Button
 
 
 def PM_START_TEXT(name):
     return (
-        """<i>Helo my dear master %s \U0001F9D9
+        """__Helo my dear master %s__ \U0001F9D9
 
-I am Kreacher, the house-elf of the family Black. you have call me, and I am here to begrudginly assist you in sharing you songs and videos in Telegram voice chat.
+__I am Kreacher, the house-elf of the family Black. you have call me, and I am here to begrudginly assist you in sharing you songs and videos in Telegram voice chat.
 
 To summon me, simply send the command /vplay followed by the link of the video you wish to share. I will take care of playing it to all members of the voice chat, wheter I like it or not.
 
@@ -14,7 +14,7 @@ If you require further instruction, you can use this command /help to learn more
 
 It is my... pleasure... to serve you, my dear wizard or witch master.
 
-Have a... tolerable... day! \U0001F52E</i>
+Have a... tolerable... day!__ \U0001F52E
 """
         % name
     )
@@ -29,14 +29,13 @@ async def start(event):
             event.chat_id,
             config.START_IMG,
             caption=PM_START_TEXT(event.sender.first_name),
-            parse_mode="HTML",
             buttons=[
                 [
                     Button.url(
                         "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
                         f"https://t.me/{config.BOT_USERNAME}?startgroup=true",
                     ),
-                    Button.inline("/U0002753 ʜᴇʟᴘ", data="help"),
+                    Button.inline("/U00002753 ʜᴇʟᴘ", data="help"),
                 ]
             ],
         )

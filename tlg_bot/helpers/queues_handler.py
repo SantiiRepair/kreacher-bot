@@ -1,5 +1,5 @@
-from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
-from kreacher.helpers.queues import (
+from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
+from tlg_bot.helpers.queues import (
     clear_queue,
     get_queue,
     pop_an_item,

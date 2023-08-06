@@ -1,4 +1,4 @@
-from kreacher.dicts.dicts import QUEUE
+from tlg_bot.dicts.dicts import QUEUE
 
 active = []
 

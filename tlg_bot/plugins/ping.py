@@ -1,7 +1,7 @@
 from time import time
 from datetime import datetime
 from telethon import events
-from kreacher import kreacher
+from tlg_bot import kreacher
 
 
 START_TIME = datetime.utcnow()
@@ -35,6 +35,5 @@ async def _(event):
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
     await event.reply(
-        f"<i>Haha my master, PONG\n\n {delta_ping * 1000:.3f}\n\n {uptime}</i>",
-        parse_mode="HTML",
+        f"__Haha my master, PONG\n\n {delta_ping * 1000:.3f}ms.\n\n Running {uptime}.__",
     )

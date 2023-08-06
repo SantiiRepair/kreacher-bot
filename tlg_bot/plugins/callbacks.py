@@ -1,8 +1,8 @@
 from asyncio import sleep
-from kreacher import config, kreacher
-from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
+from tlg_bot import config, kreacher
+from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import events, Button
-from kreacher.helpers.queues_handler import next_item, skip_current
+from tlg_bot.helpers.queues_handler import next_item, skip_current
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
@@ -20,7 +20,7 @@ async def _(event):
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
         await event.edit(
-            "\U00002378 <i>Started Video Streaming!</i>",
+            "\U00002378 __Started Video Streaming!__",
             file=thumb,
             buttons=[
                 [
@@ -32,12 +32,11 @@ async def _(event):
                 ],
                 [Button.inline("cʟᴏꜱᴇ", data="cls")],
             ],
-            parse_mode="HTML",
         )
         return await sleep(3)
     await VOICE_CHATS[chat.id].set_pause(True)
     await event.edit(
-        "\U00002378 <i>Started Video Streaming!</i>",
+        "\U00002378 __Started Video Streaming!__",
         file=thumb,
         buttons=[
             [
@@ -47,7 +46,6 @@ async def _(event):
             ],
             [Button.inline("cʟᴏꜱᴇ", data="cls")],
         ],
-        parse_mode="HTML",
     )
     return await sleep(3)
 

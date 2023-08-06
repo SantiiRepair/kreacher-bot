@@ -1,5 +1,5 @@
-from kreacher import ins, kreacher
-from kreacher.dicts.dicts import VOICE_CHATS
+from tlg_bot import ins, kreacher
+from tlg_bot.dicts.dicts import VOICE_CHATS
 from telethon import events
 
 
@@ -12,11 +12,9 @@ async def new_handler(event):
         await ins.start(chat.id)
         VOICE_CHATS[chat.id] = ins
         await event.reply(
-            "<i>Master, what do you need? \n\nVoice Chat started successfully.</i>",
-            parse_mode="HTML",
+            "__Master, what do you need? \n\nVoice Chat started successfully.__",
         )
     except Exception as e:
         return await event.reply(
-            f"<i>Oops master, something wrong has happened.</i> \n\n<code>Error: {e}</code>",
-            parse_mode="HTML",
+            f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
         )

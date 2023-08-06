@@ -1,5 +1,5 @@
 from telethon import events
-from kreacher import kreacher
+from tlg_bot import kreacher
 import asyncio
 import speedtest
 
@@ -17,27 +17,26 @@ def testspeed(m):
     return result
 
 
-msg_running = """<i>Kreacher is here to serve you.
-
-Running Speedtest...</i> \U0001F4F6"""
-
-
 @kreacher.on(events.NewMessage(pattern="[!?/]speedtest"))
 async def speedtest_function(message):
-    m = await message.reply(msg_running, parse_mode="HTML")
+    m = await message.reply(
+        """__Kreacher is here to serve you.
+
+Running Speedtest...__ \U0001F4F6"""
+    )
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, testspeed, m)
     output = f"""**Speedtest Results**
 
-**Client:**
-**__ISP:__** {result['client']['isp']}
-**__Country:__** {result['client']['country']}
-  
-**Server:**
-**__Name:__** {result['server']['name']}
+**Client**:
+**__ISP__**: {result['client']['isp']}
+**__Country__**: {result['client']['country']}</i>
+
+**Server**:
+**__Name__**: {result['server']['name']}
 **__Country:__** {result['server']['country']}, {result['server']['cc']}
 **__Sponsor:__** {result['server']['sponsor']}
-**__Latency:__** {result['server']['latency']} 
-**__Ping:__** {result['ping']}"""
+**__Latency__**: {result['server']['latency']} 
+**__Ping__**: {result['ping']}</i></b>"""
     await kreacher.send_file(message.chat.id, result["share"], caption=output)
     await m.delete()

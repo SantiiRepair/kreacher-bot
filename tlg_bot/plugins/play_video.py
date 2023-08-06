@@ -1,9 +1,9 @@
 import os
 import re
 from youtubesearchpython import VideosSearch
-from kreacher import client, ins, kreacher
-from kreacher.helpers.queues import get_queue
-from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
+from tlg_bot import client, ins, kreacher
+from tlg_bot.helpers.queues import get_queue
+from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL
@@ -24,13 +24,12 @@ ydl = YoutubeDL(ydl_opts)
 async def play_video(event):
     chat = await event.get_chat()
     media = await event.get_reply_message()
-    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
+    msg = await event.reply("🔄 **__Processing...__**")
     dir = os.path.dirname(os.path.abspath(__file__))
-    downloads_dir = os.path.join(dir, "../db/config.json")
+    downloads_dir = os.path.join(dir, "../downloads/videos")
     if not media and not " " in event.message.message:
         await msg.edit(
-            "❗ Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
-            parse_mode="HTML",
+            "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
         )
 
     elif " " in event.message.message:
@@ -38,31 +37,25 @@ async def play_video(event):
         url = text[1]
         if not "http" in url:
             return await msg.edit(
-                "❗ <i>Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!</i>",
-                parse_mode="HTML",
+                "❗ __Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
             )
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
         if VOICE_CHATS.get(chat.id) is None:
             try:
-                await msg.edit(
-                    "<i>Joining the voice chat...</i>", parse_mode="HTML"
-                )
+                await msg.edit("__Joining the voice chat...__")
                 await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
                 await sleep(3)
             except Exception as e:
                 await msg.edit(
-                    f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
-                    parse_mode="HTML",
+                    f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
                 )
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
                 return await sleep(3)
         if match:
-            await msg.edit(
-                "🔄 <i>Starting YouTube video stream...</i>", parse_mode="HTML"
-            )
+            await msg.edit("🔄 __Starting YouTube video stream...__")
             try:
                 meta = ydl.extract_info(url=url, download=False)
                 formats = meta.get("formats", [meta])
@@ -76,8 +69,7 @@ async def play_video(event):
                 thumb = split[0].strip()
             except Exception as e:
                 await msg.edit(
-                    f"❌ <i>Master, YouTube download error!</i> \n\n<code>Error: {e}</code>",
-                    parse_mode="HTML",
+                    f"❌ __Master, YouTube download error!</i> \n\n`Error: {e}`",
                 )
                 print(e)
                 await VOICE_CHATS[chat.id].stop()
@@ -85,9 +77,7 @@ async def play_video(event):
                 return await sleep(3)
 
         else:
-            await msg.edit(
-                "🔄 <i>Starting live video stream...</i>", parse_mode="HTML"
-            )
+            await msg.edit("🔄 __Starting live video stream...__")
 
         try:
             await sleep(2)
@@ -118,7 +108,7 @@ async def play_video(event):
             return await sleep(3)
 
     elif media.video or media.file:
-        await msg.edit("🔄 <i>Downloading...</i>", parse_mode="HTML")
+        await msg.edit("🔄 __Downloading...__")
         video = await client.download_media(media, file=downloads_dir)
 
         try:
