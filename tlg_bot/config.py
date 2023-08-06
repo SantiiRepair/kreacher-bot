@@ -5,6 +5,7 @@ from dotenv import find_dotenv, load_dotenv
 class Config(object):
     def __init__(self):
         load_dotenv(find_dotenv())
+        print(os.getenv("API_HASH"))
         self.API_HASH = os.getenv("API_HASH")
         self.API_ID = os.getenv("API_ID")
         self.ASSISTANT_ID = os.getenv("ASSISTANT_ID")
