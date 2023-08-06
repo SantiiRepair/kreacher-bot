@@ -58,7 +58,7 @@ async def play_song(event):
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
     dir = os.path.dirname(os.path.abspath(__file__))
-    downloads_dir = os.path.join(dir, "../downloads/songs/")
+    download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
     from_user = vcmention(event.sender)
     if (
         replied
@@ -142,9 +142,7 @@ async def play_song(event):
 
     else:
         await msg.edit("➕ __Downloading...__")
-        dl = await replied.download_media(
-            file=f"{downloads_dir} {str(uuid.uuid4())}"
-        )
+        dl = await replied.download_media(file=download_as)
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
             name = "Audio File"

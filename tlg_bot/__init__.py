@@ -1,10 +1,15 @@
+import os
+import logging
 from tlg_bot.config import Config
 from telethon.sync import TelegramClient
-import logging
+
 from pytgcalls import GroupCallFactory
 
 config = Config()
+dir = os.path.dirname(os.path.abspath(__file__))
+logs = os.path.join(dir, "./logs/logs.txt")
 logging.basicConfig(
+    filename=logs,
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )

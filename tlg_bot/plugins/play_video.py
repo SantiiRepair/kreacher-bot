@@ -29,7 +29,7 @@ async def play_video(event):
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
     dir = os.path.dirname(os.path.abspath(__file__))
-    downloads_dir = os.path.join(dir, "../downloads/videos/")
+    download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
     if not media and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
@@ -112,9 +112,7 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 __Downloading...__")
-        video = await client.download_media(
-            media, file=f"{downloads_dir} {str(uuid.uuid4())}"
-        )
+        video = await client.download_media(media, file=download_as)
 
         try:
             await sleep(2)
@@ -137,7 +135,7 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(
-                f"❌ <b>An error occoured!</b> \n\n<code>Error: {e}</code>",
+                f"❌ **An error occoured!** \n\n`Error: {e}`",
                 parse_mode="HTML",
             )
             print(e)
@@ -147,8 +145,7 @@ async def play_video(event):
 
     else:
         await msg.edit(
-            "<i>\U0001F9D9 Do you want to search for a YouTube video?</i>",
-            parse_mode="HTML",
+            "__\U0001F9D9 Do you want to search for a YouTube video?__"
         )
         return await sleep(3)
 
