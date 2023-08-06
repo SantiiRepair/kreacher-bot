@@ -15,7 +15,7 @@ async def get_active_chats() -> list:
 
 def add_to_queue(chat, name, url, ref, type):
     await dbq.add({"id": chat.id})
-    if chat.id in dbq.find(chat.id):
+    if dbq.getBy(chat.id):
         chat_queue = QUEUE[chat.id]
         chat_queue.append([name, url, ref, type])
         return int(len(chat_queue) - 1)
