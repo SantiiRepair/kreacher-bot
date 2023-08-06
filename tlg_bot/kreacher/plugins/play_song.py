@@ -130,6 +130,7 @@ async def play_song(event):
                             ],
                             [Button.inline("cʟᴏꜱᴇ", data="cls")],
                         ],
+                        parse_mode="HTML",
                     )
                 except Exception as e:
                     clear_queue(chat)

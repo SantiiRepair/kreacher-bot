@@ -17,6 +17,6 @@ async def leave_handler(event):
         )
     except Exception as e:
         return await event.reply(
-            f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
+            f"<i>Oops master, something wrong has happened.</i> \n\n<code>Error: {e}</code>",
             parse_mode="HTML",
         )
