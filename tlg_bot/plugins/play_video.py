@@ -27,6 +27,7 @@ async def play_video(event):
     chat = await event.get_chat()
     media = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
+    await sleep(2)
     dir = os.path.dirname(os.path.abspath(__file__))
     downloads_dir = os.path.join(dir, "../downloads/videos/")
     if not media and not " " in event.message.message:
