@@ -1,6 +1,7 @@
 import os
 import uuid
 from asyncio import sleep
+
 # from tlg_bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
 from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
@@ -71,6 +72,19 @@ async def play_song(event):
             file=config.CMD_IMG,
             buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
         )
+    if VOICE_CHATS.get(chat.id) is None:
+        try:
+            await msg.edit("__Joining the voice chat...__")
+            await ins.join(chat.id)
+            VOICE_CHATS[chat.id] = ins
+            await sleep(3)
+        except Exception as e:
+            await msg.edit(
+                f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
+            )
+            await VOICE_CHATS[chat.id].stop()
+            VOICE_CHATS.pop(chat.id)
+            return await sleep(3)
     elif replied and not replied.audio and not replied.voice or not replied:
         query = event.text.split(maxsplit=1)[1]
         search = ytsearch(query)
@@ -96,19 +110,7 @@ async def play_song(event):
                     # file=thumb,
                     buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
                 )
-            elif VOICE_CHATS.get(chat.id) is None:
-                try:
-                    await msg.edit("__Joining the voice chat...__")
-                    await ins.join(chat.id)
-                    VOICE_CHATS[chat.id] = ins
-                    await sleep(3)
-                except Exception as e:
-                    await msg.edit(
-                        f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
-                    )
-                    await VOICE_CHATS[chat.id].stop()
-                    VOICE_CHATS.pop(chat.id)
-                    return await sleep(3)
+
                 try:
                     await ins.start_audio(url, repeat=False)
                     add_to_queue(chat, name, url, ref, "audio")
@@ -139,7 +141,9 @@ async def play_song(event):
 
     else:
         await msg.edit("➕ __Downloading...__")
-        dl = await replied.download_media(file=f"{downloads_dir} {str(uuid.uuid4())}")
+        dl = await replied.download_media(
+            file=f"{downloads_dir} {str(uuid.uuid4())}"
+        )
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
             name = "Audio File"

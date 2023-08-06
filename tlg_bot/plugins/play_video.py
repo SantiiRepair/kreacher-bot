@@ -111,7 +111,9 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 __Downloading...__")
-        video = await client.download_media(media, file=f"{downloads_dir} {str(uuid.uuid4())}")
+        video = await client.download_media(
+            media, file=f"{downloads_dir} {str(uuid.uuid4())}"
+        )
 
         try:
             await sleep(2)
