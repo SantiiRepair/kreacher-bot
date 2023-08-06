@@ -1,15 +1,19 @@
 import os
 import logging
+from termcolor import colored
 from tlg_bot.config import Config
 from telethon.sync import TelegramClient
-
 from pytgcalls import GroupCallFactory
 
 config = Config()
 dir = os.path.dirname(os.path.abspath(__file__))
-logs = os.path.join(dir, "./logs/logs.txt")
+path = os.path.join(dir, "logs/logs.txt")
+if os.path.exists(path) is False:
+    with open(path, "w"):
+        print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
+
 logging.basicConfig(
-    filename=logs,
+    filename=path,
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
