@@ -56,9 +56,9 @@ async def play_song(event):
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
-    await sleep(2)
     dir = os.path.dirname(os.path.abspath(__file__))
     download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
+    await sleep(2)
     from_user = vcmention(event.sender)
     if (
         replied
