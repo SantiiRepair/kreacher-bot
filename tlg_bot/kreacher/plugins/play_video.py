@@ -73,7 +73,7 @@ async def play_video(event):
                 thumb = split[0].strip()
             except Exception as e:
                 await msg.edit(
-                    f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>",
+                    f"❌ <i>Master, YouTube download error!</i> \n\n<code>Error: {e}</code>",
                     parse_mode="HTML",
                 )
                 print(e)
@@ -83,7 +83,7 @@ async def play_video(event):
 
         else:
             await msg.edit(
-                "🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML"
+                "🔄 <i>Starting live video Stream...</i>", parse_mode="HTML"
             )
 
         try:
@@ -91,7 +91,7 @@ async def play_video(event):
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await msg.edit(
-                "\U00002378 <i>Started Video Streaming!</i>",
+                "\U00002378 <i>Started video Streaming!</i>",
                 file=thumb,
                 buttons=[
                     [
@@ -106,7 +106,10 @@ async def play_video(event):
                 parse_mode="HTML",
             )
         except Exception as e:
-            await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
+            await msg.edit(
+                f"❌ <b>An error occoured !</b> \n\n<code>Error: {e}</code>",
+                parse_mode="HTML",
+            )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
             return await sleep(3)
@@ -136,7 +139,7 @@ async def play_video(event):
             )
         except Exception as e:
             await msg.edit(
-                f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>",
+                f"❌ <b>An error occoured!</b> \n\n<code>Error: {e}</code>",
                 parse_mode="HTML",
             )
             print(e)
@@ -146,7 +149,7 @@ async def play_video(event):
 
     else:
         await msg.edit(
-            "<code>\U0001F9D9 Do you want to search for a YouTube video?</code>",
+            "<i>\U0001F9D9 Do you want to search for a YouTube video?</i>",
             parse_mode="HTML",
         )
 
