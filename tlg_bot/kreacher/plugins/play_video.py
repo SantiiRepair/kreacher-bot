@@ -130,7 +130,7 @@ async def playlist(event):
         )
         return
     if chat.id in QUEUE:
-        chat_queue = get_queue(chat.id)
+        chat_queue = get_queue(chat)
         if len(chat_queue) == 1:
             await event.reply(
                 f"**�PlAYLIST:**\n• [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",

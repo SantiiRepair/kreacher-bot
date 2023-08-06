@@ -11,13 +11,13 @@ from kreacher.helpers.queues import (
 @ins.on_stream_end()
 async def stream_end_handler(_, u: Update):
     chat = u.get_chat()
-    await skip_current(chat.id)
+    await skip_current(chat)
 
 
 @ins.on_closed_voice_chat()
 async def closed(_, chat):
     if chat.id in QUEUE:
-        clear_queue(chat.id)
+        clear_queue(chat)
     if chat.id in active:
         active.remove(chat.id)
 
@@ -25,7 +25,7 @@ async def closed(_, chat):
 @ins.on_left()
 async def left(_, chat):
     if chat.id in QUEUE:
-        clear_queue(chat.id)
+        clear_queue(chat)
     if chat.id in active:
         active.remove(chat.id)
 
@@ -33,6 +33,6 @@ async def left(_, chat):
 @ins.on_kicked()
 async def kicked(_, chat):
     if chat.id in QUEUE:
-        clear_queue(chat.id)
+        clear_queue(chat)
     if chat.id in active:
         active.remove(chat.id)

@@ -6,7 +6,7 @@ async def get_active_chats() -> list:
     return active
 
 
-def add_to_queue(chat, name, url, ref, type, quality):
+def add_to_queue(chat, name, url, ref, type):
     if chat.id in QUEUE:
         chat_queue = QUEUE[chat.id]
         chat_queue.append([name, url, ref, type])
@@ -23,10 +23,10 @@ def get_queue(chat):
     return 0
 
 
-def pop_an_item(chat_id):
-    if chat_id not in QUEUE:
+def pop_an_item(chat):
+    if chat.id not in QUEUE:
         return 0
-    chat_queue = QUEUE[chat_id]
+    chat_queue = QUEUE[chat.id]
     chat_queue.pop(0)
     return 1
 

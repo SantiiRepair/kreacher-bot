@@ -10,11 +10,11 @@ from kreacher.helpers.queues import (
 async def skip_current(chat):
     if chat.id not in QUEUE:
         return 0
-    chat_queue = get_queue(chat.id)
+    chat_queue = get_queue(chat)
     if len(chat_queue) == 1:
         await VOICE_CHATS[chat.id].stop_video()
         await VOICE_CHATS[chat.id].stop()
-        clear_queue(chat.id)
+        clear_queue(chat)
         VOICE_CHATS.pop(chat.id)
         active.remove(chat.id)
         return 1
@@ -26,18 +26,18 @@ async def skip_current(chat):
         await VOICE_CHATS[chat.id].start_audio(url, repeat=False)
     elif type == "video":
         await VOICE_CHATS[chat.id].start_video(url, with_audio=True, repeat=False)
-    pop_an_item(chat.id)
+    pop_an_item(chat)
     return [songname, link, type]
 
 
 async def next_item(chat, x: int):
     if chat.id not in QUEUE:
         return 0
-    chat_queue = get_queue(chat.id)
+    chat_queue = get_queue(chat)
     try:
-        songname = chat_queue[x][0]
+        name = chat_queue[x][0]
         chat_queue.pop(x)
-        return songname
+        return name
     except Exception as e:
         print(e)
         return 0
