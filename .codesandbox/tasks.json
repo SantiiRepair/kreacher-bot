@@ -1,6 +1,11 @@
 {
   // These tasks will run in order when initializing your CodeSandbox project.
-  "setupTasks": ["make install"],
+  "setupTasks": [
+    {
+      "name": "make install",
+      "command": "make install"
+    }
+  ],
 
   // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
@@ -12,7 +17,7 @@
     "run": {
       "name": "run",
       "command": "make run_bot",
-      "runAtStart": false
+      "runAtStart": true
     }
   }
 }

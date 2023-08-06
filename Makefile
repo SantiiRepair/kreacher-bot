@@ -20,7 +20,7 @@ lint:
 
 # command to run bot in normal mode
 run_bot:
-	cd tlg_bot && python3 -m kreacher
+	cd tlg_bot && python3 -m
 
 # command to run bot in virtual enviroment
 run_bot_virtual_env:
