@@ -12,7 +12,7 @@ format:
 
 # generate string session of your telegram account
 gen_session:
-	python3 ./tlg_session/tlg_session.py
+	python3 ./session/session.py
 
 # lint all project looking for issues
 lint:
