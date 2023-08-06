@@ -11,6 +11,12 @@ async def leave_handler(event):
             raise Exception("Streaming is not active")
         await VOICE_CHATS[chat.id].leave_current_group_call()
         VOICE_CHATS.pop(chat.id)
-        await event.reply("<i>Goodbye master, just call me if you need me. \n\nVoice Chat left successfully.</i>", parse_mode="HTML")
+        await event.reply(
+            "<i>Goodbye master, just call me if you need me. \n\nVoice Chat left successfully.</i>",
+            parse_mode="HTML",
+        )
     except Exception as e:
-        return await event.reply(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
+        return await event.reply(
+            f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
+            parse_mode="HTML",
+        )

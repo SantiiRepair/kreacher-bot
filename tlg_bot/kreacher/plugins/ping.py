@@ -34,4 +34,7 @@ async def _(event):
     delta_ping = time() - start
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
-    await event.reply(f"<i>Haha my master, PONG\n\n {delta_ping * 1000:.3f}\n\n {uptime}</i>", parse_mode="HTML")
+    await event.reply(
+        f"<i>Haha my master, PONG\n\n {delta_ping * 1000:.3f}\n\n {uptime}</i>",
+        parse_mode="HTML",
+    )

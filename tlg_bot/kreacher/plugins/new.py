@@ -11,6 +11,12 @@ async def new_handler(event):
             raise Exception("Streaming is active")
         await ins.start(chat.id)
         VOICE_CHATS[chat.id] = ins
-        await event.reply("<i>Master, what do you need? \n\nVoice Chat started successfully.</i>", parse_mode="HTML")
+        await event.reply(
+            "<i>Master, what do you need? \n\nVoice Chat started successfully.</i>",
+            parse_mode="HTML",
+        )
     except Exception as e:
-        return await event.reply(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
+        return await event.reply(
+            f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
+            parse_mode="HTML",
+        )

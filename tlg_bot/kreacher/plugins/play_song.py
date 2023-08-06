@@ -50,7 +50,7 @@ async def ytdl(format: str, link: str):
 
 @kreacher.on(events.NewMessage(pattern="[!?/]play_song"))
 async def play_song(event):
-    title = ' '.join(event.text[5:])
+    title = " ".join(event.text[5:])
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     from_user = vcmention(event.sender)
@@ -62,7 +62,12 @@ async def play_song(event):
         or not replied
         and not title
     ):
-        return await event.client.send_file(chat.id, config.CMD_IMG, caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`", buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+        return await event.client.send_file(
+            chat.id,
+            config.CMD_IMG,
+            caption="**Give Me Your Query Which You want to Play**\n\n **Example**: `/play Nira Ishq Bass boosted`",
+            buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+        )
     elif replied and not replied.audio and not replied.voice or not replied:
         msg = await event.reply("🔎")
         query = event.text.split(maxsplit=1)[1]
@@ -86,7 +91,12 @@ async def play_song(event):
                 pos = add_to_queue(chat, name, url, ref, "audio")
                 caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                 await msg.delete()
-                await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+                await event.client.send_file(
+                    chat.id,
+                    thumb,
+                    caption=caption,
+                    buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+                )
             else:
                 try:
                     await ins.join(chat.id)
@@ -95,7 +105,12 @@ async def play_song(event):
                     add_to_queue(chat, name, url, ref, "audio")
                     caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
                     await msg.delete()
-                    await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+                    await event.client.send_file(
+                        chat.id,
+                        thumb,
+                        caption=caption,
+                        buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+                    )
                 except Exception as ep:
                     clear_queue(chat)
                     VOICE_CHATS.pop(chat.id)
@@ -113,7 +128,12 @@ async def play_song(event):
         if chat.id in QUEUE:
             pos = add_to_queue(chat, name, url, ref, "audio")
             caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-            await event.client.send_file(chat.id, ngantri, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
+            await event.client.send_file(
+                chat.id,
+                ngantri,
+                caption=caption,
+                buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+            )
             await msg.delete()
         else:
             try:
@@ -122,15 +142,27 @@ async def play_song(event):
                 VOICE_CHATS[chat.id] = ins
                 add_to_queue(chat, name, url, ref, "audio")
                 caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{name}]({link})\n <b>Requested by: </b> {from_user}"
-                await event.client.send_file(chat.id, fotoplay, caption=caption, buttons=[
-                    [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
-                     Button.inline("\U0001F501 ᴘᴀᴜsᴇ",
-                                   data="pause_or_resume_callback"),
-                     Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback")
-                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
-                ],
-                    parse_mode="HTML")
+                await event.client.send_file(
+                    chat.id,
+                    fotoplay,
+                    caption=caption,
+                    buttons=[
+                        [
+                            Button.inline(
+                                "\U000023ee ʙᴀᴄᴋ", data="back_callback"
+                            ),
+                            Button.inline(
+                                "\U0001F501 ᴘᴀᴜsᴇ",
+                                data="pause_or_resume_callback",
+                            ),
+                            Button.inline(
+                                "\U000023ED ɴᴇxᴛ", data="next_callback"
+                            ),
+                        ],
+                        [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                    ],
+                    parse_mode="HTML",
+                )
                 await msg.delete()
             except Exception as e:
                 clear_queue(chat)

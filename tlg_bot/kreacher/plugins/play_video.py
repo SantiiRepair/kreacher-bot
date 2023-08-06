@@ -6,6 +6,7 @@ from kreacher.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import Button, events
 from asyncio import sleep
 from yt_dlp import YoutubeDL
+
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
@@ -23,34 +24,45 @@ async def play_video(event):
     chat = await event.get_chat()
     msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     media = await event.get_reply_message()
-    if not media and not ' ' in event.message.message:
-        await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
+    if not media and not " " in event.message.message:
+        await msg.edit(
+            "❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__"
+        )
 
-    elif ' ' in event.message.message:
-        text = event.message.message.split(' ', 1)
+    elif " " in event.message.message:
+        text = event.message.message.split(" ", 1)
         url = text[1]
-        if not 'http' in url:
-            return await msg.edit("❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__")
+        if not "http" in url:
+            return await msg.edit(
+                "❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__"
+            )
         regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
         match = re.match(regex, url)
         if VOICE_CHATS.get(chat.id) is None:
             try:
-                await msg.edit("<i>Joining the voice chat...</i>", parse_mode="HTML")
+                await msg.edit(
+                    "<i>Joining the voice chat...</i>", parse_mode="HTML"
+                )
                 await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
                 await sleep(3)
             except Exception as e:
-                await msg.edit(f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>", parse_mode="HTML")
+                await msg.edit(
+                    f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
+                    parse_mode="HTML",
+                )
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
                 return await sleep(3)
         if match:
-            await msg.edit("🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML")
+            await msg.edit(
+                "🔄 <i>Starting YouTube Video Stream...</i>", parse_mode="HTML"
+            )
             try:
                 meta = ydl.extract_info(url=url, download=False)
-                formats = meta.get('formats', [meta])
+                formats = meta.get("formats", [meta])
                 for f in formats:
-                    ytstreamlink = f['url']
+                    ytstreamlink = f["url"]
                 search = VideosSearch(ytstreamlink, limit=1)
                 opp = search.result()["result"]
                 oppp = opp[0]
@@ -58,30 +70,39 @@ async def play_video(event):
                 split = thumbid.split("?")
                 thumb = split[0].strip()
             except Exception as e:
-                await msg.edit(f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
+                await msg.edit(
+                    f"❌ <i>Master, YouTube Download Error!</i> \n\n<code>Error: {e}</code>",
+                    parse_mode="HTML",
+                )
                 print(e)
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
                 return await sleep(3)
 
         else:
-            await msg.edit("🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML")
+            await msg.edit(
+                "🔄 <i>Starting Live Video Stream...</i>", parse_mode="HTML"
+            )
 
         try:
             await sleep(2)
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
-            await event.reply(
-                f"\U00002378 <i>Started Video Streaming!</i>",
+            await msg.edit(
+                "\U00002378 <i>Started Video Streaming!</i>",
                 file=thumb,
                 buttons=[
-                    [Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
-                     Button.inline("\U0001F501 ʀᴇsᴜᴍᴇ", data="pause_or_resume_callback"),
-                     Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback")
-                     ],
+                    [
+                        Button.inline("\U000023ee ʙᴀᴄᴋ", data="back_callback"),
+                        Button.inline(
+                            "\U0001F501 ʀᴇsᴜᴍᴇ",
+                            data="pause_or_resume_callback",
+                        ),
+                        Button.inline("\U000023ED ɴᴇxᴛ", data="next_callback"),
+                    ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
-                parse_mode="HTML"
+                parse_mode="HTML",
             )
         except Exception as e:
             await msg.edit(f"❌ **An Error Occoured !** \n\nError: `{e}`")
@@ -98,26 +119,35 @@ async def play_video(event):
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                f"▶️ <i>Started [Video Streaming](https://t.me/AsmSafone)!</i>",
+                "▶️ <i>Started [Video Streaming](https://t.me/AsmSafone)!</i>",
                 file=thumb,
                 buttons=[
-                    [Button.inline("\U000023ee Back", data="back_callback"),
-                     Button.inline("\U00002378 Pause", data="pause_or_resume_callback"),
-                     Button.inline("\U000023ED Next", data="next_callback")
-                     ],
+                    [
+                        Button.inline("\U000023ee Back", data="back_callback"),
+                        Button.inline(
+                            "\U00002378 Pause", data="pause_or_resume_callback"
+                        ),
+                        Button.inline("\U000023ED Next", data="next_callback"),
+                    ],
                     [Button.inline("\U00002379 Stop", data="end_callback")],
                 ],
-                parse_mode="HTML"
+                parse_mode="HTML",
             )
         except Exception as e:
-            await msg.edit(f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>", parse_mode="HTML")
+            await msg.edit(
+                f"❌ <i>An Error Occoured!</i> \n\n<code>Error: {e}</code>",
+                parse_mode="HTML",
+            )
             print(e)
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
             return await sleep(3)
 
     else:
-        await msg.edit("<code>\U0001F9D9 Do you want to search for a YouTube video?</code>", parse_mode="HTML")
+        await msg.edit(
+            "<code>\U0001F9D9 Do you want to search for a YouTube video?</code>",
+            parse_mode="HTML",
+        )
 
 
 @kreacher.on(events.NewMessage(pattern="^[?!/]playlist"))

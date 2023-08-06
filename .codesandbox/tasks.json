@@ -4,6 +4,11 @@
 
   // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
+    "format": {
+      "name": "format",
+      "command": "make format",
+      "runAtStart": false
+    },
     "run": {
       "name": "run",
       "command": "make run_bot",
