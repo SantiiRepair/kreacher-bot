@@ -56,6 +56,7 @@ async def play_song(event):
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
+    await sleep(2)
     dir = os.path.dirname(os.path.abspath(__file__))
     downloads_dir = os.path.join(dir, "../downloads/songs/")
     from_user = vcmention(event.sender)
@@ -72,7 +73,7 @@ async def play_song(event):
             file=config.CMD_IMG,
             buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
         )
-    if VOICE_CHATS.get(chat.id) is None:
+    elif VOICE_CHATS.get(chat.id) is None:
         try:
             await msg.edit("__Joining the voice chat...__")
             await ins.join(chat.id)
@@ -85,7 +86,7 @@ async def play_song(event):
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
             return await sleep(3)
-    elif replied and not replied.audio and not replied.voice or not replied:
+    if replied and not replied.audio and not replied.voice or not replied:
         query = event.text.split(maxsplit=1)[1]
         search = ytsearch(query)
         if search == 0:
