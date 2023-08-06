@@ -26,7 +26,8 @@ async def play_video(event):
     media = await event.get_reply_message()
     if not media and not " " in event.message.message:
         await msg.edit(
-            "❗ __Send Me An Live Stream Link / YouTube Video Link / Reply To An Video To Start Video Streaming!__"
+            "❗ Master, try with an: \n\nLive Stream link.\n\nYouTube video link.\n\nReply to an video to start video Streaming!__",
+            parse_mode="HTML",
         )
 
     elif " " in event.message.message:
