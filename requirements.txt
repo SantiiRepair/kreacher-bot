@@ -6,6 +6,7 @@ black==23.7.0
 numpy==1.24.4
 opencv-python-headless==4.5.5.62
 pillow==10.0.0
+pysondb=1.6.7
 pylint==2.17.5
 pyrogram==2.0.106
 python-dotenv==1.0.0
