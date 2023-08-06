@@ -111,14 +111,14 @@ async def play_video(event):
 
     elif media.video or media.file:
         await msg.edit("🔄 <i>Downloading...</i>", parse_mode="HTML")
-        video = await client.download_media(media, file="")
+        video = await client.download_media(media)
 
         try:
             await sleep(2)
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                "▶️ <i>Started [Video Streaming](https://t.me/AsmSafone)!</i>",
+                "▶️ <i>Started Video Streaming!</i>",
                 file=thumb,
                 buttons=[
                     [

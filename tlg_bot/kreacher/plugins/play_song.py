@@ -52,6 +52,7 @@ async def play_song(event):
     title = " ".join(event.text[5:])
     replied = await event.get_reply_message()
     chat = await event.get_chat()
+    msg = await event.reply("🔄 <i>Processing...</i>", parse_mode="HTML")
     from_user = vcmention(event.sender)
     if (
         replied
@@ -73,7 +74,8 @@ async def play_song(event):
         search = ytsearch(query)
         if search == 0:
             await msg.edit(
-                "**Can't Find Song** Try searching with More Specific Title"
+                "<i>Can't find song.\n\nTry searching with more specific title.",
+                parse_mode="HTML",
             )
         else:
             name = search[0]
@@ -88,25 +90,34 @@ async def play_song(event):
                 await msg.edit(f"`{url}`")
             elif chat.id in QUEUE:
                 pos = add_to_queue(chat, name, url, ref, "audio")
-                caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                await msg.delete()
-                await event.client.send_file(
-                    chat.id,
-                    thumb,
-                    caption=caption,
+                await msg.edit(
+                    f"<b>Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:</b> {from_user}",
+                    file=thumb,
                     buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
                 )
-            else:
+            elif VOICE_CHATS.get(chat.id) is None:
                 try:
+                    await msg.edit(
+                        "<i>Joining the voice chat...</i>", parse_mode="HTML"
+                    )
                     await ins.join(chat.id)
-                    await ins.start_audio(url, repeat=False)
                     VOICE_CHATS[chat.id] = ins
+                    await sleep(3)
+                except Exception as e:
+                    await msg.edit(
+                        f"<i>Oops master, something wrong has happened. \n\nError:</i> <code>{e}</code>",
+                        parse_mode="HTML",
+                    )
+                    await VOICE_CHATS[chat.id].stop()
+                    VOICE_CHATS.pop(chat.id)
+                    return await sleep(3)
+                try:
+                    await ins.start_audio(url, repeat=False)
                     add_to_queue(chat, name, url, ref, "audio")
-                    caption = f"➻ **sᴛᴀʀᴛᴇᴅ sᴛʀᴇᴀᴍɪɴɢ**\n\n🌸 **ᴛɪᴛʟᴇ :** [{name}]({url})\n⏱ **ᴅᴜʀᴀᴛɪᴏɴ :** {duration} ᴍɪɴᴜᴛᴇs\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-                    await msg.delete()
-                    await event.client.send_file(
-                        chat.id,
-                        thumb,
+                    caption = f"<b>Started Streaming\n\n Title: [{name}]({url})\n Duration: {duration} Minutes\n Requested by: {from_user}</b>"
+                    await sleep(3)
+                    await msg.edit(
+                        file=thumb,
                         caption=caption,
                         buttons=[
                             [
@@ -122,14 +133,15 @@ async def play_song(event):
                             [Button.inline("cʟᴏꜱᴇ", data="cls")],
                         ],
                     )
-                except Exception as ep:
+                except Exception as e:
                     clear_queue(chat)
+                    await VOICE_CHATS[chat.id].stop()
+                    await msg.edit(f"`{e}`")
                     VOICE_CHATS.pop(chat.id)
-                    await msg.edit(f"`{ep}`")
                     return await sleep(3)
 
     else:
-        msg = await event.edit("➕ Downloading File...")
+        await msg.edit("➕ <i>Downloading...</i>", parsed_mode="HTML")
         dl = await replied.download_media()
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
@@ -138,11 +150,9 @@ async def play_song(event):
             name = "Voice Note"
         if chat.id in QUEUE:
             pos = add_to_queue(chat, name, url, ref, "audio")
-            caption = f"✨ **ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ** {pos}\n\n❄ **ᴛɪᴛʟᴇ :** [{name}]({url})\n🥀 **ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :** {from_user}"
-            await event.client.send_file(
-                chat.id,
-                ngantri,
-                caption=caption,
+            await msg.edit(
+                f"<b>Added to queue at {pos}\n\n Title: [{name}]({url})\n Requested by: {from_user}</b>",
+                file=ngantri,
                 buttons=[
                     [
                         Button.inline("\u23EA", data="back_callback"),
@@ -153,19 +163,15 @@ async def play_song(event):
                     ],
                     [Button.inline("cʟᴏꜱᴇ", data="cls")],
                 ],
+                parse_mode="HTML",
             )
-            await msg.delete()
         else:
             try:
-                await ins.join(chat.id)
                 await ins.start_audio(dl, repeat=False)
-                VOICE_CHATS[chat.id] = ins
                 add_to_queue(chat, name, url, ref, "audio")
-                caption = f"<b>Started Streaming</b>\n\n <b>Title: </b> [{name}]({link})\n <b>Requested by: </b> {from_user}"
-                await event.client.send_file(
-                    chat.id,
-                    fotoplay,
-                    caption=caption,
+                await msg.edit(
+                    f"<b>Started Streaming</b>\n\n <b>Title: </b> [{name}]({link})\n <b>Requested by: </b> {from_user}",
+                    file=fotoplay,
                     buttons=[
                         [
                             Button.inline("\u23EA", data="back_callback"),
@@ -180,9 +186,9 @@ async def play_song(event):
                     ],
                     parse_mode="HTML",
                 )
-                await msg.delete()
             except Exception as e:
                 clear_queue(chat)
-                VOICE_CHATS.pop(chat.id)
+                await VOICE_CHATS[chat.id].stop()
                 await msg.edit(f"`{e}`")
+                VOICE_CHATS.pop(chat.id)
                 return await sleep(3)
