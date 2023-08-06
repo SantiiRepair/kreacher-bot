@@ -17,7 +17,7 @@
     "run": {
       "name": "run",
       "command": "make run_bot",
-      "runAtStart": true
+      "runAtStart": false
     }
   }
 }
