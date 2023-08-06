@@ -97,7 +97,7 @@ async def play_song(event):
                     await msg.delete()
                     await event.client.send_file(chat.id, thumb, caption=caption, buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]])
                 except Exception as ep:
-                    clear_queue(chat.id)
+                    clear_queue(chat)
                     VOICE_CHATS.pop(chat.id)
                     await msg.edit(f"`{ep}`")
                     return await sleep(3)
@@ -132,8 +132,8 @@ async def play_song(event):
                 ],
                     parse_mode="HTML")
                 await msg.delete()
-            except Exception as ep:
-                clear_queue(chat.id)
+            except Exception as e:
+                clear_queue(chat)
                 VOICE_CHATS.pop(chat.id)
-                await msg.edit(f"`{ep}`")
+                await msg.edit(f"`{e}`")
                 return await sleep(3)
