@@ -1,5 +1,5 @@
 import os
-from pkl import load_pkl, dump_pkl
+from bot.helpers.pkl import load_pkl, dump_pkl
 
 dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
