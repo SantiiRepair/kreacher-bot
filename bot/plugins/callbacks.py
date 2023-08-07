@@ -1,20 +1,21 @@
+import pickle
 from asyncio import sleep
 from bot import config, kreacher
-from bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot.dicts.dicts import VOICE_CHATS
 from telethon import events, Button
 from bot.helpers.queues_handler import next_item, skip_current
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
+dir = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(dir, "../dbs/queues.pkl")
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
 async def _(event):
     await event.delete()
 
 
-@kreacher.on(
-    events.callbackquery.CallbackQuery(data="pause_or_resume_callback")
-)
+@kreacher.on(events.callbackquery.CallbackQuery(data="pause_or_resume_callback"))
 async def _(event):
     chat = await event.get_chat()
     if VOICE_CHATS[chat.id].is_video_paused:
@@ -58,6 +59,8 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="next_callback"))
 async def _(event):
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     chat = await event.get_chat()
     if len(event.text.split()) < 2:
         op = await skip_current(chat)
@@ -88,8 +91,12 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     chat = await event.get_chat()
     QUEUE.pop(chat.id)
+    with open(queues, "w") as q:
+        pickle.dump(QUEUE,q)
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()
     VOICE_CHATS.pop(chat.id)
