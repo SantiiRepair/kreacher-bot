@@ -5,11 +5,12 @@ from bot.helpers.queues import (
     clear_queue,
     get_queue,
     pop_an_item,
-    active,
+    get_active_chats,
 )
 
 dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
+actives = os.path.join(dir, "../dbs/actives.pkl")
 
 
 async def skip_current(chat):
@@ -23,7 +24,10 @@ async def skip_current(chat):
         await VOICE_CHATS[chat.id].stop()
         clear_queue(chat)
         VOICE_CHATS.pop(chat.id)
-        active.remove(chat.id)
+        ACTIVE = await get_active_chats()
+        ACTIVE.remove(chat.id)
+        with open(actives, "w") as a:
+            pickle.dump(ACTIVE, a)
         return 1
     songname = chat_queue[1][0]
     url = chat_queue[1][1]

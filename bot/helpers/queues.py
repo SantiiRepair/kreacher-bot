@@ -23,8 +23,8 @@ def add_to_queue(chat, name, url, ref, type):
             with open(queues, "w") as q:
                 pickle.dump(QUEUE, q)
             return int(len(QUEUE[chat.id]) - 1)
-        if chat.id not in active:
-            active.append(chat.id)
+        if chat.id not in ACTIVE:
+            ACTIVE.append(chat.id)
             with open(actives, "w") as a:
                 pickle.dump(ACTIVE, a)
         QUEUE[chat.id] = [[name, url, ref, type]]

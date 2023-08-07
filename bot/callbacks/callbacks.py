@@ -1,3 +1,4 @@
+import os
 import pickle
 from bot import config, kreacher
 from bot.instance.of_every_vc import VOICE_CHATS
