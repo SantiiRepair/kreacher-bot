@@ -1,5 +1,5 @@
 from bot import kreacher
-from bot.instance.of_every_vc import VOICE_CHATS
+from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.queues import clear_queue
 from telethon import events
 

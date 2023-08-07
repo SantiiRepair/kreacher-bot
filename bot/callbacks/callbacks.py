@@ -1,9 +1,10 @@
 import os
 import pickle
 from bot import config, kreacher
-from bot.instance.of_every_vc import VOICE_CHATS
+from bot.instance_of.every_vc import VOICE_CHATS
 from telethon import events, Button
 from bot.helpers.handler import next_item, skip_current
+from bot.helpers.pkl import load_pkl, dump_pkl
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
@@ -60,8 +61,7 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="next_callback"))
 async def _(event):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = await event.get_chat()
     if len(event.text.split()) < 2:
         op = await skip_current(chat)
@@ -90,12 +90,10 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = await event.get_chat()
     QUEUE.pop(chat.id)
-    with open(queues, "wb") as q:
-        pickle.dump(QUEUE, q)
+    dump_pkl(queues, "wb", QUEUE)
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()
     VOICE_CHATS.pop(chat.id)

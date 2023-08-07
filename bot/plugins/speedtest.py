@@ -24,6 +24,7 @@ async def speed_test(event):
 
 Running Speedtest...__ \U0001F4F6"""
     )
+    await event.delete()
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, testspeed, message)
     output = f"""**Speedtest Results**

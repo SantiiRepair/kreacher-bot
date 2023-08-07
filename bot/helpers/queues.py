@@ -1,5 +1,5 @@
 import os
-import pickle
+from pkl import load_pkl, dump_pkl
 
 dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
@@ -7,36 +7,29 @@ actives = os.path.join(dir, "../dbs/actives.pkl")
 
 
 async def get_active_chats() -> list:
-    with open(actives, "rb") as a:
-        ACTIVE = pickle.load(a)
+    ACTIVE = load_pkl(actives, "rb", "list")
     return ACTIVE
 
 
 def add_to_queue(chat, name, url, ref, type):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
-    with open(actives, "rb") as a:
-        ACTIVE = pickle.load(a)
+    QUEUE = load_pkl(queues, "rb", "dict")
+    ACTIVE = load_pkl(actives, "rb", "list")
     try:
         if chat.id in QUEUE:
             QUEUE[chat.id].append([name, url, ref, type])
-            with open(queues, "wb") as q:
-                pickle.dump(QUEUE, q)
+            dump_pkl(queues, "wb", QUEUE)
             return int(len(QUEUE[chat.id]) - 1)
         if chat.id not in ACTIVE:
             ACTIVE.append(chat.id)
-            with open(actives, "wb") as a:
-                pickle.dump(ACTIVE, a)
+            dump_pkl(actives, "wb", ACTIVE)
         QUEUE[chat.id] = [[name, url, ref, type]]
-        with open(queues, "wb") as q:
-            pickle.dump(QUEUE, q)
+        dump_pkl(queues, "wb", QUEUE)
     except Exception as e:
         raise e
 
 
 def get_queue(chat):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(f)
+    QUEUE = load_pkl(queues, "rb", "dict")
     try:
         if chat.id in QUEUE:
             return QUEUE[chat.id]
@@ -46,34 +39,28 @@ def get_queue(chat):
 
 
 def pop_an_item(chat):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
+    QUEUE = load_pkl(queues, "rb", "dict")
     try:
         if chat.id not in QUEUE:
             return 0
         QUEUE[chat.id].pop(0)
-        with open(queues, "wb") as q:
-            pickle.dump(QUEUE, q)
+        dump_pkl(queues, "wb", QUEUE)
         return 1
     except Exception as e:
         raise e
 
 
 def clear_queue(chat):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
-    with open(actives, "rb") as a:
-        ACTIVE = pickle.load(a)
+    QUEUE = load_pkl(queues, "rb", "dict")
+    ACTIVE = load_pkl(actives, "rb", "list")
     try:
         if chat.id not in QUEUE:
             return 0
         QUEUE.pop(chat.id)
-        with open(queues, "wb") as q:
-            pickle.dump(QUEUE, q)
+        dump_pkl(queues, "wb", QUEUE)
         if chat.id in ACTIVE:
             ACTIVE.remove(chat.id)
-            with open(actives, "rb") as a:
-                pickle.dump(ACTIVE, a)
+            dump_pkl(actives, "wb", ACTIVE)
         return 1
     except Exception as e:
         raise e

@@ -6,7 +6,8 @@ from asyncio import sleep
 from youtubesearchpython import VideosSearch
 from bot import client, ins, kreacher
 from bot.helpers.queues import get_queue
-from bot.instance.of_every_vc import VOICE_CHATS
+from bot.helpers.pkl import load_pkl
+from bot.instance_of.every_vc import VOICE_CHATS
 from telethon import Button, events
 
 from yt_dlp import YoutubeDL
@@ -29,12 +30,11 @@ ydl = YoutubeDL(ydl_opts)
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]play_video"))
 async def play_video(event):
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = await event.get_chat()
     media = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
     if not media and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
@@ -153,10 +153,9 @@ async def play_video(event):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(event):
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
@@ -186,10 +185,9 @@ async def playlist(event):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
 async def pause(event):
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
@@ -207,10 +205,9 @@ async def pause(event):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
 async def resume(event):
+    QUEUE = load_pkl(queues, "rb", "dict")
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."

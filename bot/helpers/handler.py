@@ -1,12 +1,8 @@
 import os
 import pickle
-from bot.instance.of_every_vc import VOICE_CHATS
-from bot.helpers.queues import (
-    clear_queue,
-    get_queue,
-    pop_an_item,
-    get_active_chats,
-)
+from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.pkl import load_pkl, dump_pkl
+from bot.helpers.queues import clear_queue, get_queue, pop_an_item
 
 dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
@@ -14,8 +10,7 @@ actives = os.path.join(dir, "../dbs/actives.pkl")
 
 
 async def skip_current(chat):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
+    QUEUE = load_pkl(queues, "rb", "dict")
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)
@@ -24,12 +19,11 @@ async def skip_current(chat):
         await VOICE_CHATS[chat.id].stop()
         clear_queue(chat)
         VOICE_CHATS.pop(chat.id)
-        ACTIVE = await get_active_chats()
+        ACTIVE = load_pkl(actives, "rb", "list")
         ACTIVE.remove(chat.id)
-        with open(actives, "wb") as a:
-            pickle.dump(ACTIVE, a)
+        dump_pkl(actives, "wb", ACTIVE)
         return 1
-    songname = chat_queue[1][0]
+    name = chat_queue[1][0]
     url = chat_queue[1][1]
     link = chat_queue[1][2]
     type = chat_queue[1][3]
@@ -40,20 +34,18 @@ async def skip_current(chat):
             url, with_audio=True, repeat=False
         )
     pop_an_item(chat)
-    return [songname, link, type]
+    return [name, link, type]
 
 
 async def next_item(chat, x: int):
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
+    QUEUE = load_pkl(queues, "rb", "dict")
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)
     try:
         name = chat_queue[x][0]
         chat_queue.pop(x)
-        with open(queues, "wb") as q:
-            pickle.dump(chat_queue, q)
+        dump_pkl(queues, "wb", chat_queue)
         return name
     except Exception as e:
         print(e)

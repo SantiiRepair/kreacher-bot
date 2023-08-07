@@ -5,7 +5,8 @@ from asyncio import sleep
 
 # from bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
-from bot.instance.of_every_vc import VOICE_CHATS
+from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.pkl import load_pkl
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
@@ -57,13 +58,12 @@ async def ytdl(format: str, link: str):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]play_song"))
 async def play_song(event):
+    QUEUE = load_pkl(queues, "rb", "dict")
     title = " ".join(event.text[5:])
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    with open(queues, "rb") as q:
-        QUEUE = pickle.load(q)
     from_user = vcmention(event.sender)
     if (
         replied
