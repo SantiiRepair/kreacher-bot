@@ -1,2 +1,1 @@
-QUEUE = {}
 VOICE_CHATS = {}

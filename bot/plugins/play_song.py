@@ -1,10 +1,11 @@
 import os
 import uuid
+import pickle
 from asyncio import sleep
 
 # from bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
-from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
@@ -20,6 +21,10 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
+dir = os.path.dirname(os.path.abspath(__file__))
+download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
+queues = os.path.join(dir, "../dbs/queues.pkl")
+
 
 def vcmention(user):
     full_name = get_display_name(user)
@@ -32,12 +37,12 @@ def ytsearch(query: str):
     try:
         search = VideosSearch(query, limit=1).result()
         data = search["result"][0]
-        songname = data["title"]
+        name = data["title"]
         url = data["link"]
         duration = data["duration"]
         thumbnail = f"https://i.ytimg.com/vi/{data['id']}/hqdefault.jpg"
         videoid = data["id"]
-        return [songname, url, duration, thumbnail, videoid]
+        return [name, url, duration, thumbnail, videoid]
     except Exception as e:
         print(e)
         return 0
@@ -56,9 +61,9 @@ async def play_song(event):
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
-    dir = os.path.dirname(os.path.abspath(__file__))
-    download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
     await sleep(2)
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     from_user = vcmention(event.sender)
     if (
         replied
@@ -78,14 +83,14 @@ async def play_song(event):
             await msg.edit("__Joining the voice chat...__")
             await ins.join(chat.id)
             VOICE_CHATS[chat.id] = ins
-            await sleep(3)
+            await sleep(2)
         except Exception as e:
             await msg.edit(
                 f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await sleep(3)
+            return await sleep(2)
     if replied and not replied.audio and not replied.voice or not replied:
         query = event.text.split(maxsplit=1)[1]
         search = ytsearch(query)
@@ -115,7 +120,7 @@ async def play_song(event):
                 try:
                     await ins.start_audio(url, repeat=False)
                     add_to_queue(chat, name, url, ref, "audio")
-                    await sleep(3)
+                    await sleep(2)
                     await msg.edit(
                         f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** {from_user}",
                         # file=thumb,
@@ -138,7 +143,7 @@ async def play_song(event):
                     await VOICE_CHATS[chat.id].stop()
                     await msg.edit(f"`{e}`")
                     VOICE_CHATS.pop(chat.id)
-                    return await sleep(3)
+                    return await sleep(2)
 
     else:
         await msg.edit("➕ __Downloading...__")
@@ -166,7 +171,7 @@ async def play_song(event):
             )
         else:
             try:
-                await sleep(3)
+                await sleep(2)
                 await ins.start_audio(dl, repeat=False)
                 await msg.edit(
                     f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
@@ -189,4 +194,4 @@ async def play_song(event):
                 await VOICE_CHATS[chat.id].stop()
                 await msg.edit(f"`{e}`")
                 VOICE_CHATS.pop(chat.id)
-                return await sleep(3)
+                return await sleep(2)

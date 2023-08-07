@@ -2,7 +2,7 @@ import pickle
 from bot import config, kreacher
 from bot.instance.of_every_vc import VOICE_CHATS
 from telethon import events, Button
-from bot.handler.handler import next_item, skip_current
+from bot.helpers.handler import next_item, skip_current
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 

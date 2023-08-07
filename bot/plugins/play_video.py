@@ -1,11 +1,12 @@
 import os
 import re
 import uuid
+import pickle
 from asyncio import sleep
 from youtubesearchpython import VideosSearch
 from bot import client, ins, kreacher
 from bot.helpers.queues import get_queue
-from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
 from telethon import Button, events
 
 from yt_dlp import YoutubeDL
@@ -13,6 +14,10 @@ from yt_dlp import YoutubeDL
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
+
+dir = os.path.dirname(os.path.abspath(__file__))
+download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
+queues = os.path.join(dir, "../dbs/queues.pkl")
 
 ydl_opts = {
     "quiet": True,
@@ -28,8 +33,8 @@ async def play_video(event):
     media = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    dir = os.path.dirname(os.path.abspath(__file__))
-    download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if not media and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
@@ -49,14 +54,14 @@ async def play_video(event):
                 await msg.edit("__Joining the voice chat...__")
                 await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
-                await sleep(3)
+                await sleep(2)
             except Exception as e:
                 await msg.edit(
                     f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
                 )
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
-                return await sleep(3)
+                return await sleep(2)
         if match:
             await msg.edit("🔄 __Starting YouTube video stream...__")
             try:
@@ -77,7 +82,7 @@ async def play_video(event):
                 print(e)
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
-                return await sleep(3)
+                return await sleep(2)
 
         else:
             await msg.edit("🔄 __Starting live video stream...__")
@@ -106,7 +111,7 @@ async def play_video(event):
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await sleep(3)
+            return await sleep(2)
 
     elif media.video or media.file:
         await msg.edit("🔄 __Downloading...__")
@@ -137,19 +142,21 @@ async def play_video(event):
             print(e)
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await sleep(3)
+            return await sleep(2)
 
     else:
         await msg.edit(
             "__\U0001F9D9 Do you want to search for a YouTube video?__"
         )
-        return await sleep(3)
+        return await sleep(2)
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(event):
     chat = event.get_chat()
     user = event.get_sender()
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
@@ -181,6 +188,8 @@ async def playlist(event):
 async def pause(event):
     chat = event.get_chat()
     user = event.get_sender()
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."
@@ -200,6 +209,8 @@ async def pause(event):
 async def resume(event):
     chat = event.get_chat()
     user = event.get_sender()
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
             "Sorry, you must be an administrator to execute this command."

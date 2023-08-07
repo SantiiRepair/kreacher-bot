@@ -1,4 +1,6 @@
-from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
+import os
+import pickle
+from bot.instance.of_every_vc import VOICE_CHATS
 from bot.helpers.queues import (
     clear_queue,
     get_queue,
@@ -6,8 +8,13 @@ from bot.helpers.queues import (
     active,
 )
 
+dir = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(dir, "../dbs/queues.pkl")
+
 
 async def skip_current(chat):
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)
@@ -33,12 +40,16 @@ async def skip_current(chat):
 
 
 async def next_item(chat, x: int):
+    with open(queues, "r") as q:
+        QUEUE = pickle.load(q)
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)
     try:
         name = chat_queue[x][0]
         chat_queue.pop(x)
+        with open(queues, "w") as q:
+            pickle.dump(chat_queue, q)
         return name
     except Exception as e:
         print(e)
