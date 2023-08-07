@@ -5,7 +5,7 @@ from pathlib import Path
 from termcolor import colored
 
 
-def loader(name):
+async def loader():
     folders = ["callbacks", "plugins", "tasks"]
 
     for folder in folders:
@@ -16,9 +16,7 @@ def loader(name):
             spec = importlib.util.spec_from_file_location(module_name, file)
             module = importlib.util.module_from_spec(spec)
             module.logger = logging.getLogger(module_name)
-
             spec.loader.exec_module(module)
-
             sys.modules[module_name] = module
 
             print(

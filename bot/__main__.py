@@ -14,16 +14,9 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-path = "bot/plugins/*.py"
-files = glob.glob(path)
-for file in files:
-    with open(file) as a:
-        patt = Path(a.name)
-        name = patt.stem
-        loader(name.replace(".py", ""))
-
 
 async def start_bot():
+    await loader()
     print(f'{colored("[INFO]", "blue")}: LOADING ASSISTANT DETAILS')
     botme = await kreacher.get_me()
     botid = telethon.utils.get_peer_id(botme)

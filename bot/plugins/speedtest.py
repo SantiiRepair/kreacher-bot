@@ -1,12 +1,12 @@
-from telethon import events
-from bot import kreacher
 import asyncio
-import speedtest
+from bot import kreacher
+from telethon import events
+from speedtest import Speedtest
 
 
 def testspeed(m):
     try:
-        test = speedtest.Speedtest()
+        test = Speedtest()
         test.get_best_server()
         test.download()
         test.upload()
@@ -17,7 +17,7 @@ def testspeed(m):
     return result
 
 
-@kreacher.on(events.NewMessage(pattern="[!?/]speedtest"))
+@kreacher.on(events.NewMessage(pattern="^[!?/]speedtest"))
 async def speed_test(event):
     message = await event.reply(
         """__Kreacher is here to serve you.
@@ -30,7 +30,7 @@ Running Speedtest...__ \U0001F4F6"""
 
 **Client**:
 **__ISP__**: {result['client']['isp']}
-**__Country__**: {result['client']['country']}</i>
+**__Country__**: {result['client']['country']}
 
 **Server**:
 **__Name__**: {result['server']['name']}
@@ -38,4 +38,5 @@ Running Speedtest...__ \U0001F4F6"""
 **__Sponsor:__** {result['server']['sponsor']}
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
+    print(result["share"])
     return await message.edit(output, file=result["share"])
