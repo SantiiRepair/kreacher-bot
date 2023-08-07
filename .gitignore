@@ -9,8 +9,7 @@ kreacher_env
 my_env
 .env
 tester.py
+.gitpod.yml
 
 # dbs
-queues.json.lock
-users.json.lock
-vcs.json.lock
+chats.json.lock

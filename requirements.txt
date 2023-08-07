@@ -1,10 +1,10 @@
 aiofile==3.8.7
 aiofiles==23.1.0
 aiohttp==3.8.5
-av==8.1.0
+av==10.0.0
 black==23.7.0
 numpy==1.24.4
-opencv-python-headless==4.5.5.62
+opencv-python-headless==4.8.0.74
 pillow==10.0.0
 pysondb==1.6.7
 python-crontab==3.0.0

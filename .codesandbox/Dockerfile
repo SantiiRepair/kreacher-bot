@@ -1,4 +1,4 @@
-FROM python:3.8.10
+FROM python:3.11.1
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install curl expect ffmpeg git python3 python3-pip tree -y
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
