@@ -1,7 +1,7 @@
 from asyncio import sleep
 from telethon import events
 from bot import kreacher
-from bot.dicts.dicts import VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
 
 
 @kreacher.on(events.NewMessage(pattern="[!?/]actives"))

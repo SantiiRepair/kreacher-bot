@@ -5,14 +5,22 @@ from pathlib import Path
 from termcolor import colored
 
 
-def load_plugins(plugin_name):
-    path = Path(f"bot/plugins/{plugin_name}.py")
-    name = "bot.plugins.{}".format(plugin_name)
-    spec = importlib.util.spec_from_file_location(name, path)
-    load = importlib.util.module_from_spec(spec)
-    load.logger = logging.getLogger(plugin_name)
-    spec.loader.exec_module(load)
-    sys.modules["bot.plugins." + plugin_name] = load
-    print(
-        f'{colored("[INFO]", "blue")}: Bot has started {colored(plugin_name, "yellow")}'
-    )
+def loader(name):
+    folders = ["callbacks", "plugins", "tasks"]
+
+    for folder in folders:
+        folder_path = Path(f"bot/{folder}")
+        for file in folder_path.glob("*.py"):
+            module_name = f"bot.{folder}.{file.stem}"
+
+            spec = importlib.util.spec_from_file_location(module_name, file)
+            module = importlib.util.module_from_spec(spec)
+            module.logger = logging.getLogger(module_name)
+
+            spec.loader.exec_module(module)
+
+            sys.modules[module_name] = module
+
+            print(
+                f'{colored("[INFO]", "blue")}: Bot has started {colored(module_name, "yellow")}'
+            )

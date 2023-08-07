@@ -1,7 +1,7 @@
 from bot import ins
 from pytgcalls.types import Update
-from bot.helpers.queues_handler import skip_current
-from bot.dicts.dicts import QUEUE
+from bot.handler.handler import skip_current
+from bot.instance.of_every_vc import QUEUE
 from bot.helpers.queues import (
     clear_queue,
     active,

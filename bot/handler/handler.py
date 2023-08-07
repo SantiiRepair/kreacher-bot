@@ -1,4 +1,4 @@
-from bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
 from bot.helpers.queues import (
     clear_queue,
     get_queue,

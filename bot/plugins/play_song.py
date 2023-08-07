@@ -4,7 +4,7 @@ from asyncio import sleep
 
 # from bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
-from bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
@@ -130,7 +130,7 @@ async def play_song(event):
                                     "\u23ED\uFE0F", data="next_callback"
                                 ),
                             ],
-                            [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                            [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
                         ],
                     )
                 except Exception as e:
@@ -161,7 +161,7 @@ async def play_song(event):
                         ),
                         Button.inline("\u23ED\uFE0F", data="next_callback"),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         else:
@@ -181,7 +181,7 @@ async def play_song(event):
                                 "\u23ED\uFE0F", data="next_callback"
                             ),
                         ],
-                        [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                        [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
                     ],
                 )
             except Exception as e:

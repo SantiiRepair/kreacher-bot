@@ -3,7 +3,7 @@ import asyncio
 import telethon
 import glob
 from pathlib import Path
-from bot.utils import load_plugins
+from bot.utils import loader
 import logging
 from termcolor import colored
 from bot import kreacher
@@ -16,11 +16,11 @@ logging.basicConfig(
 
 path = "bot/plugins/*.py"
 files = glob.glob(path)
-for name in files:
-    with open(name) as a:
+for file in files:
+    with open(file) as a:
         patt = Path(a.name)
-        plugin_name = patt.stem
-        load_plugins(plugin_name.replace(".py", ""))
+        name = patt.stem
+        loader(name.replace(".py", ""))
 
 
 async def start_bot():

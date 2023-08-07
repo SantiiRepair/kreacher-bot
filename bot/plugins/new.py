@@ -1,5 +1,5 @@
 from bot import ins, kreacher
-from bot.dicts.dicts import VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
 from telethon import events
 
 

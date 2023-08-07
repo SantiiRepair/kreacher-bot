@@ -1,26 +1,28 @@
 import pickle
-from asyncio import sleep
 from bot import config, kreacher
-from bot.dicts.dicts import VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
 from telethon import events, Button
-from bot.helpers.queues_handler import next_item, skip_current
+from bot.handler.handler import next_item, skip_current
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
 dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
+
 @kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
 async def _(event):
     await event.delete()
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="pause_or_resume_callback"))
+@kreacher.on(
+    events.callbackquery.CallbackQuery(data="pause_or_resume_callback")
+)
 async def _(event):
     chat = await event.get_chat()
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
-        await event.edit(
+        return await event.edit(
             "\U00002378 __Started Video Streaming!__",
             file=thumb,
             buttons=[
@@ -31,12 +33,11 @@ async def _(event):
                     ),
                     Button.inline("\u23ED\uFE0F", data="next_callback"),
                 ],
-                [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
             ],
         )
-        return await sleep(3)
     await VOICE_CHATS[chat.id].set_pause(True)
-    await event.edit(
+    return await event.edit(
         "\U00002378 __Started Video Streaming!__",
         file=thumb,
         buttons=[
@@ -45,10 +46,9 @@ async def _(event):
                 Button.inline("\u23F8\uFE0F", data="pause_or_resume_callback"),
                 Button.inline("\u23ED\uFE0F", data="next_callback"),
             ],
-            [Button.inline("cʟᴏꜱᴇ", data="cls")],
+            [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
         ],
     )
-    return await sleep(3)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="back_callback"))
@@ -73,7 +73,6 @@ async def _(event):
                 f"**⏭ Skipped**\n**🎧 Now Playing** - [{op[0]}]({op[1]})",
                 link_preview=False,
             )
-            return await sleep(3)
     else:
         skip = event.text.split(maxsplit=1)[1]
         DELQUE = "**Removing Following Songs From Queue:**"
@@ -86,7 +85,6 @@ async def _(event):
                     if hm != 0:
                         DELQUE = DELQUE + "\n" + f"**#{x}** - {hm}"
             await event.reply(DELQUE)
-            return await sleep(3)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
@@ -96,11 +94,10 @@ async def _(event):
     chat = await event.get_chat()
     QUEUE.pop(chat.id)
     with open(queues, "w") as q:
-        pickle.dump(QUEUE,q)
+        pickle.dump(QUEUE, q)
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()
     VOICE_CHATS.pop(chat.id)
-    return await sleep(3)
 
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="help"))

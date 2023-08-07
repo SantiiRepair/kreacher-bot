@@ -5,7 +5,7 @@ from asyncio import sleep
 from youtubesearchpython import VideosSearch
 from bot import client, ins, kreacher
 from bot.helpers.queues import get_queue
-from bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot.instance.of_every_vc import QUEUE, VOICE_CHATS
 from telethon import Button, events
 
 from yt_dlp import YoutubeDL
@@ -97,7 +97,7 @@ async def play_video(event):
                         ),
                         Button.inline("\u23ED\uFE0F", data="next_callback"),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         except Exception as e:
@@ -127,7 +127,7 @@ async def play_video(event):
                         ),
                         Button.inline("\u23ED\uFE0F", data="next_callback"),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="cls")],
+                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         except Exception as e:

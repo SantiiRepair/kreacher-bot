@@ -1,5 +1,6 @@
 from bot import kreacher
-from bot.dicts.dicts import VOICE_CHATS
+from bot.instance.of_every_vc import VOICE_CHATS
+from bot.helpers.queues import clear_queue
 from telethon import events
 
 
@@ -11,6 +12,7 @@ async def leave_handler(event):
             raise Exception("Streaming is not active")
         await VOICE_CHATS[chat.id].leave_current_group_call()
         VOICE_CHATS.pop(chat.id)
+        clear_queue(chat.id)
         await event.reply(
             "__Goodbye master, just call me if you need me. \n\nVoice Chat left successfully.__",
         )
