@@ -20,7 +20,7 @@ lint:
 
 # command to run bot in normal mode
 run_bot:
-	python3 -m tlg_bot
+	python3 -m bot
 
 # command to run bot in virtual enviroment
 run_bot_virtual_env:

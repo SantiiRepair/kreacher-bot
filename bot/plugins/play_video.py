@@ -3,9 +3,9 @@ import re
 import uuid
 from asyncio import sleep
 from youtubesearchpython import VideosSearch
-from tlg_bot import client, ins, kreacher
-from tlg_bot.helpers.queues import get_queue
-from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot import client, ins, kreacher
+from bot.helpers.queues import get_queue
+from bot.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import Button, events
 
 from yt_dlp import YoutubeDL

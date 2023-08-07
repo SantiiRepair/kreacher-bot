@@ -1,7 +1,7 @@
 import os
 import logging
 from termcolor import colored
-from tlg_bot.config import Config
+from bot.config import Config
 from telethon.sync import TelegramClient
 from pytgcalls import GroupCallFactory
 

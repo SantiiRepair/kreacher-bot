@@ -1,8 +1,8 @@
 from asyncio import sleep
-from tlg_bot import config, kreacher
-from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot import config, kreacher
+from bot.dicts.dicts import QUEUE, VOICE_CHATS
 from telethon import events, Button
-from tlg_bot.helpers.queues_handler import next_item, skip_current
+from bot.helpers.queues_handler import next_item, skip_current
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 

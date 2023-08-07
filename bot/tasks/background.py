@@ -1,8 +1,8 @@
-from tlg_bot import ins
+from bot import ins
 from pytgcalls.types import Update
-from tlg_bot.helpers.queues_handler import skip_current
-from tlg_bot.dicts.dicts import QUEUE
-from tlg_bot.helpers.queues import (
+from bot.helpers.queues_handler import skip_current
+from bot.dicts.dicts import QUEUE
+from bot.helpers.queues import (
     clear_queue,
     active,
 )

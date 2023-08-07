@@ -1,5 +1,5 @@
 from telethon import events
-from tlg_bot import kreacher
+from bot import kreacher
 import asyncio
 import speedtest
 

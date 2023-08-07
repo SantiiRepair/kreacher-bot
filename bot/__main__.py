@@ -3,10 +3,10 @@ import asyncio
 import telethon
 import glob
 from pathlib import Path
-from tlg_bot.utils import load_plugins
+from bot.utils import load_plugins
 import logging
 from termcolor import colored
-from tlg_bot import kreacher
+from bot import kreacher
 
 
 logging.basicConfig(
@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-path = "tlg_bot/plugins/*.py"
+path = "bot/plugins/*.py"
 files = glob.glob(path)
 for name in files:
     with open(name) as a:

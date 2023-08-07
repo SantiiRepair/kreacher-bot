@@ -1,5 +1,5 @@
-from tlg_bot import kreacher
-from tlg_bot.dicts.dicts import VOICE_CHATS
+from bot import kreacher
+from bot.dicts.dicts import VOICE_CHATS
 from telethon import events
 
 

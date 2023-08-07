@@ -2,7 +2,7 @@ import asyncio
 import os
 import os.path
 from yt_dlp import YoutubeDL
-from tlg_bot import kreacher as bot
+from bot import kreacher as bot
 from telethon.tl.functions.channels import GetParticipantRequest
 from telethon.tl.types import (
     ChannelParticipantAdmin,

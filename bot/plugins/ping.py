@@ -1,7 +1,7 @@
 from time import time
 from datetime import datetime
 from telethon import events
-from tlg_bot import kreacher
+from bot import kreacher
 
 
 START_TIME = datetime.utcnow()

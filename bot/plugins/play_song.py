@@ -2,15 +2,15 @@ import os
 import uuid
 from asyncio import sleep
 
-# from tlg_bot.helpers.thumbnail import gen_thumb
+# from bot.helpers.thumbnail import gen_thumb
 from telethon import Button, events
-from tlg_bot.dicts.dicts import QUEUE, VOICE_CHATS
-from tlg_bot.helpers.queues import (
+from bot.dicts.dicts import QUEUE, VOICE_CHATS
+from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
 )
-from tlg_bot.helpers.yt_dlp import bash
-from tlg_bot import config, ins, kreacher
+from bot.helpers.yt_dlp import bash
+from bot import config, ins, kreacher
 from telethon.tl import types
 from telethon.utils import get_display_name
 from youtubesearchpython import VideosSearch

@@ -1,4 +1,4 @@
-from tlg_bot import config, kreacher
+from bot import config, kreacher
 from telethon import events
 from telethon.tl.functions.messages import SearchRequest
 from telethon.tl.types import InputMessagesFilterVideo

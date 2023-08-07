@@ -1,4 +1,4 @@
-from tlg_bot import kreacher, config
+from bot import kreacher, config
 from telethon import events, Button
 
 
