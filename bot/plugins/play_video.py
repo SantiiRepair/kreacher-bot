@@ -33,7 +33,7 @@ async def play_video(event):
     media = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if not media and not " " in event.message.message:
         await msg.edit(
@@ -155,7 +155,7 @@ async def play_video(event):
 async def playlist(event):
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
@@ -188,7 +188,7 @@ async def playlist(event):
 async def pause(event):
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(
@@ -209,7 +209,7 @@ async def pause(event):
 async def resume(event):
     chat = event.get_chat()
     user = event.get_sender()
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if not user.is_admin:
         await event.reply(

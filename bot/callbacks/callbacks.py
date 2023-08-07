@@ -60,7 +60,7 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="next_callback"))
 async def _(event):
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     chat = await event.get_chat()
     if len(event.text.split()) < 2:
@@ -90,11 +90,11 @@ async def _(event):
 
 @kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
 async def _(event):
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     chat = await event.get_chat()
     QUEUE.pop(chat.id)
-    with open(queues, "w") as q:
+    with open(queues, "wb") as q:
         pickle.dump(QUEUE, q)
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()

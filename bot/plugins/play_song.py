@@ -62,7 +62,7 @@ async def play_song(event):
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     from_user = vcmention(event.sender)
     if (

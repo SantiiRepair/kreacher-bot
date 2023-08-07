@@ -38,5 +38,5 @@ Running Speedtest...__ \U0001F4F6"""
 **__Sponsor:__** {result['server']['sponsor']}
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
-    print(result["share"])
-    return await message.edit(output, file=result["share"])
+    await kreacher.send_file(event.chat.id, result["share"], caption=output)
+    return await message.delete()

@@ -14,7 +14,7 @@ actives = os.path.join(dir, "../dbs/actives.pkl")
 
 
 async def skip_current(chat):
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if chat.id not in QUEUE:
         return 0
@@ -26,7 +26,7 @@ async def skip_current(chat):
         VOICE_CHATS.pop(chat.id)
         ACTIVE = await get_active_chats()
         ACTIVE.remove(chat.id)
-        with open(actives, "w") as a:
+        with open(actives, "wb") as a:
             pickle.dump(ACTIVE, a)
         return 1
     songname = chat_queue[1][0]
@@ -44,7 +44,7 @@ async def skip_current(chat):
 
 
 async def next_item(chat, x: int):
-    with open(queues, "r") as q:
+    with open(queues, "rb") as q:
         QUEUE = pickle.load(q)
     if chat.id not in QUEUE:
         return 0
@@ -52,7 +52,7 @@ async def next_item(chat, x: int):
     try:
         name = chat_queue[x][0]
         chat_queue.pop(x)
-        with open(queues, "w") as q:
+        with open(queues, "wb") as q:
             pickle.dump(chat_queue, q)
         return name
     except Exception as e:
