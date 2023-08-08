@@ -1,11 +1,13 @@
 import os
 import pickle
 from bot import kreacher
+from pyrogram import filters
 from bot.config import config
-from bot.instance_of.every_vc import VOICE_CHATS
-from telethon import events, Button
-from bot.helpers.handler import next_item, skip_current
 from bot.helpers.pkl import load_pkl, dump_pkl
+from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.handler import next_item, skip_current
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
@@ -13,57 +15,77 @@ dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="cls"))
+@kreacher.on_callback_query(filters.CallbackQuery(data="cls"))
 async def _(message):
     await message.delete()
 
 
-@kreacher.on(
-    events.callbackquery.CallbackQuery(data="pause_or_resume_callback")
+@kreacher.on_callback_query(
+    filters.CallbackQuery(data="pause_or_resume_callback")
 )
-async def _(message):
-    chat = await message.get_chat()
+async def _(client, message):
+    chat = message.chat
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
         return await message.edit(
             "\U00002378 __Started Video Streaming!__",
             file=thumb,
-            buttons=[
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    Button.inline("\u23EA", data="back_callback"),
-                    Button.inline(
-                        "\u25B6\uFE0F", data="pause_or_resume_callback"
-                    ),
-                    Button.inline("\u23ED\uFE0F", data="next_callback"),
-                ],
-                [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
-            ],
+                    [
+                        InlineKeyboardButton(
+                            "\u23EA", callback_data="back_callback"
+                        ),
+                        InlineKeyboardButton(
+                            "\u25B6\uFE0F",
+                            callback_data="pause_or_resume_callback",
+                        ),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", callback_data="next_callback"
+                        ),
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "cʟᴏꜱᴇ", callback_data="end_callback"
+                        )
+                    ],
+                ]
+            ),
         )
     await VOICE_CHATS[chat.id].set_pause(True)
     return await message.edit(
         "\U00002378 __Started Video Streaming!__",
         file=thumb,
-        buttons=[
+        reply_markup=InlineKeyboardMarkup(
             [
-                Button.inline("\u23EA", data="back_callback"),
-                Button.inline("\u23F8\uFE0F", data="pause_or_resume_callback"),
-                Button.inline("\u23ED\uFE0F", data="next_callback"),
-            ],
-            [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
-        ],
+                [
+                    InlineKeyboardButton(
+                        "\u23EA", callback_data="back_callback"
+                    ),
+                    InlineKeyboardButton(
+                        "\u23F8\uFE0F",
+                        callback_data="pause_or_resume_callback",
+                    ),
+                    InlineKeyboardButton(
+                        "\u23ED\uFE0F", callback_data="next_callback"
+                    ),
+                ],
+                [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="end_callback")],
+            ]
+        ),
     )
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="back_callback"))
-async def _(message):
-    chat = await message.get_chat()
+@kreacher.on_callback_query(filters.CallbackQuery(data="back_callback"))
+async def _(client, message):
+    chat = message.chat
     await VOICE_CHATS[chat.id].set_pause(False)
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="next_callback"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="next_callback"))
+async def _(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = await message.get_chat()
+    chat = message.chat
     if len(message.text.split()) < 2:
         op = await skip_current(chat)
         if op == 0:
@@ -89,10 +111,10 @@ async def _(message):
             await message.reply(DELQUE)
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="end_callback"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="end_callback"))
+async def _(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = await message.get_chat()
+    chat = message.chat
     QUEUE.pop(chat.id)
     dump_pkl(queues, "wb", QUEUE)
     await VOICE_CHATS[chat.id].stop_media()
@@ -100,52 +122,64 @@ async def _(message):
     VOICE_CHATS.pop(chat.id)
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="help"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="help"))
+async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     await message.edit(
         "ᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ғᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴩ\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ : `/`",
-        buttons=[
+        reply_markup=InlineKeyboardMarkup(
             [
-                Button.inline("ᴀᴅᴍɪɴ", data="admin"),
-                Button.inline("ᴘʟᴀʏ", data="play"),
-            ],
-            [Button.inline("ʜᴏᴍᴇ", data="start")],
-        ],
+                [
+                    InlineKeyboardButton("ᴀᴅᴍɪɴ", callback_data="admin"),
+                    InlineKeyboardButton("ᴘʟᴀʏ", callback_data="play"),
+                ],
+                [InlineKeyboardButton("ʜᴏᴍᴇ", callback_data="start")],
+            ]
+        ),
     )
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="admin"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="admin"))
+async def _(client, message):
     await message.edit(
-        ADMIN_TEXT, buttons=[[Button.inline("« Bᴀᴄᴋ", data="help")]]
+        ADMIN_TEXT,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
+        ),
     )
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="play"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="play"))
+async def _(client, message):
     await message.edit(
-        PLAY_TEXT, buttons=[[Button.inline("« Bᴀᴄᴋ", data="help")]]
+        PLAY_TEXT,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
+        ),
     )
 
 
-@kreacher.on(events.callbackquery.CallbackQuery(data="start"))
-async def _(message):
+@kreacher.on_callback_query(filters.CallbackQuery(data="start"))
+async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     if message.is_private:
         await message.edit(
             PM_START_TEXT(message.sender.first_name),
-            buttons=[
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    Button.url(
-                        "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
-                        f"https://t.me/{config:BOT_USERNAME}?startgroup=true",
-                    ),
-                    Button.inline("/U0002753 ʜᴇʟᴘ", data="help"),
+                    [
+                        InlineKeyboardMarkup(
+                            "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
+                            url=f"https://t.me/{config:BOT_USERNAME}?startgroup=true",
+                        ),
+                        InlineKeyboardButton(
+                            "/U0002753 ʜᴇʟᴘ", callback_data="help"
+                        ),
+                    ]
                 ]
-            ],
+            ),
         )
         return
 

@@ -1,10 +1,8 @@
+import uuid
+import tempfile
 from bot import kreacher
 from bot.config import config
-from telethon import events
-from telethon.tl.functions.messages import SearchRequest
-from telethon.tl.types import InputMessagesFilterVideo
-import tempfile
-import uuid
+
 
 query = "ejemplo"
 

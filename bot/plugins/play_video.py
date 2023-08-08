@@ -96,15 +96,17 @@ async def play_video(client, message):
             await msg.edit(
                 "\U00002378 **Started video streaming!**",
                 file=thumb,
-                buttons=[
+                reply_markup=[
                     [
-                        Button.inline("\u23EA", data="back_callback"),
-                        Button.inline(
+                        InlineKeyboardButton("\u23EA", data="back_callback"),
+                        InlineKeyboardButton(
                             "\u23F8\uFE0F", data="pause_or_resume_callback"
                         ),
-                        Button.inline("\u23ED\uFE0F", data="next_callback"),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", data="next_callback"
+                        ),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
+                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         except Exception as e:
@@ -129,15 +131,17 @@ async def play_video(client, message):
             await message.reply(
                 "**Started video streaming!**",
                 file=thumb,
-                buttons=[
+                reply_markup=[
                     [
-                        Button.inline("\u23EA", data="back_callback"),
-                        Button.inline(
+                        InlineKeyboardButton("\u23EA", data="back_callback"),
+                        InlineKeyboardButton(
                             "\u23F8\uFE0F", data="pause_or_resume_callback"
                         ),
-                        Button.inline("\u23ED\uFE0F", data="next_callback"),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", data="next_callback"
+                        ),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
+                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         except Exception as e:
@@ -159,7 +163,7 @@ async def play_video(client, message):
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = message.get_chat()
+    chat = message.chat
     user = message.get_sender()
     if not user.is_admin:
         await message.reply(
@@ -191,7 +195,7 @@ async def playlist(message):
 @kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
 async def pause(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = message.get_chat()
+    chat = message.chat
     user = message.get_sender()
     if not user.is_admin:
         await message.reply(
@@ -211,7 +215,7 @@ async def pause(message):
 @kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
 async def resume(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = message.get_chat()
+    chat = message.chat
     user = message.get_sender()
     if not user.is_admin:
         await message.reply(

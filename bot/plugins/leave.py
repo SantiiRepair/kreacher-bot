@@ -6,7 +6,7 @@ from bot.instance_of.every_vc import VOICE_CHATS
 @kreacher.on_message(filters.regex(pattern="^[!?/]leave"))
 async def _(client, message):
     try:
-        chat = await message.chat
+        chat = message.chat
         if VOICE_CHATS.get(chat.id) is None:
             raise Exception("Streaming is not active")
         await VOICE_CHATS[chat.id].leave_current_group_call()

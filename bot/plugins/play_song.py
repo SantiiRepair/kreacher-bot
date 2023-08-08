@@ -50,7 +50,7 @@ async def play_song(client, message):
         return await msg.edit(
             "__Give me your query which you want to play\n\n Example:__ `/play Hey Boy Sia`",
             file=config.CMD_IMG,
-            buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+            reply_markup=[[InlineKeyboardButton("cʟᴏꜱᴇ", data="cls")]],
         )
     elif VOICE_CHATS.get(chat.id) is None:
         try:
@@ -88,7 +88,7 @@ async def play_song(client, message):
                 await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ {from_user}",
                     # file=thumb,
-                    buttons=[[Button.inline("cʟᴏꜱᴇ", data="cls")]],
+                    reply_markup=[[InlineKeyboardButton("cʟᴏꜱᴇ", data="cls")]],
                 )
 
                 try:
@@ -98,18 +98,24 @@ async def play_song(client, message):
                     await msg.edit(
                         f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** {from_user}",
                         # file=thumb,
-                        buttons=[
+                        reply_markup=[
                             [
-                                Button.inline("\u23EA", data="back_callback"),
-                                Button.inline(
+                                InlineKeyboardButton(
+                                    "\u23EA", data="back_callback"
+                                ),
+                                InlineKeyboardButton(
                                     "\u23F8\uFE0F",
                                     data="pause_or_resume_callback",
                                 ),
-                                Button.inline(
+                                InlineKeyboardButton(
                                     "\u23ED\uFE0F", data="next_callback"
                                 ),
                             ],
-                            [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
+                            [
+                                InlineKeyboardButton(
+                                    "cʟᴏꜱᴇ", data="end_callback"
+                                )
+                            ],
                         ],
                     )
                 except Exception as e:
@@ -142,15 +148,17 @@ async def play_song(client, message):
             await msg.edit(
                 f"**__Added to queue at__** \n\n **Title:** [{name}]({url})\n **Requested by:** {from_user}",
                 file=ngantri,
-                buttons=[
+                reply_markup=[
                     [
-                        Button.inline("\u23EA", data="back_callback"),
-                        Button.inline(
+                        InlineKeyboardButton("\u23EA", data="back_callback"),
+                        InlineKeyboardButton(
                             "\u23F8\uFE0F", data="pause_or_resume_callback"
                         ),
-                        Button.inline("\u23ED\uFE0F", data="next_callback"),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", data="next_callback"
+                        ),
                     ],
-                    [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
+                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
                 ],
             )
         else:
@@ -160,17 +168,19 @@ async def play_song(client, message):
                 await msg.edit(
                     f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
                     file=fotoplay,
-                    buttons=[
+                    reply_markup=[
                         [
-                            Button.inline("\u23EA", data="back_callback"),
-                            Button.inline(
+                            InlineKeyboardButton(
+                                "\u23EA", data="back_callback"
+                            ),
+                            InlineKeyboardButton(
                                 "\u23F8\uFE0F", data="pause_or_resume_callback"
                             ),
-                            Button.inline(
+                            InlineKeyboardButton(
                                 "\u23ED\uFE0F", data="next_callback"
                             ),
                         ],
-                        [Button.inline("cʟᴏꜱᴇ", data="end_callback")],
+                        [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
                     ],
                 )
             except Exception as e:
