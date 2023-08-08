@@ -1,6 +1,5 @@
-import os
 import pickle
-
+import logging
 
 def load_pkl(path, mode, type):
     try:
@@ -20,4 +19,4 @@ def dump_pkl(path, mode, data):
             pickle.dump(data, file)
         file.close()
     except Exception as e:
-        print(e)
+        logging.error(e)
