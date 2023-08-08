@@ -15,14 +15,12 @@ dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="cls"))
+@kreacher.on_callback_query(filters.regex("cls"))
 async def _(message):
     await message.delete()
 
 
-@kreacher.on_callback_query(
-    filters.CallbackQuery(data="pause_or_resume_callback")
-)
+@kreacher.on_callback_query(filters.regex("pause_or_resume_callback"))
 async def _(client, message):
     chat = message.chat
     if VOICE_CHATS[chat.id].is_video_paused:
@@ -76,13 +74,13 @@ async def _(client, message):
     )
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="back_callback"))
+@kreacher.on_callback_query(filters.regex("back_callback"))
 async def _(client, message):
     chat = message.chat
     await VOICE_CHATS[chat.id].set_pause(False)
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="next_callback"))
+@kreacher.on_callback_query(filters.regex("next_callback"))
 async def _(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
@@ -111,7 +109,7 @@ async def _(client, message):
             await message.reply(DELQUE)
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="end_callback"))
+@kreacher.on_callback_query(filters.regex("end_callback"))
 async def _(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
@@ -122,7 +120,7 @@ async def _(client, message):
     VOICE_CHATS.pop(chat.id)
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="help"))
+@kreacher.on_callback_query(filters.regex("help"))
 async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
@@ -140,7 +138,7 @@ async def _(client, message):
     )
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="admin"))
+@kreacher.on_callback_query(filters.regex("admin"))
 async def _(client, message):
     await message.edit(
         ADMIN_TEXT,
@@ -150,7 +148,7 @@ async def _(client, message):
     )
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="play"))
+@kreacher.on_callback_query(filters.regex("play"))
 async def _(client, message):
     await message.edit(
         PLAY_TEXT,
@@ -160,7 +158,7 @@ async def _(client, message):
     )
 
 
-@kreacher.on_callback_query(filters.CallbackQuery(data="start"))
+@kreacher.on_callback_query(filters.regex("start"))
 async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return

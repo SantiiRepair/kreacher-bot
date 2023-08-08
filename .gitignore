@@ -4,7 +4,10 @@ tlg_botu
 cache
 logs
 downloads
-bot.session
+kreacher.bot.session
+kreacher.bot.session-journal
+kreacher.client.session
+kreacher.client.session-journal
 kreacher_env
 
 .env

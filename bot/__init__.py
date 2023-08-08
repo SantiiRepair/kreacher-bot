@@ -40,17 +40,16 @@ BOT_USERNAME = config.BOT_USERNAME
 ASSISTANT_ID = config.ASSISTANT_ID
 
 client = Client(
-    "Kreacher Client",
+    "kreacher.client",
     api_id=config.API_ID,
     api_hash=config.API_HASH,
     session_string=config.SESSION_STRING,
 )
 kreacher = Client(
-    "Kreacher Bot",
+    "kreacher.bot",
     api_id=config.API_ID,
     api_hash=config.API_HASH,
     bot_token=config.BOT_TOKEN,
-    session_string=config.SESSION_STRING,
 )
 _factory = GroupCallFactory(
     client, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM

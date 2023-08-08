@@ -1,26 +1,15 @@
-import os
 import asyncio
 import pyrogram
-import glob
-from pathlib import Path
-from bot.utils import loader
-import logging
-from termcolor import colored
 from bot import kreacher
-
-
-logging.basicConfig(
-    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
-    level=logging.INFO,
-)
+from bot.utils import loader
+from termcolor import colored
 
 
 async def start_bot():
     await loader()
     print(f'{colored("[INFO]", "blue")}: LOADING ASSISTANT DETAILS')
-    botme = await kreacher.get_me()
-    botid = pyrogram.utils.get_peer_id(botme)
-    print(f'{colored("[INFO]", "blue")}: ASSISTANT ID {botid}')
+    bot_me = await kreacher.get_me()
+    print(f'{colored("[INFO]", "blue")}: ASSISTANT ID {bot_me.id}')
 
 
 loop = asyncio.get_event_loop()
@@ -30,4 +19,4 @@ print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
 
 
 if __name__ == "__main__":
-    kreacher.run_until_disconnected()
+    pyrogram.idle()

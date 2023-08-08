@@ -3,14 +3,16 @@ import re
 import uuid
 import pickle
 from asyncio import sleep
-from youtubesearchpython import VideosSearch
-from bot import client, kreacher, on_call
-from bot.helpers.queues import get_queue
-from bot.helpers.pkl import load_pkl
-from bot.instance_of.every_vc import VOICE_CHATS
-from pyrogram import Button, filters
-from bot.helpers.progress import progress_callback
 from yt_dlp import YoutubeDL
+from pyrogram import filters
+from bot.helpers.pkl import load_pkl
+from bot.helpers.queues import get_queue
+from bot import client, kreacher, on_call
+from youtubesearchpython import VideosSearch
+from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.progress import progress_callback
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -98,15 +100,22 @@ async def play_video(client, message):
                 file=thumb,
                 reply_markup=[
                     [
-                        InlineKeyboardButton("\u23EA", data="back_callback"),
                         InlineKeyboardButton(
-                            "\u23F8\uFE0F", data="pause_or_resume_callback"
+                            "\u23EA", callback_data="back_callback"
                         ),
                         InlineKeyboardButton(
-                            "\u23ED\uFE0F", data="next_callback"
+                            "\u23F8\uFE0F",
+                            callback_data="pause_or_resume_callback",
+                        ),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", callback_data="next_callback"
                         ),
                     ],
-                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
+                    [
+                        InlineKeyboardButton(
+                            "cʟᴏꜱᴇ", callback_data="end_callback"
+                        )
+                    ],
                 ],
             )
         except Exception as e:
@@ -133,15 +142,22 @@ async def play_video(client, message):
                 file=thumb,
                 reply_markup=[
                     [
-                        InlineKeyboardButton("\u23EA", data="back_callback"),
                         InlineKeyboardButton(
-                            "\u23F8\uFE0F", data="pause_or_resume_callback"
+                            "\u23EA", callback_data="back_callback"
                         ),
                         InlineKeyboardButton(
-                            "\u23ED\uFE0F", data="next_callback"
+                            "\u23F8\uFE0F",
+                            callback_data="pause_or_resume_callback",
+                        ),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", callback_data="next_callback"
                         ),
                     ],
-                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
+                    [
+                        InlineKeyboardButton(
+                            "cʟᴏꜱᴇ", callback_data="end_callback"
+                        )
+                    ],
                 ],
             )
         except Exception as e:
@@ -160,6 +176,7 @@ async def play_video(client, message):
         return await sleep(2)
 
 
+"""
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(message):
     QUEUE = load_pkl(queues, "rb", "dict")
@@ -230,3 +247,4 @@ async def resume(message):
             await message.reply(f"**ERROR:** `{e}`")
     else:
         await message.reply("**Nothing Is Streaming**")
+"""

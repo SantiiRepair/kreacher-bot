@@ -3,6 +3,7 @@ import uuid
 import pickle
 from asyncio import sleep
 from pyrogram import types
+from pyrogram import filters
 from bot.config import config
 from bot.helpers.pkl import load_pkl
 from bot.helpers.mention import mention
@@ -50,7 +51,9 @@ async def play_song(client, message):
         return await msg.edit(
             "__Give me your query which you want to play\n\n Example:__ `/play Hey Boy Sia`",
             file=config.CMD_IMG,
-            reply_markup=[[InlineKeyboardButton("cʟᴏꜱᴇ", data="cls")]],
+            reply_markup=[
+                [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]
+            ],
         )
     elif VOICE_CHATS.get(chat.id) is None:
         try:
@@ -88,7 +91,9 @@ async def play_song(client, message):
                 await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ {from_user}",
                     # file=thumb,
-                    reply_markup=[[InlineKeyboardButton("cʟᴏꜱᴇ", data="cls")]],
+                    reply_markup=[
+                        [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]
+                    ],
                 )
 
                 try:
@@ -101,19 +106,20 @@ async def play_song(client, message):
                         reply_markup=[
                             [
                                 InlineKeyboardButton(
-                                    "\u23EA", data="back_callback"
+                                    "\u23EA", callback_data="back_callback"
                                 ),
                                 InlineKeyboardButton(
                                     "\u23F8\uFE0F",
-                                    data="pause_or_resume_callback",
+                                    callback_data="pause_or_resume_callback",
                                 ),
                                 InlineKeyboardButton(
-                                    "\u23ED\uFE0F", data="next_callback"
+                                    "\u23ED\uFE0F",
+                                    callback_data="next_callback",
                                 ),
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "cʟᴏꜱᴇ", data="end_callback"
+                                    "cʟᴏꜱᴇ", callback_data="end_callback"
                                 )
                             ],
                         ],
@@ -150,15 +156,22 @@ async def play_song(client, message):
                 file=ngantri,
                 reply_markup=[
                     [
-                        InlineKeyboardButton("\u23EA", data="back_callback"),
                         InlineKeyboardButton(
-                            "\u23F8\uFE0F", data="pause_or_resume_callback"
+                            "\u23EA", callback_data="back_callback"
                         ),
                         InlineKeyboardButton(
-                            "\u23ED\uFE0F", data="next_callback"
+                            "\u23F8\uFE0F",
+                            callback_data="pause_or_resume_callback",
+                        ),
+                        InlineKeyboardButton(
+                            "\u23ED\uFE0F", callback_data="next_callback"
                         ),
                     ],
-                    [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
+                    [
+                        InlineKeyboardButton(
+                            "cʟᴏꜱᴇ", callback_data="end_callback"
+                        )
+                    ],
                 ],
             )
         else:
@@ -171,16 +184,21 @@ async def play_song(client, message):
                     reply_markup=[
                         [
                             InlineKeyboardButton(
-                                "\u23EA", data="back_callback"
+                                "\u23EA", callback_data="back_callback"
                             ),
                             InlineKeyboardButton(
-                                "\u23F8\uFE0F", data="pause_or_resume_callback"
+                                "\u23F8\uFE0F",
+                                callback_data="pause_or_resume_callback",
                             ),
                             InlineKeyboardButton(
-                                "\u23ED\uFE0F", data="next_callback"
+                                "\u23ED\uFE0F", callback_data="next_callback"
                             ),
                         ],
-                        [InlineKeyboardButton("cʟᴏꜱᴇ", data="end_callback")],
+                        [
+                            InlineKeyboardButton(
+                                "cʟᴏꜱᴇ", callback_data="end_callback"
+                            )
+                        ],
                     ],
                 )
             except Exception as e:
