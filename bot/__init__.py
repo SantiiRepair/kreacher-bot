@@ -2,7 +2,7 @@ import os
 import logging
 from termcolor import colored
 from bot.config import config
-from telethon.sync import TelegramClient
+from pyrogram import Client
 from pytgcalls import GroupCallFactory
 
 
@@ -39,11 +39,20 @@ logging.basicConfig(
 BOT_USERNAME = config.BOT_USERNAME
 ASSISTANT_ID = config.ASSISTANT_ID
 
-client = TelegramClient(None, api_id=config.API_ID, api_hash=config.API_HASH)
-kreacher = TelegramClient(None, api_id=config.API_ID, api_hash=config.API_HASH)
+client = Client(
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    session_string=config.SESSION_STRING,
+)
+kreacher = Client(
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    bot_token=config.BOT_TOKEN,
+    session_string=config.SESSION_STRING,
+)
 _factory = GroupCallFactory(
-    client, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON
+    client, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
 )
 on_call = _factory.get_group_call()
 client.start()
-kreacher.start(bot_token=config.BOT_TOKEN)
+kreacher.start()

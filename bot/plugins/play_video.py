@@ -4,7 +4,7 @@ import uuid
 import pickle
 from asyncio import sleep
 from youtubesearchpython import VideosSearch
-from bot import client, on_call, kreacher
+from bot import client, kreacher, on_call
 from bot.helpers.queues import get_queue
 from bot.helpers.pkl import load_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
@@ -117,13 +117,14 @@ async def play_video(event):
 
     elif replied.video or replied.file:
         await msg.edit("🔄 **__Downloading...__**")
-        video = await client.download_media(
-            replied, file=download_as, progress_callback=progress_callback
+        media = await replied.download_media(
+            file=download_as,
+            progress_callback=progress_callback,
         )
 
         try:
             await sleep(2)
-            await on_call.start_video(video, with_audio=True, repeat=False)
+            await on_call.start_video(media, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
                 "**Started video streaming!**",

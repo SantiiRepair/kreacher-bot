@@ -21,6 +21,7 @@ class Config(object):
         self.MANAGEMENT_MODE = os.getenv("MANAGEMENT_MODE")
         self.MANTAINER = os.getenv("MANTAINER")
         self.MOVIES_CHANNEL = os.getenv("MOVIES_CHANNEL")
+        self.SESSION_STRING = os.getenv("SESSION_STRING")
         self.START_IMG = os.getenv("START_IMG")
         self.SUPPORT = os.getenv("SUPPORT")
 

@@ -13,12 +13,12 @@ def bytes_to_string(byte_count):
     )
 
 
-def progress_callback(downloaded_bytes, total_bytes):
+def progress_callback(current_bytes, total_bytes):
     logging.info(
         "{} {} out of {} ({:.2%})".format(
-            progress_type,
-            bytes_to_string(downloaded_bytes),
+            "In progress...",
+            bytes_to_string(current_bytes),
             bytes_to_string(total_bytes),
-            downloaded_bytes / total_bytes,
+            current_bytes / total_bytes,
         )
     )
