@@ -20,22 +20,21 @@ dir = os.path.dirname(os.path.abspath(__file__))
 download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
-ydl_opts = {
+ydl = YoutubeDL({
     "quiet": True,
     "geo_bypass": True,
     "nocheckcertificate": True,
-}
-ydl = YoutubeDL(ydl_opts)
+})
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]play_video"))
 async def play_video(event):
     QUEUE = load_pkl(queues, "rb", "dict")
     chat = await event.get_chat()
-    media = await event.get_reply_message()
+    replied = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
-    if not media and not " " in event.message.message:
+    if not replied and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
         )
@@ -113,9 +112,9 @@ async def play_video(event):
             VOICE_CHATS.pop(chat.id)
             return await sleep(2)
 
-    elif media.video or media.file:
+    elif replied.video or replied.file:
         await msg.edit("🔄 __Downloading...__")
-        video = await client.download_media(media, file=download_as)
+        video = await client.download_media(replied, file=download_as)
 
         try:
             await sleep(2)

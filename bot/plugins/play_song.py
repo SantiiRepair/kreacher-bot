@@ -65,6 +65,10 @@ async def play_song(event):
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
     from_user = vcmention(event.sender)
+    if not replied and not " " in event.message.message:
+        await msg.edit(
+            "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
+        )
     if (
         replied
         and not replied.audio
