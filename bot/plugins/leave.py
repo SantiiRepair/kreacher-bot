@@ -12,7 +12,7 @@ async def leave_handler(event):
             raise Exception("Streaming is not active")
         await VOICE_CHATS[chat.id].leave_current_group_call()
         VOICE_CHATS.pop(chat.id)
-        clear_queue(chat.id)
+        clear_queue(chat)
         await event.reply(
             "__Goodbye master, just call me if you need me. \n\nVoice Chat left successfully.__",
         )
