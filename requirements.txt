@@ -7,7 +7,7 @@ cryptg==0.4.0
 numpy==1.24.4
 opencv-python-headless==4.8.0.74
 pillow==10.0.0
-pysondb==1.6.6
+pysondb==1.6.7
 python-crontab==3.0.0
 pylint==2.17.5
 pyrogram==2.0.106
