@@ -7,9 +7,9 @@ def load_pkl(path, mode, type):
             pkl = pickle.load(file)
         return pkl
     except EOFError:
-        if type is "list":
+        if type == "list":
             return []
-        if type is "dict":
+        if type == "dict":
             return {}
 
 
