@@ -12,8 +12,8 @@ def testspeed(m):
         test.upload()
         test.results.share()
         result = test.results.dict()
-    except Exception:
-        return
+    except Exception as e:
+        raise e
     return result
 
 
@@ -25,8 +25,13 @@ async def _(client, message):
 Running Speedtest...__** \U0001F4F6"""
     )
     await message.delete()
-    loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(None, testspeed, msg)
+    try:
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(None, testspeed, msg)
+    except Exception as e:
+        return await msg.edit(
+            f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+        )
     output = f"""**Speedtest Results**
 
 **Client**:
