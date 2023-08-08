@@ -23,7 +23,7 @@ ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
 dir = os.path.dirname(os.path.abspath(__file__))
-download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
+
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 
@@ -63,8 +63,9 @@ async def play_song(event):
     replied = await event.get_reply_message()
     chat = await event.get_chat()
     msg = await event.reply("🔄 **__Processing...__**")
-    await sleep(2)
     from_user = vcmention(event.sender)
+    await sleep(2)
+    download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
     if not replied and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
@@ -84,13 +85,13 @@ async def play_song(event):
         )
     elif VOICE_CHATS.get(chat.id) is None:
         try:
-            await msg.edit("__Joining the voice chat...__")
+            await msg.edit("**__Joining the voice chat...__**")
             await ins.join(chat.id)
             VOICE_CHATS[chat.id] = ins
             await sleep(2)
         except Exception as e:
             await msg.edit(
-                f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
+                f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)

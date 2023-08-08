@@ -17,7 +17,7 @@ ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
 dir = os.path.dirname(os.path.abspath(__file__))
-download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
+
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 ydl = YoutubeDL({
@@ -34,6 +34,7 @@ async def play_video(event):
     replied = await event.get_reply_message()
     msg = await event.reply("🔄 **__Processing...__**")
     await sleep(2)
+    download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
     if not replied and not " " in event.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
@@ -50,19 +51,19 @@ async def play_video(event):
         match = re.match(regex, url)
         if VOICE_CHATS.get(chat.id) is None:
             try:
-                await msg.edit("__Joining the voice chat...__")
+                await msg.edit("**__Joining the voice chat...__**")
                 await ins.join(chat.id)
                 VOICE_CHATS[chat.id] = ins
                 await sleep(2)
             except Exception as e:
                 await msg.edit(
-                    f"__Oops master, something wrong has happened. \n\nError:__ `{e}`",
+                    f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
                 )
                 await VOICE_CHATS[chat.id].stop()
                 VOICE_CHATS.pop(chat.id)
                 return await sleep(2)
         if match:
-            await msg.edit("🔄 __Starting YouTube video stream...__")
+            await msg.edit("🔄 **__Starting YouTube video stream...__**")
             try:
                 meta = ydl.extract_info(url=url, download=False)
                 formats = meta.get("formats", [meta])
@@ -76,7 +77,7 @@ async def play_video(event):
                 thumb = split[0].strip()
             except Exception as e:
                 await msg.edit(
-                    f"❌ __Master, YouTube download error!</i> \n\n`Error: {e}`",
+                    f"❌ __Master, YouTube download error!__ \n\n`Error: {e}`",
                 )
                 print(e)
                 await VOICE_CHATS[chat.id].stop()
@@ -84,14 +85,14 @@ async def play_video(event):
                 return await sleep(2)
 
         else:
-            await msg.edit("🔄 __Starting live video stream...__")
+            await msg.edit("🔄 **__Starting live video stream...__**")
 
         try:
             await sleep(2)
             await ins.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await msg.edit(
-                "\U00002378 __Started video streaming!__",
+                "\U00002378 **Started video streaming!**",
                 file=thumb,
                 buttons=[
                     [
@@ -113,7 +114,7 @@ async def play_video(event):
             return await sleep(2)
 
     elif replied.video or replied.file:
-        await msg.edit("🔄 __Downloading...__")
+        await msg.edit("🔄 **__Downloading...__**")
         video = await client.download_media(replied, file=download_as)
 
         try:
@@ -121,7 +122,7 @@ async def play_video(event):
             await ins.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
-                "▶️ __Started video streaming!__",
+                "**Started video streaming!**",
                 file=thumb,
                 buttons=[
                     [
