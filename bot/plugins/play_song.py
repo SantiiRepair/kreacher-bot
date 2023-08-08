@@ -26,7 +26,7 @@ dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 
-@kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
+@kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
 async def play_song(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
