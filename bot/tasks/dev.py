@@ -15,8 +15,20 @@ async def send_log():
         user = InputPeerUser(entity.id, entity.access_hash)
         await kreacher.send_file(user, file=file)
         print(f'{colored("[INFO]", "blue")}: LOG FILE WAS SENT SUCCESSFULLY')
+        with open(file, "w") as f:
+            f.truncate(0)
+            f.close()
+        await kreacher.send_message(
+            user, "__Master, Master, the log file was flushed successfully.__"
+        )
+        print(
+            f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY'
+        )
+
     except Exception as e:
-        await kreacher.send_message(f"__Master, something has happened.__\n\n `Error: {e}`")
+        await kreacher.send_message(
+            user, f"__Master, something has happened.__\n\n `Error: {e}`"
+        )
         logging.error(e)
 
 

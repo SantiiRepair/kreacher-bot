@@ -12,11 +12,15 @@ folder = os.path.join(dir, "logs")
 
 if os.path.exists(f"{folder}/logs.txt"):
     pass
+elif os.stat(f"{folder}/logs.txt").st_size > 0:
+    with open(f"{folder}/logs.txt", "w") as f:
+        f.truncate(0)
+        f.close()
 elif not os.path.exists(folder):
     os.makedirs(folder)
 try:
-    with open(f"{folder}/logs.txt", 'w') as f:
-        f.write('')
+    with open(f"{folder}/logs.txt", "w") as f:
+        f.write("")
     print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
 except Exception as e:
     print(e)

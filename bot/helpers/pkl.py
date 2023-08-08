@@ -1,6 +1,7 @@
 import pickle
 import logging
 
+
 def load_pkl(path, mode, type):
     try:
         with open(path, mode) as file:

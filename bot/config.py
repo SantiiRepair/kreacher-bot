@@ -24,4 +24,5 @@ class Config(object):
         self.START_IMG = os.getenv("START_IMG")
         self.SUPPORT = os.getenv("SUPPORT")
 
+
 config = Config()

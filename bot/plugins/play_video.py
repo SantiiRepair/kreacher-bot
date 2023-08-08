@@ -20,11 +20,13 @@ dir = os.path.dirname(os.path.abspath(__file__))
 
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
-ydl = YoutubeDL({
-    "quiet": True,
-    "geo_bypass": True,
-    "nocheckcertificate": True,
-})
+ydl = YoutubeDL(
+    {
+        "quiet": True,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+    }
+)
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]play_video"))
