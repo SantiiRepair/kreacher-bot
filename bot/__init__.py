@@ -1,5 +1,4 @@
 import os
-import asyncio
 import logging
 from termcolor import colored
 from bot.config import config
@@ -8,21 +7,23 @@ from pytgcalls import GroupCallFactory
 
 
 dir = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(dir, "logs/logs.txt")
-def logs():
-    if os.path.exists(path):
-        pass
-    else:
-        try:
-            with open(ruta_archivo, 'w') as g:
-                f.write('')
-            print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
-        except Exception as e:
-            print(e)
+folder = os.path.join(dir, "logs")
+
+
+if os.path.exists(f"{folder}/logs.txt"):
+    pass
+elif not os.path.exists(folder):
+    os.makedirs(folder)
+try:
+    with open(f"{folder}/logs.txt", 'w') as f:
+        f.write('')
+    print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
+except Exception as e:
+    print(e)
 
 
 logging.basicConfig(
-    filename=path,
+    filename=f"{folder}/logs.txt",
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
