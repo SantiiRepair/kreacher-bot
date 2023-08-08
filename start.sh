@@ -1,5 +1,6 @@
 #!/bin/bash
 
+python3 -m bot
 source .env
 
 expect << EOF
