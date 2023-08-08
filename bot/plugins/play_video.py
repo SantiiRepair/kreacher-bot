@@ -7,10 +7,10 @@ from yt_dlp import YoutubeDL
 from pyrogram import filters
 from bot.helpers.pkl import load_pkl
 from bot.helpers.queues import get_queue
-from bot import client, kreacher, on_call
+from bot import user, kreacher, on_call
 from youtubesearchpython import VideosSearch
 from bot.instance_of.every_vc import VOICE_CHATS
-from bot.helpers.progress import progress_callback
+from bot.helpers.progress import progress
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
@@ -128,9 +128,10 @@ async def play_video(client, message):
 
     elif replied.video or replied.file:
         await msg.edit("🔄 **__Downloading...__**")
-        media = await replied.download_media(
-            file=download_as,
-            progress_callback=progress_callback,
+        media = await user.download_media(
+            replied,
+            file_name=download_as,
+            progress=progress,
         )
 
         try:

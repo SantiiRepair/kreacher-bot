@@ -39,7 +39,7 @@ logging.basicConfig(
 BOT_USERNAME = config.BOT_USERNAME
 ASSISTANT_ID = config.ASSISTANT_ID
 
-client = Client(
+user = Client(
     "kreacher.client",
     api_id=config.API_ID,
     api_hash=config.API_HASH,
@@ -52,8 +52,8 @@ kreacher = Client(
     bot_token=config.BOT_TOKEN,
 )
 _factory = GroupCallFactory(
-    client, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
+    user, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
 )
 on_call = _factory.get_group_call()
-client.start()
+user.start()
 kreacher.start()
