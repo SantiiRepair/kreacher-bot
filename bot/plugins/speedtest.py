@@ -19,6 +19,7 @@ def testspeed(m):
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]speedtest"))
 async def _(client, message):
+    chat = message.chat
     msg = await message.reply(
         """**__Kreacher is here to serve you.
 
@@ -44,7 +45,5 @@ Running Speedtest...__** \U0001F4F6"""
 **__Sponsor:__** {result['server']['sponsor']}
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
-    await kreacher.send_photo(
-        message.chat.id, photo=result["share"], caption=output
-    )
+    await kreacher.send_photo(chat.id, photo=result["share"], caption=output)
     return await msg.delete()

@@ -7,7 +7,7 @@ from pyrogram import types
 from pyrogram import filters
 from bot.config import config
 from bot.helpers.pkl import load_pkl
-from bot.helpers.mention import mention
+from bot.helpers.linked import linked
 from bot import user, kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
@@ -35,7 +35,7 @@ async def play_song(client, message):
     title = " ".join(message.text[5:])
     replied = message.reply_to_message
     msg = await message.reply("🔄 **__Processing...__**")
-    from_user = mention(message.from_user.id)
+    data = await linked(message.from_user)
     await sleep(2)
     download_as = os.path.join(
         dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
@@ -93,7 +93,7 @@ async def play_song(client, message):
             elif chat.id in QUEUE:
                 pos = add_to_queue(chat, name, url, ref, "audio")
                 await msg.edit(
-                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ {from_user}",
+                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
                     # file=thumb,
                     reply_markup=[
                         [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]
@@ -105,9 +105,108 @@ async def play_song(client, message):
                     add_to_queue(chat, name, url, ref, "audio")
                     await sleep(2)
                     await msg.edit(
-                        f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** {from_user}",
+                        f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
                         # file=thumb,
-                        reply_markup=[
+                        reply_markup=InlineKeyboardMarkup(
+                            [
+                                [
+                                    InlineKeyboardButton(
+                                        "\u23EA", callback_data="back_callback"
+                                    ),
+                                    InlineKeyboardButton(
+                                        "\u23F8\uFE0F",
+                                        callback_data="pause_or_resume_callback",
+                                    ),
+                                    InlineKeyboardButton(
+                                        "\u23ED\uFE0F",
+                                        callback_data="next_callback",
+                                    ),
+                                ],
+                                [
+                                    InlineKeyboardButton(
+                                        "cʟᴏꜱᴇ", callback_data="end_callback"
+                                    )
+                                ],
+                            ]
+                        ),
+                    )
+                except Exception as e:
+                    logging.error(e)
+                    clear_queue(chat)
+                    await VOICE_CHATS[chat.id].stop()
+                    await msg.edit(
+                        f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+                    )
+                    VOICE_CHATS.pop(chat.id)
+                    return await sleep(2)
+
+    else:
+        try:
+            if replied.audio:
+                name = "Audio File"
+                await msg.edit("➕ **__Downloading...__**")
+                media = await client.download_media(
+                    replied.audio,
+                    block=False,
+                    file_name=download_as,
+                    progress=progress,
+                )
+            elif replied.voice:
+                name = "Voice Note"
+                await client.edit("➕ **__Downloading...__**")
+                media = await user.download_media(
+                    replied.voice,
+                    block=False,
+                    file_name=download_as,
+                    progress=progress,
+                )
+        except Exception as e:
+            logging.error(e)
+            return await msg.edit(
+                f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+            )
+        proto = f"https://t.me/c/{chat.id}/{message.reply_to_message.id}"
+        msg_linked = proto.replace("/c/-100", "/c/")
+        if chat.id in QUEUE:
+            # pos = add_to_queue(chat, name, url, ref, "audio")
+            await msg.delete()
+            await kreacher.send_photo(
+                chat.id,
+                caption=f"**__Added to queue at__** \n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
+                photo=ngantri,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "\u23EA", callback_data="back_callback"
+                            ),
+                            InlineKeyboardButton(
+                                "\u23F8\uFE0F",
+                                callback_data="pause_or_resume_callback",
+                            ),
+                            InlineKeyboardButton(
+                                "\u23ED\uFE0F", callback_data="next_callback"
+                            ),
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "cʟᴏꜱᴇ", callback_data="end_callback"
+                            )
+                        ],
+                    ]
+                ),
+            )
+        else:
+            try:
+                await sleep(2)
+                await on_call.start_audio(media, repeat=False)
+                await msg.delete()
+                await kreacher.send_photo(
+                    chat.id,
+                    caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
+                    photo=fotoplay,
+                    reply_markup=InlineKeyboardMarkup(
+                        [
                             [
                                 InlineKeyboardButton(
                                     "\u23EA", callback_data="back_callback"
@@ -126,95 +225,8 @@ async def play_song(client, message):
                                     "cʟᴏꜱᴇ", callback_data="end_callback"
                                 )
                             ],
-                        ],
-                    )
-                except Exception as e:
-                    logging.error(e)
-                    clear_queue(chat)
-                    await VOICE_CHATS[chat.id].stop()
-                    await msg.edit(
-                        f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
-                    )
-                    VOICE_CHATS.pop(chat.id)
-                    return await sleep(2)
-
-    else:
-        try:
-            if replied.audio:
-                name = "Audio File"
-                await msg.edit("➕ **__Downloading...__**")
-                media = await user.download_media(
-                    replied.audio,
-                    block=False,
-                    file_name=download_as,
-                    progress=progress,
-                )
-            elif replied.voice:
-                name = "Voice Note"
-                await msg.edit("➕ **__Downloading...__**")
-                media = await user.download_media(
-                    replied.voice,
-                    block=False,
-                    file_name=download_as,
-                    progress=progress,
-                )
-        except Exception as e:
-            logging.error(e)
-            return await msg.edit(
-                f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
-            )
-        link = f"https://t.me/c/{chat.id}/{message.reply_to_message.id}"
-        if chat.id in QUEUE:
-            # pos = add_to_queue(chat, name, url, ref, "audio")
-            await msg.edit(
-                f"**__Added to queue at__** \n\n **Title:** [{name}]({url})\n **Requested by:** {from_user}",
-                file=ngantri,
-                reply_markup=[
-                    [
-                        InlineKeyboardButton(
-                            "\u23EA", callback_data="back_callback"
-                        ),
-                        InlineKeyboardButton(
-                            "\u23F8\uFE0F",
-                            callback_data="pause_or_resume_callback",
-                        ),
-                        InlineKeyboardButton(
-                            "\u23ED\uFE0F", callback_data="next_callback"
-                        ),
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "cʟᴏꜱᴇ", callback_data="end_callback"
-                        )
-                    ],
-                ],
-            )
-        else:
-            try:
-                await sleep(2)
-                await on_call.start_audio(media, repeat=False)
-                await msg.edit(
-                    f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
-                    file=fotoplay,
-                    reply_markup=[
-                        [
-                            InlineKeyboardButton(
-                                "\u23EA", callback_data="back_callback"
-                            ),
-                            InlineKeyboardButton(
-                                "\u23F8\uFE0F",
-                                callback_data="pause_or_resume_callback",
-                            ),
-                            InlineKeyboardButton(
-                                "\u23ED\uFE0F", callback_data="next_callback"
-                            ),
-                        ],
-                        [
-                            InlineKeyboardButton(
-                                "cʟᴏꜱᴇ", callback_data="end_callback"
-                            )
-                        ],
-                    ],
+                        ]
+                    ),
                 )
             except Exception as e:
                 logging.error(e)
