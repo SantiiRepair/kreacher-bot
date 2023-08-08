@@ -1,6 +1,7 @@
 import os
 import pickle
-from bot import config, kreacher
+from bot import kreacher
+from bot.config import config
 from bot.instance_of.every_vc import VOICE_CHATS
 from telethon import events, Button
 from bot.helpers.handler import next_item, skip_current

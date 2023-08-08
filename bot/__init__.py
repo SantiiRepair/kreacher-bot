@@ -1,14 +1,25 @@
 import os
+import asyncio
 import logging
 from termcolor import colored
-from bot.config import Config
+from bot.config import config
 from telethon.sync import TelegramClient
 from pytgcalls import GroupCallFactory
 
-config = Config()
+
 dir = os.path.dirname(os.path.abspath(__file__))
 path = os.path.join(dir, "logs/logs.txt")
-print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
+def logs():
+    if os.path.exists(path):
+        pass
+    else:
+        try:
+            with open(ruta_archivo, 'w') as g:
+                f.write('')
+            print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
+        except Exception as e:
+            print(e)
+
 
 logging.basicConfig(
     filename=path,

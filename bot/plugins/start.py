@@ -1,4 +1,5 @@
-from bot import kreacher, config
+from bot import kreacher
+from bot.config import config
 from telethon import events, Button
 
 

@@ -12,7 +12,8 @@ from bot.helpers.queues import (
     clear_queue,
 )
 from bot.helpers.yt_dlp import bash
-from bot import config, on_call, kreacher
+from bot import on_call, kreacher
+from bot.config import config
 from telethon.tl import types
 from telethon.utils import get_display_name
 from youtubesearchpython import VideosSearch

@@ -2,6 +2,7 @@ import os
 import asyncio
 import logging
 from bot import kreacher
+from bot.config import config
 from termcolor import colored
 from telethon.tl.types import InputPeerUser
 
@@ -10,7 +11,7 @@ async def send_log():
     dir = os.path.dirname(os.path.abspath(__file__))
     file = os.path.join(dir, "../logs/logs.txt")
     try:
-        entity = await kreacher.get_entity()
+        entity = await kreacher.get_entity(config.MANTAINER)
         user = InputPeerUser(entity.id, entity.access_hash)
         await kreacher.send_file(user, file=file)
         print(f'{colored("[INFO]", "blue")}: LOG FILE WAS SENT SUCCESSFULLY')

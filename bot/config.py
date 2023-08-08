@@ -19,6 +19,9 @@ class Config(object):
         self.CMD_IMG = os.getenv("CMD_IMG")
         self.HEROKU_MODE = os.getenv("HEROKU_MODE")
         self.MANAGEMENT_MODE = os.getenv("MANAGEMENT_MODE")
+        self.MANTAINER = os.getenv("MANTAINER")
         self.MOVIES_CHANNEL = os.getenv("MOVIES_CHANNEL")
         self.START_IMG = os.getenv("START_IMG")
         self.SUPPORT = os.getenv("SUPPORT")
+
+config = Config()
