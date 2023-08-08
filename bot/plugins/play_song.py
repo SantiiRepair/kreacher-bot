@@ -1,16 +1,18 @@
 import os
 import uuid
 import pickle
+import logging
 from asyncio import sleep
 from pyrogram import types
 from pyrogram import filters
 from bot.config import config
 from bot.helpers.pkl import load_pkl
 from bot.helpers.mention import mention
-from bot.helpers.yt import ytsearch, ytdl
 from bot import user, kreacher, on_call
-from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.progress import progress
+from bot.helpers.yt import ytsearch, ytdl
+from bot.instance_of.every_vc import VOICE_CHATS
+from pyrogram.types import Message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
     add_to_queue,
@@ -35,7 +37,9 @@ async def play_song(client, message):
     msg = await message.reply("🔄 **__Processing...__**")
     from_user = mention(message.from_user.id)
     await sleep(2)
-    download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3")
+    download_as = os.path.join(
+        dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
+    )
     if not replied and not " " in message.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
@@ -125,6 +129,7 @@ async def play_song(client, message):
                         ],
                     )
                 except Exception as e:
+                    logging.error(e)
                     clear_queue(chat)
                     await VOICE_CHATS[chat.id].stop()
                     await msg.edit(
@@ -135,21 +140,30 @@ async def play_song(client, message):
 
     else:
         try:
-            await msg.edit("➕ **__Downloading...__**")
-            media = await user.download_media(
-                replied.media,
-                file_name=download_as,
-                progress=progress,
-            )
+            if replied.audio:
+                name = "Audio File"
+                await msg.edit("➕ **__Downloading...__**")
+                media = await user.download_media(
+                    replied.audio,
+                    block=False,
+                    file_name=download_as,
+                    progress=progress,
+                )
+            elif replied.voice:
+                name = "Voice Note"
+                await msg.edit("➕ **__Downloading...__**")
+                media = await user.download_media(
+                    replied.voice,
+                    block=False,
+                    file_name=download_as,
+                    progress=progress,
+                )
         except Exception as e:
+            logging.error(e)
             return await msg.edit(
                 f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
             )
         link = f"https://t.me/c/{chat.id}/{message.reply_to_message.id}"
-        if replied.audio:
-            name = "Audio File"
-        elif replied.voice:
-            name = "Voice Note"
         if chat.id in QUEUE:
             # pos = add_to_queue(chat, name, url, ref, "audio")
             await msg.edit(
@@ -203,6 +217,7 @@ async def play_song(client, message):
                     ],
                 )
             except Exception as e:
+                logging.error(e)
                 clear_queue(chat)
                 await VOICE_CHATS[chat.id].stop()
                 await msg.edit(
