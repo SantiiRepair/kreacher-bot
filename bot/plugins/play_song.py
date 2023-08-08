@@ -2,22 +2,18 @@ import os
 import uuid
 import pickle
 from asyncio import sleep
-
-# from bot.helpers.thumbnail import gen_thumb
-from telethon import Button, events
-from bot.instance_of.every_vc import VOICE_CHATS
+from pyrogram import types
+from bot.config import config
 from bot.helpers.pkl import load_pkl
+from bot.helpers.mention import mention
+from bot.helpers.yt import ytsearch, ytdl
+from bot import client as app, kreacher, on_call
+from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.progress import progress_callback
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
 )
-from bot.helpers.yt_dlp import bash
-from bot import client, kreacher, on_call
-from bot.config import config
-from telethon.tl import types
-from telethon.utils import get_display_name
-from bot.helpers.progress import progress_callback
-from youtubesearchpython import VideosSearch
 
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -25,50 +21,20 @@ ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
 dir = os.path.dirname(os.path.abspath(__file__))
-
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
 
-def vcmention(user):
-    full_name = get_display_name(user)
-    if not isinstance(user, types.User):
-        return full_name
-    return f"[{full_name}](tg://user?id={user.id})"
-
-
-def ytsearch(query: str):
-    try:
-        search = VideosSearch(query, limit=1).result()
-        data = search["result"][0]
-        name = data["title"]
-        url = data["link"]
-        duration = data["duration"]
-        thumbnail = f"https://i.ytimg.com/vi/{data['id']}/hqdefault.jpg"
-        videoid = data["id"]
-        return [name, url, duration, thumbnail, videoid]
-    except Exception as e:
-        print(e)
-        return 0
-
-
-async def ytdl(format: str, link: str):
-    stdout, stderr = await bash(f'yt-dlp -g -f "{format}" {link}')
-    if stdout:
-        return 1, stdout.split("\n")[0]
-    return 0, stderr
-
-
-@kreacher.on(events.NewMessage(pattern="^[!?/]play_song"))
-async def play_song(event):
+@kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
+async def play_song(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    title = " ".join(event.text[5:])
-    replied = await event.get_reply_message()
-    chat = await event.get_chat()
-    msg = await event.reply("🔄 **__Processing...__**")
-    from_user = vcmention(event.sender)
+    chat = message.chat
+    title = " ".join(message.text[5:])
+    replied = message.reply_to_message
+    msg = await message.reply("🔄 **__Processing...__**")
+    from_user = mention(message.from_user.id)
     await sleep(2)
     download_as = os.path.join(dir, f"../downloads/songs/{str(uuid.uuid4())}")
-    if not replied and not " " in event.message.message:
+    if not replied and not " " in message.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
         )
@@ -99,7 +65,7 @@ async def play_song(event):
             VOICE_CHATS.pop(chat.id)
             return await sleep(2)
     if replied and not replied.audio and not replied.voice or not replied:
-        query = event.text.split(maxsplit=1)[1]
+        query = message.text.split(maxsplit=1)[1]
         search = ytsearch(query)
         if search == 0:
             await msg.edit(
@@ -163,7 +129,7 @@ async def play_song(event):
             return await msg.edit(
                 f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
             )
-        link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
+        link = f"https://t.me/c/{chat.id}/{message.reply_to_msg_id}"
         if replied.audio:
             name = "Audio File"
         elif replied.voice:

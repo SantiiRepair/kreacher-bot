@@ -8,7 +8,7 @@ from bot import client, kreacher, on_call
 from bot.helpers.queues import get_queue
 from bot.helpers.pkl import load_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
-from telethon import Button, events
+from pyrogram import Button, filters
 from bot.helpers.progress import progress_callback
 from yt_dlp import YoutubeDL
 
@@ -29,21 +29,21 @@ ydl = YoutubeDL(
 )
 
 
-@kreacher.on(events.NewMessage(pattern="^[!?/]play_video"))
-async def play_video(event):
+@kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
+async def play_video(client, message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = await event.get_chat()
-    replied = await event.get_reply_message()
-    msg = await event.reply("🔄 **__Processing...__**")
+    chat = message.chat
+    replied = await message.get_reply_message()
+    msg = await message.reply("🔄 **__Processing...__**")
     await sleep(2)
     download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
-    if not replied and not " " in event.message.message:
+    if not replied and not " " in message.message.message:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
         )
 
-    elif " " in event.message.message:
-        text = event.message.message.split(" ", 1)
+    elif " " in message.message.message:
+        text = message.message.message.split(" ", 1)
         url = text[1]
         if not "http" in url:
             return await msg.edit(
@@ -126,7 +126,7 @@ async def play_video(event):
             await sleep(2)
             await on_call.start_video(media, with_audio=True, repeat=False)
             await msg.delete()
-            await event.reply(
+            await message.reply(
                 "**Started video streaming!**",
                 file=thumb,
                 buttons=[
@@ -157,19 +157,19 @@ async def play_video(event):
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
-async def playlist(event):
+async def playlist(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = event.get_chat()
-    user = event.get_sender()
+    chat = message.get_chat()
+    user = message.get_sender()
     if not user.is_admin:
-        await event.reply(
+        await message.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
     if chat.id in QUEUE:
         chat_queue = get_queue(chat)
         if len(chat_queue) == 1:
-            await event.reply(
+            await message.reply(
                 f"**�PlAYLIST:**\n• [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
                 link_preview=False,
             )
@@ -183,46 +183,46 @@ async def playlist(event):
                 PLAYLIST = (
                     PLAYLIST + "\n" + f"**#{x}** - [{hmm}]({hmmm}) | `{hmmmm}`"
                 )
-            await event.reply(PLAYLIST, link_preview=False)
+            await message.reply(PLAYLIST, link_preview=False)
     else:
-        await event.reply("**Ntg is Streaming**")
+        await message.reply("**Ntg is Streaming**")
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
-async def pause(event):
+async def pause(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = event.get_chat()
-    user = event.get_sender()
+    chat = message.get_chat()
+    user = message.get_sender()
     if not user.is_admin:
-        await event.reply(
+        await message.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
     if chat.id in QUEUE:
         try:
             await VOICE_CHATS[chat.id].pause_stream(chat.id)
-            await event.reply("**Streaming Paused**")
+            await message.reply("**Streaming Paused**")
         except Exception as e:
-            await event.reply(f"**ERROR:** `{e}`")
+            await message.reply(f"**ERROR:** `{e}`")
     else:
-        await event.reply("**Nothing Is Playing**")
+        await message.reply("**Nothing Is Playing**")
 
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
-async def resume(event):
+async def resume(message):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = event.get_chat()
-    user = event.get_sender()
+    chat = message.get_chat()
+    user = message.get_sender()
     if not user.is_admin:
-        await event.reply(
+        await message.reply(
             "Sorry, you must be an administrator to execute this command."
         )
         return
     if chat.id in QUEUE:
         try:
             await VOICE_CHATS[chat.id].resume_stream(chat.id)
-            await event.reply("**Streaming Started Back 🔙**")
+            await message.reply("**Streaming Started Back 🔙**")
         except Exception as e:
-            await event.reply(f"**ERROR:** `{e}`")
+            await message.reply(f"**ERROR:** `{e}`")
     else:
-        await event.reply("**Nothing Is Streaming**")
+        await message.reply("**Nothing Is Streaming**")

@@ -1,6 +1,6 @@
 import os
 import asyncio
-import telethon
+import pyrogram
 import glob
 from pathlib import Path
 from bot.utils import loader
@@ -19,7 +19,7 @@ async def start_bot():
     await loader()
     print(f'{colored("[INFO]", "blue")}: LOADING ASSISTANT DETAILS')
     botme = await kreacher.get_me()
-    botid = telethon.utils.get_peer_id(botme)
+    botid = pyrogram.utils.get_peer_id(botme)
     print(f'{colored("[INFO]", "blue")}: ASSISTANT ID {botid}')
 
 

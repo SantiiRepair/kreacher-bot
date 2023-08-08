@@ -10,7 +10,7 @@ query = "ejemplo"
 
 
 @kreacher.on(events.NewMessage(chats=config.MOVIES_CHANNEL))
-async def find_movie(event, q):
+async def find_movie(message, q):
     messages = await kreacher(
         SearchRequest(
             peer=config.MOVIES_CHANNEL,

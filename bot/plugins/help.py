@@ -1,49 +1,57 @@
 from bot import kreacher
 from bot.config import config
-from telethon import events, Button
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-@kreacher.on(events.NewMessage(pattern="[!?/]help"))
-async def help(event):
+@kreacher.on_message(filters.regex(pattern="^[!?/]help"))
+async def help(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    if event.is_group:
-        await event.reply(
+    if message.is_group:
+        await message.reply(
             "Contact me in PM to get available help menu!",
-            buttons=[
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    Button.url(
-                        "Help and Commands!",
-                        "t.me/{}?start=help".format(config.BOT_USERNAME),
-                    )
+                    [
+                        InlineKeyboardButton(
+                            "Help and Commands!",
+                            url="t.me/{}?start=help".format(
+                                config.BOT_USERNAME
+                            ),
+                        )
+                    ]
                 ]
-            ],
+            ),
         )
         return
 
-    await event.reply(
+    await message.reply(
         "ᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ғᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴩ\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ : `/`",
-        buttons=[
+        reply_markup=InlineKeyboardMarkup(
             [
-                Button.inline("ᴀᴅᴍɪɴ", data="admin"),
-                Button.inline("ᴘʟᴀʏ", data="play"),
-            ],
-            [Button.inline("ʜᴏᴍᴇ", data="start")],
-        ],
+                [
+                    InlineKeyboardButton("ᴀᴅᴍɪɴ", callback_data="admin"),
+                    InlineKeyboardButton("ᴘʟᴀʏ", callback_data="play"),
+                ],
+                [InlineKeyboardButton("ʜᴏᴍᴇ", callback_data="start")],
+            ]
+        ),
     )
 
 
-@kreacher.on(events.NewMessage(pattern="^/start help"))
-async def _(event):
+@kreacher.on_message(filters.regex(pattern="^/start help"))
+async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    await event.reply(
+    await message.reply(
         "ᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ғᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴩ\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ : `/`",
-        buttons=[
+        reply_markup=InlineKeyboardMarkup(
             [
-                Button.inline("ᴀᴅᴍɪɴ", data="admin"),
-                Button.inline("ᴘʟᴀʏ", data="play"),
-            ],
-            [Button.inline("ʜᴏᴍᴇ", data="start")],
-        ],
+                [
+                    InlineKeyboardButton("ᴀᴅᴍɪɴ", callback_data="admin"),
+                    InlineKeyboardButton("ᴘʟᴀʏ", callback_data="play"),
+                ],
+                [InlineKeyboardButton("ʜᴏᴍᴇ", callback_data="start")],
+            ]
+        ),
     )

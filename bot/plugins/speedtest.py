@@ -1,6 +1,5 @@
 import asyncio
 from bot import kreacher
-from telethon import events
 from speedtest import Speedtest
 
 
@@ -17,14 +16,14 @@ def testspeed(m):
     return result
 
 
-@kreacher.on(events.NewMessage(pattern="^[!?/]speedtest"))
-async def speed_test(event):
-    msg = await event.reply(
-        """__Kreacher is here to serve you.
+@kreacher.on_message(filters.regex(pattern="^[!?/]speedtest"))
+async def _(client, message):
+    msg = await message.reply(
+        """**__Kreacher is here to serve you.
 
-Running Speedtest...__ \U0001F4F6"""
+Running Speedtest...__** \U0001F4F6"""
     )
-    await msg.delete()
+    await message.delete()
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, testspeed, msg)
     output = f"""**Speedtest Results**
@@ -39,5 +38,7 @@ Running Speedtest...__ \U0001F4F6"""
 **__Sponsor:__** {result['server']['sponsor']}
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
-    await kreacher.send_file(event.chat.id, result["share"], caption=output)
+    await kreacher.send_photo(
+        message.chat.id, photo=result["share"], caption=output
+    )
     return await msg.delete()

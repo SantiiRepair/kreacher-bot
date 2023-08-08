@@ -1,7 +1,6 @@
 from time import time
-from datetime import datetime
-from telethon import events
 from bot import kreacher
+from datetime import datetime
 
 
 START_TIME = datetime.utcnow()
@@ -27,13 +26,13 @@ async def _human_time_duration(seconds):
     return ", ".join(parts)
 
 
-@kreacher.on(events.NewMessage(pattern="[!?/]ping"))
-async def _(event):
+@kreacher.on_message(filters.regex(pattern="^[!?/]ping"))
+async def _(client, message):
     start = time()
     current_time = datetime.utcnow()
     delta_ping = time() - start
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
-    await event.reply(
+    await message.reply(
         f"__Haha my master, PONG\n\n {delta_ping * 1000:.3f}ms.\n\n Active since {uptime}.__",
     )

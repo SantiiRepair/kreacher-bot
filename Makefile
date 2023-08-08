@@ -10,13 +10,13 @@ install:
 format:
 	black . --line-length 79
 
-# generate string session of your telegram account
-gen_session:
-	python3 ./session/session.py
-
 # lint all project looking for issues
 lint:
 	pylint --disable=C0301,C0103 --recursive yes --jobs=4 .
+
+# generate string session of your telegram account
+session_string:
+	python3 ./session/string.py
 
 # command to run bot in normal mode
 run_bot:

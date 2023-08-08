@@ -1,6 +1,6 @@
 from bot import kreacher
 from bot.config import config
-from telethon import events, Button
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def PM_START_TEXT(name):
@@ -21,47 +21,31 @@ Have a... tolerable... day!__ \U0001F52E
     )
 
 
-@kreacher.on(events.NewMessage(pattern="[!?/]start"))
-async def start(event):
+@kreacher.on_message(filters.regex(pattern="^[!?/]start"))
+async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    if event.is_private:
-        await event.client.send_file(
-            event.chat_id,
-            config.START_IMG,
-            caption=PM_START_TEXT(event.sender.first_name),
-            buttons=[
+    if message.is_private:
+        await kreacher.send_photo(
+            message.chat_id,
+            photo=config.START_IMG,
+            caption=PM_START_TEXT(message.sender.first_name),
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    Button.url(
-                        "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
-                        f"https://t.me/{config.BOT_USERNAME}?startgroup=true",
-                    ),
-                    Button.inline("/U00002753 ʜᴇʟᴘ", data="help"),
+                    [
+                        InlineKeyboardButton(
+                            "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
+                            url=f"https://t.me/{config.BOT_USERNAME}?startgroup=true",
+                        ),
+                        InlineKeyboardButton(
+                            "/U00002753 ʜᴇʟᴘ", callback_data="help"
+                        ),
+                    ]
                 ]
-            ],
+            ),
         )
         return
 
-    if event.is_group:
-        await event.reply("**ʜᴇʏ! ɪ'ᴍ ꜱᴛɪʟʟ ᴀʟɪᴠᴇ ✅**")
-        return
-
-
-@kreacher.on(events.callbackquery.CallbackQuery(data="start"))
-async def _(event):
-    if config.MANAGEMENT_MODE == "ENABLE":
-        return
-    if event.is_private:
-        await event.edit(
-            PM_START_TEXT(event.sender.first_name),
-            buttons=[
-                [
-                    Button.url(
-                        "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
-                        f"https://t.me/{config:BOT_USERNAME}?startgroup=true",
-                    ),
-                    Button.inline("/U0002753 ʜᴇʟᴘ", data="help"),
-                ]
-            ],
-        )
+    if message.is_group:
+        await message.reply("**ʜᴇʏ! ɪ'ᴍ ꜱᴛɪʟʟ ᴀʟɪᴠᴇ ✅**")
         return
