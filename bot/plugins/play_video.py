@@ -4,7 +4,7 @@ import uuid
 import pickle
 from asyncio import sleep
 from youtubesearchpython import VideosSearch
-from bot import client, ins, kreacher
+from bot import client, on_call, kreacher
 from bot.helpers.queues import get_queue
 from bot.helpers.pkl import load_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
@@ -52,8 +52,8 @@ async def play_video(event):
         if VOICE_CHATS.get(chat.id) is None:
             try:
                 await msg.edit("**__Joining the voice chat...__**")
-                await ins.join(chat.id)
-                VOICE_CHATS[chat.id] = ins
+                await on_call.join(chat.id)
+                VOICE_CHATS[chat.id] = on_call
                 await sleep(2)
             except Exception as e:
                 await msg.edit(
@@ -89,7 +89,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.start_video(url, with_audio=True, repeat=False)
+            await on_call.start_video(url, with_audio=True, repeat=False)
             await msg.delete()
             await msg.edit(
                 "\U00002378 **Started video streaming!**",
@@ -119,7 +119,7 @@ async def play_video(event):
 
         try:
             await sleep(2)
-            await ins.start_video(video, with_audio=True, repeat=False)
+            await on_call.start_video(video, with_audio=True, repeat=False)
             await msg.delete()
             await event.reply(
                 "**Started video streaming!**",

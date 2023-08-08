@@ -12,7 +12,7 @@ from bot.helpers.queues import (
     clear_queue,
 )
 from bot.helpers.yt_dlp import bash
-from bot import config, ins, kreacher
+from bot import config, on_call, kreacher
 from telethon.tl import types
 from telethon.utils import get_display_name
 from youtubesearchpython import VideosSearch
@@ -86,8 +86,8 @@ async def play_song(event):
     elif VOICE_CHATS.get(chat.id) is None:
         try:
             await msg.edit("**__Joining the voice chat...__**")
-            await ins.join(chat.id)
-            VOICE_CHATS[chat.id] = ins
+            await on_call.join(chat.id)
+            VOICE_CHATS[chat.id] = on_call
             await sleep(2)
         except Exception as e:
             await msg.edit(
@@ -123,7 +123,7 @@ async def play_song(event):
                 )
 
                 try:
-                    await ins.start_audio(url, repeat=False)
+                    await on_call.start_audio(url, repeat=False)
                     add_to_queue(chat, name, url, ref, "audio")
                     await sleep(2)
                     await msg.edit(
@@ -177,7 +177,7 @@ async def play_song(event):
         else:
             try:
                 await sleep(2)
-                await ins.start_audio(dl, repeat=False)
+                await on_call.start_audio(dl, repeat=False)
                 await msg.edit(
                     f"**__Started Streaming__**\n\n **Title:** [{name}]({link})\n **Requested by:** {from_user}",
                     file=fotoplay,

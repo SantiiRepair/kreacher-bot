@@ -1,4 +1,4 @@
-from bot import ins, kreacher
+from bot import on_call, kreacher
 from bot.instance_of.every_vc import VOICE_CHATS
 from telethon import events
 
@@ -9,8 +9,8 @@ async def new_handler(event):
         chat = await event.get_chat()
         if VOICE_CHATS.get(chat.id) is not None:
             raise Exception("Streaming is active")
-        await ins.start(chat.id)
-        VOICE_CHATS[chat.id] = ins
+        await on_call.start(chat.id)
+        VOICE_CHATS[chat.id] = on_call
         await event.reply(
             "__Master, what do you need? \n\nVoice Chat started successfully.__",
         )
