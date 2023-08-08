@@ -10,6 +10,7 @@ from bot.helpers.yt import ytsearch, ytdl
 from bot import client as app, kreacher, on_call
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.progress import progress_callback
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
@@ -114,7 +115,9 @@ async def play_song(client, message):
                 except Exception as e:
                     clear_queue(chat)
                     await VOICE_CHATS[chat.id].stop()
-                    await msg.edit(f"`{e}`")
+                    await msg.edit(
+                        f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+                    )
                     VOICE_CHATS.pop(chat.id)
                     return await sleep(2)
 

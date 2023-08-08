@@ -17,7 +17,8 @@ async def send_log():
             f.truncate(0)
             f.close()
         await kreacher.send_message(
-            user.id, "__Master, Master, the log file was flushed successfully.__"
+            user.id,
+            "__Master, Master, the log file was flushed successfully.__",
         )
         print(
             f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY'
