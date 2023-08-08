@@ -4,12 +4,12 @@ tlg_botu
 cache
 logs
 downloads
-kreacher.session
+bot.session
 kreacher_env
-my_env
+
 .env
-tester.py
 .gitpod.yml
+:memory:.session
 
 # dbs
 chats.json.lock

@@ -23,6 +23,6 @@ run_bot:
 	python3 -m bot
 
 # command to run bot in virtual enviroment
-run_bot_virtual_env:
+run_in_virtual_env:
 	make create_env && make install && source kreacher_env/bin/activate && bash python3 -m kreacher
 
