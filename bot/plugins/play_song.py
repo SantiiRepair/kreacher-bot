@@ -16,6 +16,7 @@ from bot import on_call, kreacher
 from bot.config import config
 from telethon.tl import types
 from telethon.utils import get_display_name
+from bot.helpers.progress import progress_callback
 from youtubesearchpython import VideosSearch
 
 
@@ -153,7 +154,9 @@ async def play_song(event):
 
     else:
         await msg.edit("➕ __Downloading...__")
-        dl = await replied.download_media(file=download_as)
+        dl = await client.download_media(
+            replied, file=download_as, progress_callback=progress_callback
+        )
         link = f"https://t.me/c/{chat.id}/{event.reply_to_msg_id}"
         if replied.audio:
             name = "Audio File"

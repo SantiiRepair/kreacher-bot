@@ -9,7 +9,7 @@ from bot.helpers.queues import get_queue
 from bot.helpers.pkl import load_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
 from telethon import Button, events
-
+from bot.helpers.progress import progress_callback
 from yt_dlp import YoutubeDL
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -117,7 +117,9 @@ async def play_video(event):
 
     elif replied.video or replied.file:
         await msg.edit("🔄 **__Downloading...__**")
-        video = await client.download_media(replied, file=download_as)
+        video = await client.download_media(
+            replied, file=download_as, progress_callback=progress_callback
+        )
 
         try:
             await sleep(2)

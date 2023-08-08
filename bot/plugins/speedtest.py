@@ -19,14 +19,14 @@ def testspeed(m):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]speedtest"))
 async def speed_test(event):
-    message = await event.reply(
+    msg = await event.reply(
         """__Kreacher is here to serve you.
 
 Running Speedtest...__ \U0001F4F6"""
     )
-    await event.delete()
+    await msg.delete()
     loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(None, testspeed, message)
+    result = await loop.run_in_executor(None, testspeed, msg)
     output = f"""**Speedtest Results**
 
 **Client**:
@@ -40,4 +40,4 @@ Running Speedtest...__ \U0001F4F6"""
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
     await kreacher.send_file(event.chat.id, result["share"], caption=output)
-    return await message.delete()
+    return await msg.delete()
