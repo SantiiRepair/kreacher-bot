@@ -1,1 +1,0 @@
-container: bash start.sh
