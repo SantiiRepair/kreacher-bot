@@ -14,8 +14,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
-dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(dir, "../dbs/queues.pkl")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_callback_query(filters.regex("cls"))

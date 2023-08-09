@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 class Config(object):
     def __init__(self):
-        dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(dir, ".env")
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(current_dir, "../.env")
         load_dotenv(path)
         self.API_HASH = os.getenv("API_HASH")
         self.API_ID = os.getenv("API_ID")

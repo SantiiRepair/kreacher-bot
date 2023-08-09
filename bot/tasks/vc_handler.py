@@ -4,9 +4,9 @@ from bot import on_call
 from bot.helpers.handler import skip_current
 from bot.helpers.queues import clear_queue, get_active_chats
 
-dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(dir, "../dbs/queues.pkl")
-actives = os.path.join(dir, "../dbs/actives.pkl")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(current_dir, "../dbs/queues.pkl")
+actives = os.path.join(current_dir, "../dbs/actives.pkl")
 
 
 @on_call.on_audio_playout_ended

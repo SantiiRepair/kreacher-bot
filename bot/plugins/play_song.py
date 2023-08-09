@@ -21,8 +21,8 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
-dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(dir, "../dbs/queues.pkl")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
@@ -35,7 +35,7 @@ async def play_song(client, message):
     data = await user_info(message.from_user)
     await sleep(2)
     download_as = os.path.join(
-        dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
+        current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
     if not replied and not " " in message.message.text:
         await msg.edit(

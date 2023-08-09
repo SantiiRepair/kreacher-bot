@@ -7,8 +7,8 @@ from termcolor import colored
 
 
 async def send_log():
-    dir = os.path.dirname(os.path.abspath(__file__))
-    file = os.path.join(dir, "../logs/logs.txt")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file = os.path.join(current_dir, "../logs/logs.txt")
     try:
         user = await kreacher.get_users(config.MANTAINER)
         await kreacher.send_document(user.id, document=file)

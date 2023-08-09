@@ -6,8 +6,8 @@ from pyrogram import Client
 from pytgcalls import GroupCallFactory
 
 
-dir = os.path.dirname(os.path.abspath(__file__))
-folder = os.path.join(dir, "logs")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+folder = os.path.join(current_dir, "logs")
 
 if not os.path.exists(folder):
     os.makedirs(folder)

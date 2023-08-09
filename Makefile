@@ -24,7 +24,7 @@ lint:
 
 # generate string session of your telegram account
 session_string:
-	python3 ./session/string.py
+	python3 ./session/session.py
 
 # command to run bot in normal mode
 run_bot:
