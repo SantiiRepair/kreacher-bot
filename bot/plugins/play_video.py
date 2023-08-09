@@ -13,6 +13,7 @@ from youtubesearchpython import VideosSearch
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.progress import progress
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from bot.helpers.yt import ydl
 
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -23,14 +24,6 @@ dir = os.path.dirname(os.path.abspath(__file__))
 
 queues = os.path.join(dir, "../dbs/queues.pkl")
 
-ydl = YoutubeDL(
-    {
-        "quiet": True,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-    }
-)
-
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
 async def play_video(client, message):
@@ -40,12 +33,12 @@ async def play_video(client, message):
     msg = await message.reply("🔄 **__Processing...__**")
     await sleep(2)
     download_as = os.path.join(dir, f"../downloads/videos/{str(uuid.uuid4())}")
-    if not replied and not " " in message.message.message:
+    if not replied and not " " in message.message.text:
         await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
         )
 
-    elif " " in message.message.message:
+    elif " " in message.message.text:
         text = message.message.message.split(" ", 1)
         url = text[1]
         if not "http" in url:

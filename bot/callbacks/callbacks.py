@@ -1,13 +1,13 @@
 import os
 import pickle
-import datetime
 from time import time
 from bot import kreacher
 from pyrogram import filters
 from bot.config import config
-from bot.helpers.pong import execution_time
+from datetime import datetime
 from bot.helpers.pkl import load_pkl, dump_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
+from bot.helpers.pong import execution_time, START_TIME
 from bot.helpers.handler import next_item, skip_current
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -125,7 +125,6 @@ async def _(client, message):
 
 @kreacher.on_callback_query(filters.regex("pong_callback"))
 async def _(client, callback):
-    chat = callback.message.chat
     start = time()
     current_time = datetime.utcnow()
     delta_ping = time() - start

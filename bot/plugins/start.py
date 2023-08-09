@@ -1,4 +1,5 @@
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.enums.chat_type import ChatType
 from bot import kreacher
 from pyrogram import filters
 from bot.config import config
@@ -24,13 +25,14 @@ Have a... tolerable... day!__ \U0001F52E
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
 async def _(client, message):
+    chat = message.chat
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    if message.is_private:
-        await kreacher.send_photo(
-            message.chat_id,
+    if message.chat.type == ChatType.PRIVATE:
+        return await kreacher.send_photo(
+            chat.id,
             photo=config.START_IMG,
-            caption=PM_START_TEXT(message.sender.first_name),
+            caption=PM_START_TEXT(message.from_user.first_name),
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
@@ -45,8 +47,6 @@ async def _(client, message):
                 ]
             ),
         )
-        return
 
-    if message.is_group:
-        await message.reply("**ʜᴇʏ! ɪ'ᴍ ꜱᴛɪʟʟ ᴀʟɪᴠᴇ ✅**")
-        return
+    if message.chat.type == ChatType.GROUP or ChatType.SUPERGROUP:
+        return await message.reply("**ʜᴇʏ! ɪ'ᴍ ꜱᴛɪʟʟ ᴀʟɪᴠᴇ ✅**")
