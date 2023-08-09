@@ -1,6 +1,4 @@
 __pycache__
-botlog.txt
-tlg_botu
 cache
 logs
 downloads
@@ -11,7 +9,6 @@ kreacher.client.session-journal
 kreacher_env
 
 .env
-.gitpod.yml
 :memory:.session
 
 # dbs
