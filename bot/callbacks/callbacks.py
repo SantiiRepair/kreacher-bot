@@ -1,8 +1,11 @@
 import os
 import pickle
+import datetime
+from time import time
 from bot import kreacher
 from pyrogram import filters
 from bot.config import config
+from bot.helpers.pong import execution_time
 from bot.helpers.pkl import load_pkl, dump_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.handler import next_item, skip_current
@@ -118,6 +121,21 @@ async def _(client, message):
     await VOICE_CHATS[chat.id].stop_media()
     await VOICE_CHATS[chat.id].stop()
     VOICE_CHATS.pop(chat.id)
+
+
+@kreacher.on_callback_query(filters.regex("pong_callback"))
+async def _(client, callback):
+    chat = callback.message.chat
+    start = time()
+    current_time = datetime.utcnow()
+    delta_ping = time() - start
+    uptime_sec = (current_time - START_TIME).total_seconds()
+    uptime = await execution_time(int(uptime_sec))
+    await client.answer_callback_query(
+        callback.id,
+        text=f"{delta_ping * 1000:.3f}ms.\n\n Active since {uptime}",
+        show_alert=True,
+    )
 
 
 @kreacher.on_callback_query(filters.regex("help"))

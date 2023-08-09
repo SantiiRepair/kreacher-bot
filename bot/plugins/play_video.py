@@ -5,9 +5,10 @@ import pickle
 from asyncio import sleep
 from yt_dlp import YoutubeDL
 from pyrogram import filters
-from bot.helpers.pkl import load_pkl
+
+# from bot.helpers.pkl import load_pkl
 from bot.helpers.queues import get_queue
-from bot import user, kreacher, on_call
+from bot import assistant, kreacher, on_call
 from youtubesearchpython import VideosSearch
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.progress import progress
@@ -33,7 +34,7 @@ ydl = YoutubeDL(
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
 async def play_video(client, message):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    # QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
     replied = await message.get_reply_message()
     msg = await message.reply("🔄 **__Processing...__**")
@@ -55,7 +56,7 @@ async def play_video(client, message):
         match = re.match(regex, url)
         if VOICE_CHATS.get(chat.id) is None:
             try:
-                await msg.edit("**__Joining the voice chat...__**")
+                await msg.edit("**__Joining the voice chat...__** \u23F3")
                 await on_call.join(chat.id)
                 VOICE_CHATS[chat.id] = on_call
                 await sleep(2)
@@ -128,7 +129,7 @@ async def play_video(client, message):
 
     elif replied.video or replied.file:
         await msg.edit("🔄 **__Downloading...__**")
-        media = await user.download_media(
+        media = await assistant.download_media(
             replied,
             file_name=download_as,
             progress=progress,

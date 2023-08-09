@@ -1,14 +1,12 @@
 import os
 import uuid
-import pickle
 import logging
 from asyncio import sleep
-from pyrogram import types
 from pyrogram import filters
 from bot.config import config
 from bot.helpers.pkl import load_pkl
-from bot.helpers.linked import user_info
-from bot import user, kreacher, on_call
+from bot.helpers.user_info import user_info
+from bot import assistant, kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
 from bot.instance_of.every_vc import VOICE_CHATS
@@ -58,9 +56,9 @@ async def play_song(client, message):
                 [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]
             ],
         )
-    elif VOICE_CHATS.get(chat.id) is None:
+    if VOICE_CHATS.get(chat.id) is None:
         try:
-            await msg.edit("**__Joining the voice chat...__**")
+            await msg.edit("**__Joining the voice chat...__** \u23F3")
             await on_call.join(chat.id)
             VOICE_CHATS[chat.id] = on_call
             await sleep(2)
@@ -70,7 +68,7 @@ async def play_song(client, message):
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
-            return await sleep(2)
+            await sleep(2)
     if replied and not replied.audio and not replied.voice or not replied:
         query = message.text.split(maxsplit=1)[1]
         search = ytsearch(query)
@@ -153,7 +151,7 @@ async def play_song(client, message):
             elif replied.voice:
                 name = "Voice Note"
                 await client.edit("➕ **__Downloading...__**")
-                media = await user.download_media(
+                media = await assistant.download_media(
                     replied.voice,
                     block=False,
                     file_name=download_as,

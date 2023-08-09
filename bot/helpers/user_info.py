@@ -9,8 +9,7 @@ async def user_info(user) -> dict:
         if data.username:
             join.append({"linked": f"https://t.me/{data.username}"})
             return join
-        else:
-            join.append({"linked": f"https://t.me/adduser?id={user.id}"})
-            return join
+        join.append({"linked": f"https://t.me/adduser?id={user.id}"})
+        return join
     except Exception as e:
         logging.error(e)

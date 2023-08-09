@@ -1,7 +1,7 @@
 import asyncio
-from bot import kreacher
-from pyrogram import filters
 from speedtest import Speedtest
+from pyrogram import filters
+from bot import kreacher
 
 
 def testspeed(m):
@@ -20,20 +20,18 @@ def testspeed(m):
 @kreacher.on_message(filters.regex(pattern="^[!?/]speedtest"))
 async def _(client, message):
     chat = message.chat
-    msg = await message.reply(
-        """**__Kreacher is here to serve you.
+    try:
+        msg = await message.reply(
+            """**__Kreacher is here to serve you.
 
 Running Speedtest...__** \U0001F4F6"""
-    )
-    await message.delete()
-    try:
+        )
+        await message.delete()
+
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, testspeed, msg)
-    except Exception as e:
-        return await msg.edit(
-            f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
-        )
-    output = f"""**Speedtest Results**
+
+        output = f"""**Speedtest Results**
 
 **Client**:
 **__ISP__**: {result['client']['isp']}
@@ -45,5 +43,11 @@ Running Speedtest...__** \U0001F4F6"""
 **__Sponsor:__** {result['server']['sponsor']}
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
-    await kreacher.send_photo(chat.id, photo=result["share"], caption=output)
-    return await msg.delete()
+        await kreacher.send_photo(
+            chat.id, photo=result["share"], caption=output
+        )
+        return await msg.delete()
+    except Exception as e:
+        return await msg.edit(
+            f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+        )
