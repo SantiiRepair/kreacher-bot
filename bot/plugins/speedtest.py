@@ -4,7 +4,7 @@ from pyrogram import filters
 from bot import kreacher
 
 
-def testspeed(m):
+def testspeed():
     try:
         test = Speedtest()
         test.get_best_server()
@@ -29,7 +29,7 @@ Running Speedtest...__** \U0001F4F6"""
         await message.delete()
 
         loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(None, testspeed, msg)
+        result = await loop.run_in_executor(None, testspeed)
 
         output = f"""**Speedtest Results**
 

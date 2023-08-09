@@ -31,13 +31,13 @@ async def play_song(client, message):
     chat = message.chat
     title = " ".join(message.text[5:])
     replied = message.reply_to_message
-    msg = await message.reply("🔄 **__Processing...__**")
+    msg = await message.reply("\u23F3 **__Processing...__**")
     data = await user_info(message.from_user)
     await sleep(2)
     download_as = os.path.join(
         dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
-    if not replied and not " " in message.message.message:
+    if not replied and not " " in message.message.text:
         await msg.edit(
             "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
         )
@@ -58,7 +58,7 @@ async def play_song(client, message):
         )
     if VOICE_CHATS.get(chat.id) is None:
         try:
-            await msg.edit("**__Joining the voice chat...__** \u23F3")
+            await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
             await on_call.join(chat.id)
             VOICE_CHATS[chat.id] = on_call
             await sleep(2)
@@ -141,21 +141,21 @@ async def play_song(client, message):
         try:
             if replied.audio:
                 name = "Audio File"
-                await msg.edit("➕ **__Downloading...__**")
+                await msg.edit("\U0001f4be **__Downloading...__**")
                 media = await client.download_media(
                     replied.audio,
-                    block=False,
                     file_name=download_as,
                     progress=progress,
+                    progress_args=(client, chat, msg),
                 )
             elif replied.voice:
                 name = "Voice Note"
-                await client.edit("➕ **__Downloading...__**")
+                await msg.edit("\U0001f4be **__Downloading...__**")
                 media = await assistant.download_media(
                     replied.voice,
-                    block=False,
                     file_name=download_as,
                     progress=progress,
+                    progress_args=(client, chat, msg),
                 )
         except Exception as e:
             logging.error(e)

@@ -4,12 +4,12 @@ from bot import kreacher
 
 async def user_info(user) -> dict:
     try:
-        data = await kreacher.get_users(user.id)
-        join = data.__dict__
-        if data.username:
-            join.append({"linked": f"https://t.me/{data.username}"})
-            return join
-        join.append({"linked": f"https://t.me/adduser?id={user.id}"})
-        return join
+        info = await kreacher.get_users(user.id)
+        data = info.__dict__
+        if info.username:
+            data["linked"] = f"https://t.me/{info.username}"
+            return data
+        data["linked"] = f"https://t.me/adduser?id={user.id}"
+        return data
     except Exception as e:
         logging.error(e)
