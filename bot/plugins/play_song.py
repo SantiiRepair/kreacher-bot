@@ -7,12 +7,11 @@ from pyrogram import types
 from pyrogram import filters
 from bot.config import config
 from bot.helpers.pkl import load_pkl
-from bot.helpers.linked import linked
+from bot.helpers.linked import user_info
 from bot import user, kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
 from bot.instance_of.every_vc import VOICE_CHATS
-from pyrogram.types import Message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
     add_to_queue,
@@ -35,7 +34,7 @@ async def play_song(client, message):
     title = " ".join(message.text[5:])
     replied = message.reply_to_message
     msg = await message.reply("🔄 **__Processing...__**")
-    data = await linked(message.from_user)
+    data = await user_info(message.from_user)
     await sleep(2)
     download_as = os.path.join(
         dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"

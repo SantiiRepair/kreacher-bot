@@ -1,6 +1,6 @@
 import asyncio
 import pyrogram
-from bot import kreacher
+from bot import kreacher, user
 from bot.utils import loader
 from termcolor import colored
 
@@ -19,4 +19,9 @@ print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
 
 
 if __name__ == "__main__":
-    pyrogram.idle()
+    try:
+        pyrogram.idle()
+    except KeyboardInterrupt:
+        kreacher.disconnect()
+        user.disconnect()
+        print(f'{colored("[INFO]", "blue")}: CLIENTS DISCONNECTED')
