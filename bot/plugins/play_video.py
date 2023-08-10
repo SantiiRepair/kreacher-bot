@@ -29,19 +29,19 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 async def play_video(client, message):
     # QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
-    replied = await message.get_reply_message()
-    msg = await message.reply("🔄 **__Processing...__**")
+    replied = await message.reply_to_message
+    msg = await message.reply("\u23F3 **__Processing...__**")
     await sleep(2)
     download_as = os.path.join(
         current_dir, f"../downloads/videos/{str(uuid.uuid4())}"
     )
-    if not replied and not " " in message.message.text:
-        await msg.edit(
+    if not replied and not " " in message.text:
+        return await msg.edit(
             "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
         )
 
-    elif " " in message.message.text:
-        text = message.message.message.split(" ", 1)
+    elif " " in message.text:
+        text = message.text.split(" ", 1)
         url = text[1]
         if not "http" in url:
             return await msg.edit(

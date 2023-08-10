@@ -5,6 +5,7 @@ from bot import kreacher
 from pyrogram import filters
 from bot.config import config
 from datetime import datetime
+from pyrogram.enums.chat_type import ChatType
 from bot.helpers.pkl import load_pkl, dump_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.pong import execution_time, START_TIME
@@ -17,18 +18,19 @@ thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 current_dir = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
-
-@kreacher.on_callback_query(filters.regex("cls"))
-async def _(message):
-    await message.delete()
+# Play Video Modes --------------------------------------------------------------------
 
 
+# Play Song Modes ---------------------------------------------------------------------
+
+
+# Streaming Controls -----------------------------------------------------------------
 @kreacher.on_callback_query(filters.regex("pause_or_resume_callback"))
-async def _(client, message):
-    chat = message.chat
+async def _(client, callback):
+    chat = callback.chat
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
-        return await message.edit(
+        return await callback.edit(
             "\U00002378 __Started Video Streaming!__",
             file=thumb,
             reply_markup=InlineKeyboardMarkup(
@@ -54,7 +56,7 @@ async def _(client, message):
             ),
         )
     await VOICE_CHATS[chat.id].set_pause(True)
-    return await message.edit(
+    return await callback.edit(
         "\U00002378 __Started Video Streaming!__",
         file=thumb,
         reply_markup=InlineKeyboardMarkup(
@@ -78,28 +80,28 @@ async def _(client, message):
 
 
 @kreacher.on_callback_query(filters.regex("back_callback"))
-async def _(client, message):
-    chat = message.chat
+async def _(client, callback):
+    chat = callback.chat
     await VOICE_CHATS[chat.id].set_pause(False)
 
 
 @kreacher.on_callback_query(filters.regex("next_callback"))
-async def _(client, message):
+async def _(client, callback):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    if len(message.text.split()) < 2:
+    chat = callback.chat
+    if len(callback.text.split()) < 2:
         op = await skip_current(chat)
         if op == 0:
-            await message.reply("**Nothing Is Streaming**")
+            await callback.reply("**Nothing Is Streaming**")
         elif op == 1:
-            await message.reply("empty queue, leaving voice chat")
+            await callback.reply("empty queue, leaving voice chat")
         else:
-            await message.reply(
+            await callback.reply(
                 f"**⏭ Skipped**\n**🎧 Now Playing** - [{op[0]}]({op[1]})",
                 link_preview=False,
             )
     else:
-        skip = message.text.split(maxsplit=1)[1]
+        skip = callback.text.split(maxsplit=1)[1]
         DELQUE = "**Removing Following Songs From Queue:**"
         if chat.id in QUEUE:
             items = [int(x) for x in skip.split(" ") if x.isdigit()]
@@ -109,13 +111,13 @@ async def _(client, message):
                     hm = await next_item(chat, x)
                     if hm != 0:
                         DELQUE = DELQUE + "\n" + f"**#{x}** - {hm}"
-            await message.reply(DELQUE)
+            await callback.reply(DELQUE)
 
 
 @kreacher.on_callback_query(filters.regex("end_callback"))
-async def _(client, message):
+async def _(client, callback):
     QUEUE = load_pkl(queues, "rb", "dict")
-    chat = message.chat
+    chat = callback.chat
     QUEUE.pop(chat.id)
     dump_pkl(queues, "wb", QUEUE)
     await VOICE_CHATS[chat.id].stop_media()
@@ -123,6 +125,7 @@ async def _(client, message):
     VOICE_CHATS.pop(chat.id)
 
 
+# Misc ----------------------------------------------------------------------------
 @kreacher.on_callback_query(filters.regex("pong_callback"))
 async def _(client, callback):
     start = time()
@@ -138,10 +141,10 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("help"))
-async def _(client, message):
+async def _(client, callback):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    await message.edit(
+    await callback.edit(
         "ᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ғᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴩ\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ : `/`",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -156,8 +159,8 @@ async def _(client, message):
 
 
 @kreacher.on_callback_query(filters.regex("admin"))
-async def _(client, message):
-    await message.edit(
+async def _(client, callback):
+    await callback.edit(
         ADMIN_TEXT,
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
@@ -166,8 +169,8 @@ async def _(client, message):
 
 
 @kreacher.on_callback_query(filters.regex("play"))
-async def _(client, message):
-    await message.edit(
+async def _(client, callback):
+    await callback.edit(
         PLAY_TEXT,
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
@@ -176,12 +179,12 @@ async def _(client, message):
 
 
 @kreacher.on_callback_query(filters.regex("start"))
-async def _(client, message):
+async def _(client, callback):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    if message.is_private:
-        await message.edit(
-            PM_START_TEXT(message.sender.first_name),
+    if callback.chat.type == ChatType.PRIVATE:
+        await callback.edit(
+            PM_START_TEXT(callback.sender.first_name),
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
@@ -197,6 +200,11 @@ async def _(client, message):
             ),
         )
         return
+
+
+@kreacher.on_callback_query(filters.regex("cls"))
+async def _(client, callback):
+    return await callback.delete()
 
 
 ADMIN_TEXT = """

@@ -37,7 +37,7 @@ async def play_song(client, message):
     download_as = os.path.join(
         current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
-    if not replied and not " " in message.message.text:
+    if not replied and not " " in message.text:
         await msg.edit(
             "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
         )
@@ -151,7 +151,7 @@ async def play_song(client, message):
             elif replied.voice:
                 name = "Voice Note"
                 await msg.edit("\U0001f4be **__Downloading...__**")
-                media = await assistant.download_media(
+                media = await client.download_media(
                     replied.voice,
                     file_name=download_as,
                     progress=progress,
