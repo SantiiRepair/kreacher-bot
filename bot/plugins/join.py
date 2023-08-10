@@ -1,11 +1,10 @@
-from bot import kreacher
 from pyrogram import filters
+from bot import on_call, kreacher
 from pyrogram.enums.chat_type import ChatType
-from bot.helpers.queues import clear_queue
 from bot.instance_of.every_vc import VOICE_CHATS
 
 
-@kreacher.on_message(filters.regex(pattern="^[!?/]leave"))
+@kreacher.on_message(filters.regex(pattern="^[!?/]join"))
 async def _(client, message):
     user = await kreacher.get_chat_member(
         message.chat.id, message.from_user.id
@@ -20,13 +19,12 @@ async def _(client, message):
         )
     try:
         chat = message.chat
-        if VOICE_CHATS.get(chat.id) is None:
-            raise Exception("Streaming is not active")
-        await VOICE_CHATS[chat.id].leave_current_group_call()
-        VOICE_CHATS.pop(chat.id)
-        await clear_queue(chat)
+        if VOICE_CHATS.get(chat.id) is not None:
+            raise Exception("Streaming is active")
+        await on_call.join(chat.id)
+        VOICE_CHATS[chat.id] = on_call
         await message.reply(
-            "**__Goodbye master, just call me if you need me \U0001FAE1 \n\nVoice Chat left successfully__** \u2728",
+            "**__Master, what do you need? \U0001f917 \n\nVoice Chat started successfully__** \u2728",
         )
     except Exception as e:
         return await message.reply(

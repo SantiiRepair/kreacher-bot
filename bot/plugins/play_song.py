@@ -70,7 +70,9 @@ async def play_song(client, message):
                 regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
                 match = re.match(regex, query)
                 if not match:
-                    return await msg.edit("**__Sorry master, but this doesn't seem to be a YouTube link__** \U0001f914")
+                    return await msg.edit(
+                        "**__Sorry master, but this doesn't seem to be a YouTube link__** \U0001f914"
+                    )
             search = await ytsearch(query)
             name = search[0]
             title = search[0]
