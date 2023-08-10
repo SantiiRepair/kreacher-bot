@@ -39,7 +39,7 @@ def download_lagu(url: str) -> str:
     return os.path.join("downloads", f"{info['id']}.{info['ext']}")
 
 
-def ytsearch(query: str):
+async def ytsearch(query: str):
     try:
         search = VideosSearch(query, limit=1).result()
         data = search["result"][0]

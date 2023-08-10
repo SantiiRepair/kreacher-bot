@@ -1,5 +1,4 @@
 import os
-import re
 import uuid
 import logging
 from asyncio import sleep
@@ -31,8 +30,6 @@ async def play_song(client, message):
     QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     replied = message.reply_to_message
-    query = message.text.split(" ", 1)[1]
-    search = ytsearch(query)
     data = await user_info(message.from_user)
     download_as = os.path.join(
         current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
@@ -64,10 +61,10 @@ async def play_song(client, message):
             ),
         )
     msg = await message.reply("\u23F3 **__Processing...__**")
-    regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-    match = re.match(regex, query)
     try:
-        if match or " " in message.text:
+        if " " in message.text:
+            query = message.text.split(maxsplit=1)[1]
+            search = await ytsearch(query)
             name = search[0]
             title = search[0]
             ref = search[1]
@@ -78,55 +75,53 @@ async def play_song(client, message):
             hm, url = await ytdl(fmt, ref)
             if hm == 0:
                 await msg.edit(f"`{url}`")
+            if search == 0:
+                return await msg.edit(
+                    "__Can't find song.\n\nTry searching with more specific title.__",
+                )
             if chat.id in QUEUE:
                 pos = await add_to_queue(chat, name, url, ref, "audio")
                 return await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
                     # file=thumb,
-                    reply_markup=[
-                        [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]
-                    ],
+                    reply_markup=InlineKeyboardMarkup(
+                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                    ),
                 )
             elif VOICE_CHATS.get(chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
                 await on_call.join(chat.id)
                 VOICE_CHATS[chat.id] = on_call
-                await sleep(1)
-
-            if search == 0:
-                await msg.edit(
-                    "__Can't find song.\n\nTry searching with more specific title.__",
-                )
-                await on_call.start_audio(url, repeat=False)
-                await add_to_queue(chat, name, url, ref, "audio")
-                await sleep(2)
-                await msg.edit(
-                    f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
-                    # file=thumb,
-                    reply_markup=InlineKeyboardMarkup(
+            await sleep(2)
+            await on_call.start_audio(url, repeat=False)
+            await add_to_queue(chat, name, url, ref, "audio")
+            return await msg.edit(
+                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
+                # file=thumb,
+                reply_markup=InlineKeyboardMarkup(
+                    [
                         [
-                            [
-                                InlineKeyboardButton(
-                                    "\u23EA", callback_data="back_callback"
-                                ),
-                                InlineKeyboardButton(
-                                    "\u23F8\uFE0F",
-                                    callback_data="pause_or_resume_callback",
-                                ),
-                                InlineKeyboardButton(
-                                    "\u23ED\uFE0F",
-                                    callback_data="next_callback",
-                                ),
-                            ],
-                            [
-                                InlineKeyboardButton(
-                                    "cʟᴏꜱᴇ", callback_data="end_callback"
-                                )
-                            ],
-                        ]
-                    ),
-                )
-        if replied.audio:
+                            InlineKeyboardButton(
+                                "\u23EA", callback_data="back_callback"
+                            ),
+                            InlineKeyboardButton(
+                                "\u23F8\uFE0F",
+                                callback_data="pause_or_resume_callback",
+                            ),
+                            InlineKeyboardButton(
+                                "\u23ED\uFE0F",
+                                callback_data="next_callback",
+                            ),
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "cʟᴏꜱᴇ", callback_data="end_callback"
+                            )
+                        ],
+                    ]
+                ),
+            )
+        if replied and replied.audio:
             name = "Audio File"
             await msg.edit("\U0001f4be **__Downloading...__**")
             media = await client.download_media(
@@ -135,7 +130,7 @@ async def play_song(client, message):
                 progress=progress,
                 progress_args=(client, chat, msg),
             )
-        elif replied.voice:
+        elif replied and replied.voice:
             name = "Voice Note"
             await msg.edit("\U0001f4be **__Downloading...__**")
             media = await client.download_media(
@@ -179,11 +174,10 @@ async def play_song(client, message):
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
             await on_call.join(chat.id)
             VOICE_CHATS[chat.id] = on_call
-            await sleep(1)
         await sleep(2)
         await on_call.start_audio(media, repeat=False)
         await msg.delete()
-        await kreacher.send_photo(
+        return await kreacher.send_photo(
             chat.id,
             caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
             photo=fotoplay,
@@ -212,7 +206,7 @@ async def play_song(client, message):
         )
     except Exception as e:
         logging.error(e)
-        clear_queue(chat)
+        await clear_queue(chat)
         await VOICE_CHATS[chat.id].stop()
         await msg.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
