@@ -44,7 +44,7 @@ async def pop_an_item(chat):
         if chat.id not in QUEUE:
             return 0
         QUEUE[chat.id].pop(0)
-        dump_pkl(queues, "wb", QUEUE)
+        await dump_pkl(queues, "wb", QUEUE)
         return 1
     except Exception as e:
         raise e
@@ -57,10 +57,10 @@ async def clear_queue(chat):
         if chat.id not in QUEUE:
             return 0
         QUEUE.pop(chat.id)
-        dump_pkl(queues, "wb", QUEUE)
+        await dump_pkl(queues, "wb", QUEUE)
         if chat.id in ACTIVE:
             ACTIVE.remove(chat.id)
-            dump_pkl(actives, "wb", ACTIVE)
+            await dump_pkl(actives, "wb", ACTIVE)
         return 1
     except Exception as e:
         raise e
