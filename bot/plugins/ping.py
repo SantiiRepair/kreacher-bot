@@ -17,3 +17,4 @@ async def _(client, message):
             ]
         ),
     )
+    await message.delete()

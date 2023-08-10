@@ -160,7 +160,7 @@ async def _(client, callback):
     uptime = await execution_time(int(uptime_sec))
     await client.answer_callback_query(
         callback.id,
-        text=f"{delta_ping * 1000:.3f}ms.\n\n Active since {uptime}",
+        text=f"{delta_ping * 1000:.3f}ms.\n\nActive since {uptime}",
         show_alert=True,
     )
 
