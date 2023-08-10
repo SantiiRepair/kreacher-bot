@@ -1,6 +1,7 @@
 from bot import kreacher
 from pyrogram import filters
 from bot.config import config
+from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
@@ -8,7 +9,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 async def help(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    if message.is_group:
+    if message.chat.type == ChatType.GROUP or ChatType.SUPERGROUP:
         await message.reply(
             "Contact me in PM to get available help menu!",
             reply_markup=InlineKeyboardMarkup(

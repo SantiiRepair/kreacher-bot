@@ -37,21 +37,27 @@ async def play_song(client, message):
     )
     if not replied and not " " in message.text:
         return await message.reply(
-            "❗ **__How to use: \n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
+            "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
-                            "\U0001f50e sᴇᴀʀᴄʜ", callback_data="search_song_mode_callback"
-                        ),
+                            "sᴇᴀʀᴄʜ",
+                            callback_data="search_song_mode_callback",
+                        )
+                    ],
+                    [
                         InlineKeyboardButton(
-                            "\u23FA\uFE0F ʏᴏᴜᴛᴜʙᴇ",
+                            "ʏᴏᴜᴛᴜʙᴇ",
                             callback_data="youtube_song_mode_callback",
-                        ),
+                        )
+                    ],
+                    [
                         InlineKeyboardButton(
-                            "\U0001f3a7 ᴀᴜᴅɪᴏ", callback_data="audio_song_mode_callback"
-                        ),
-                    ]
+                            "ᴀᴜᴅɪᴏ",
+                            callback_data="audio_song_mode_callback",
+                        )
+                    ],
                 ],
             ),
         )
