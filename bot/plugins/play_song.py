@@ -86,7 +86,7 @@ async def play_song(client, message):
             await sleep(2)
         except Exception as e:
             await msg.edit(
-                f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+                f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
             )
             await VOICE_CHATS[chat.id].stop()
             VOICE_CHATS.pop(chat.id)
@@ -157,7 +157,6 @@ async def play_song(client, message):
                         f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
                     )
                     VOICE_CHATS.pop(chat.id)
-                    return await sleep(2)
 
     else:
         try:
@@ -181,8 +180,8 @@ async def play_song(client, message):
                 )
         except Exception as e:
             logging.error(e)
-            return await msg.edit(
-                f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+            await msg.edit(
+                f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
             )
         proto = f"https://t.me/c/{chat.id}/{message.reply_to_message.id}"
         msg_linked = proto.replace("/c/-100", "/c/")
@@ -252,7 +251,6 @@ async def play_song(client, message):
                 clear_queue(chat)
                 await VOICE_CHATS[chat.id].stop()
                 await msg.edit(
-                    f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+                    f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
                 )
                 VOICE_CHATS.pop(chat.id)
-                return await sleep(2)
