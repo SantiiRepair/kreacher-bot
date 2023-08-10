@@ -26,7 +26,7 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
-async def play_video(client, message):
+async def _(client, message):
     # QUEUE = load_pkl(queues, "rb", "dict")
     chat = message.chat
     replied = await message.reply_to_message
