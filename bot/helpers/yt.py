@@ -1,5 +1,6 @@
 import os
 import asyncio
+import logging
 from yt_dlp import YoutubeDL
 from youtubesearchpython import VideosSearch
 
@@ -49,12 +50,16 @@ def ytsearch(query: str):
         videoid = data["id"]
         return [name, url, duration, thumbnail, videoid]
     except Exception as e:
-        print(e)
+        logging.error(e)
         return 0
 
 
 async def ytdl(format: str, link: str):
-    stdout, stderr = await bash(f'yt-dlp -g -f "{format}" {link}')
-    if stdout:
-        return 1, stdout.split("\n")[0]
-    return 0, stderr
+    try:
+        stdout, stderr = await bash(f'yt-dlp -g -f "{format}" {link}')
+        if stdout:
+            return 1, stdout.split("\n")[0]
+        return 0, stderr
+    except Exception as e:
+        logging.error(e)
+        return 0

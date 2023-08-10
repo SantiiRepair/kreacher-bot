@@ -11,19 +11,19 @@ async def get_active_chats() -> list:
     return ACTIVE
 
 
-def add_to_queue(chat, name, url, ref, type):
-    QUEUE = load_pkl(queues, "rb", "dict")
-    ACTIVE = load_pkl(actives, "rb", "list")
+async def add_to_queue(chat, name, url, ref, type):
     try:
+        QUEUE = await load_pkl(queues, "rb", "dict")
+        ACTIVE = await load_pkl(actives, "rb", "list")
         if chat.id in QUEUE:
             QUEUE[chat.id].append([name, url, ref, type])
-            dump_pkl(queues, "wb", QUEUE)
+            await dump_pkl(queues, "wb", QUEUE)
             return int(len(QUEUE[chat.id]) - 1)
         if chat.id not in ACTIVE:
             ACTIVE.append(chat.id)
-            dump_pkl(actives, "wb", ACTIVE)
+            await dump_pkl(actives, "wb", ACTIVE)
         QUEUE[chat.id] = [[name, url, ref, type]]
-        dump_pkl(queues, "wb", QUEUE)
+        await dump_pkl(queues, "wb", QUEUE)
     except Exception as e:
         raise e
 

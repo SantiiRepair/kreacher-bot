@@ -2,7 +2,7 @@ import pickle
 import logging
 
 
-def load_pkl(path, mode, type):
+async def load_pkl(path, mode, type):
     try:
         with open(path, mode) as file:
             pkl = pickle.load(file)
@@ -14,7 +14,7 @@ def load_pkl(path, mode, type):
             return {}
 
 
-def dump_pkl(path, mode, data):
+async def dump_pkl(path, mode, data):
     try:
         with open(path, mode) as file:
             pickle.dump(data, file)
