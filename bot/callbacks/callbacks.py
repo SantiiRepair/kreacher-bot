@@ -22,7 +22,32 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 # Play Song Modes ---------------------------------------------------------------------
+@kreacher.on_callback_query(filters.regex("song_youtube_mode_callback"))
+async def _(client, callback):
+    start = time()
+    current_time = datetime.utcnow()
+    delta_ping = time() - start
+    uptime_sec = (current_time - START_TIME).total_seconds()
+    uptime = await execution_time(int(uptime_sec))
+    await client.answer_callback_query(
+        callback.id,
+        text=f"{delta_ping * 1000:.3f}ms.\n\n Active since {uptime}",
+        show_alert=True,
+    )
 
+
+@kreacher.on_callback_query(filters.regex("song_audio_or_voice_mode_callback"))
+async def _(client, callback):
+    start = time()
+    current_time = datetime.utcnow()
+    delta_ping = time() - start
+    uptime_sec = (current_time - START_TIME).total_seconds()
+    uptime = await execution_time(int(uptime_sec))
+    await client.answer_callback_query(
+        callback.id,
+        text=f"{delta_ping * 1000:.3f}ms.\n\n Active since {uptime}",
+        show_alert=True,
+    )
 
 # Streaming Controls -----------------------------------------------------------------
 @kreacher.on_callback_query(filters.regex("pause_or_resume_callback"))
@@ -30,7 +55,7 @@ async def _(client, callback):
     chat = callback.chat
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
-        return await callback.edit(
+        return await callback.edit_message_text(
             "\U00002378 __Started Video Streaming!__",
             file=thumb,
             reply_markup=InlineKeyboardMarkup(
@@ -56,7 +81,7 @@ async def _(client, callback):
             ),
         )
     await VOICE_CHATS[chat.id].set_pause(True)
-    return await callback.edit(
+    return await callback.edit_message_text(
         "\U00002378 __Started Video Streaming!__",
         file=thumb,
         reply_markup=InlineKeyboardMarkup(
@@ -144,7 +169,7 @@ async def _(client, callback):
 async def _(client, callback):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
-    await callback.edit(
+    await callback.edit_message_text(
         "ᴄʜᴏᴏsᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ғᴏʀ ᴡʜɪᴄʜ ʏᴏᴜ ᴡᴀɴɴᴀ ɢᴇᴛ ʜᴇʟᴩ\n\nᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ : `/`",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -160,7 +185,7 @@ async def _(client, callback):
 
 @kreacher.on_callback_query(filters.regex("admin"))
 async def _(client, callback):
-    await callback.edit(
+    await callback.edit_message_text(
         ADMIN_TEXT,
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
@@ -170,7 +195,7 @@ async def _(client, callback):
 
 @kreacher.on_callback_query(filters.regex("play"))
 async def _(client, callback):
-    await callback.edit(
+    await callback.edit_message_text(
         PLAY_TEXT,
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
@@ -183,7 +208,7 @@ async def _(client, callback):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     if callback.chat.type == ChatType.PRIVATE:
-        await callback.edit(
+        await callback.edit_message_text(
             PM_START_TEXT(callback.sender.first_name),
             reply_markup=InlineKeyboardMarkup(
                 [
