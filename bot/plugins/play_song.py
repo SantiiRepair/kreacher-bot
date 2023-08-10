@@ -61,6 +61,7 @@ async def play_song(client, message):
             ),
         )
     msg = await message.reply("\u23F3 **__Processing...__**")
+    await sleep(2)
     try:
         if " " in message.text:
             query = message.text.split(maxsplit=1)[1]
