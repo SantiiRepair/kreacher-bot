@@ -5,6 +5,6 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: sudo apt update && sudo apt install cron curl expect ffmpeg git python3 python3-pip tree -y
+  - init: sudo apt update && sudo apt install cron curl expect ffmpeg git python3 python3-pip tree -y && make install
 
 

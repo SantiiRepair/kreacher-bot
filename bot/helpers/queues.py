@@ -7,7 +7,7 @@ actives = os.path.join(current_dir, "../dbs/actives.pkl")
 
 
 async def get_active_chats() -> list:
-    ACTIVE = load_pkl(actives, "rb", "list")
+    ACTIVE = await load_pkl(actives, "rb", "list")
     return ACTIVE
 
 
@@ -28,8 +28,8 @@ async def add_to_queue(chat, name, url, ref, type):
         raise e
 
 
-def get_queue(chat):
-    QUEUE = load_pkl(queues, "rb", "dict")
+async def get_queue(chat):
+    QUEUE = await load_pkl(queues, "rb", "dict")
     try:
         if chat.id in QUEUE:
             return QUEUE[chat.id]
@@ -38,8 +38,8 @@ def get_queue(chat):
         raise e
 
 
-def pop_an_item(chat):
-    QUEUE = load_pkl(queues, "rb", "dict")
+async def pop_an_item(chat):
+    QUEUE = await load_pkl(queues, "rb", "dict")
     try:
         if chat.id not in QUEUE:
             return 0
@@ -50,9 +50,9 @@ def pop_an_item(chat):
         raise e
 
 
-def clear_queue(chat):
-    QUEUE = load_pkl(queues, "rb", "dict")
-    ACTIVE = load_pkl(actives, "rb", "list")
+async def clear_queue(chat):
+    QUEUE = await load_pkl(queues, "rb", "dict")
+    ACTIVE = await load_pkl(actives, "rb", "list")
     try:
         if chat.id not in QUEUE:
             return 0

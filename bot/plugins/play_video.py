@@ -41,8 +41,7 @@ async def play_video(client, message):
         )
 
     elif " " in message.text:
-        text = message.text.split(" ", 1)
-        url = text[1]
+        url = message.text.split(" ", 1)[1]
         if not "http" in url:
             return await msg.edit(
                 "❗ __Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
