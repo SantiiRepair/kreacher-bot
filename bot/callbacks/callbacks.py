@@ -49,6 +49,7 @@ async def _(client, callback):
         show_alert=True,
     )
 
+
 # Streaming Controls -----------------------------------------------------------------
 @kreacher.on_callback_query(filters.regex("pause_or_resume_callback"))
 async def _(client, callback):

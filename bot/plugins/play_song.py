@@ -31,16 +31,32 @@ async def play_song(client, message):
     chat = message.chat
     title = " ".join(message.text[5:])
     replied = message.reply_to_message
-    msg = await message.reply("\u23F3 **__Processing...__**")
     data = await user_info(message.from_user)
-    await sleep(2)
     download_as = os.path.join(
         current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
     if not replied and not " " in message.text:
-        await msg.edit(
-            "❗ __Master, try with an: \n\nSending song name.\n\nYouTube video link.\n\nReply to an audio file.__",
+        return await message.reply(
+            "❗ **__How to use: \n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "\U0001f50e sᴇᴀʀᴄʜ", callback_data="search_song_mode_callback"
+                        ),
+                        InlineKeyboardButton(
+                            "\u23FA\uFE0F ʏᴏᴜᴛᴜʙᴇ",
+                            callback_data="youtube_song_mode_callback",
+                        ),
+                        InlineKeyboardButton(
+                            "\U0001f3a7 ᴀᴜᴅɪᴏ", callback_data="audio_song_mode_callback"
+                        ),
+                    ]
+                ],
+            ),
         )
+    msg = await message.reply("\u23F3 **__Processing...__**")
+    await sleep(2)
     if (
         replied
         and not replied.audio
