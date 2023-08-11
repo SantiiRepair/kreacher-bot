@@ -215,9 +215,10 @@ async def play_song(client, message):
         )
     except Exception as e:
         logging.error(e)
-        await clear_queue(chat)
-        await VOICE_CHATS[chat.id].stop()
         await msg.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
-        VOICE_CHATS.pop(chat.id)
+        if chat.id in VOICE_CHATS:
+            await VOICE_CHATS[chat.id].stop()
+            await clear_queue(chat)
+            VOICE_CHATS.pop(chat.id)

@@ -35,7 +35,7 @@ async def _(client, message):
                 current_dir, f"../downloads/series/{str(uuid.uuid4())}.mp4"
             )
 
-            if "capitulo" in search or "episodio" in search:
+            if "capitulo" in search or "episodio" in search.lower():
                 series_channel = await assistant.get_chat(
                     config.ES_SERIES_CHANNEL
                 )
@@ -95,9 +95,10 @@ async def _(client, message):
                         )
     except Exception as e:
         logging.error(e)
-        await clear_queue(chat)
-        await VOICE_CHATS[chat.id].stop()
         await msg.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
-        VOICE_CHATS.pop(chat.id)
+        if chat.id in VOICE_CHATS:
+            await VOICE_CHATS[chat.id].stop()
+            await clear_queue(chat)
+            VOICE_CHATS.pop(chat.id)
