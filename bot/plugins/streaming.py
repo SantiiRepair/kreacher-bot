@@ -38,14 +38,17 @@ async def _(client, message):
                 series_channel = await assistant.get_chat(
                     config.ES_SERIES_CHANNEL
                 )
-                limit = await assistant.get()
+                limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
-                    chat_id=movies_channel.id,
+                    chat_id=series_channel.id,
                     query=search,
-                    limit=200,
+                    limit=limit,
                     filter=MessagesFilter.VIDEO,
                 ):
                     if media.video and search.lower() in media.caption.lower():
+                        await msg.edit(
+                            " **__Yeehaw, I found the serie you asked for...__**"
+                        )
                         await msg.edit("\U0001f4be **__Downloading...__**")
                         serie_file = await assistant.download_media(
                             media.video.file_id,
@@ -57,31 +60,38 @@ async def _(client, message):
                         break
 
                     else:
-                        return await msg.edit("")
+                        return await msg.edit(
+                            "**__The request has not been found in our database, please try another name__**"
+                        )
             else:
                 movies_channel = await assistant.get_chat(
                     config.ES_MOVIES_CHANNEL
                 )
-                limit = await assistant.get()
+                limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
                     chat_id=movies_channel.id,
                     query=search,
-                    limit=200,
+                    limit=limit,
                     filter=MessagesFilter.VIDEO,
                 ):
                     if media.video and search.lower() in media.caption.lower():
+                        await msg.edit(
+                            " **__Yeehaw, I found the movie you asked for...__**"
+                        )
                         await msg.edit("\U0001f4be **__Downloading...__**")
-                        serie_file = await assistant.download_media(
+                        movie_file = await assistant.download_media(
                             media.video.file_id,
                             file_name=movie,
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
-                        await on_call.start_video(serie_file, repeat=False)
-                        break
+                        await on_call.start_video(movie_file, repeat=False)
+                        return await msg.edit()
 
                     else:
-                        return await msg.edit("")
+                        return await msg.edit(
+                            "**__The request has not been found in our database, please try another name__**"
+                        )
     except Exception as e:
         logging.error(e)
         await clear_queue(chat)
