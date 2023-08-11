@@ -70,7 +70,9 @@ async def _(client, message):
                             VOICE_CHATS[chat.id] = on_call
                         await sleep(1)
                         return await on_call.start_video(
-                            serie_file, repeat=False
+                            serie_file,
+                            enable_experimental_lip_sync=True,
+                            repeat=False,
                         )
                         break
 
@@ -108,7 +110,11 @@ async def _(client, message):
                             await on_call.join(chat.id)
                             VOICE_CHATS[chat.id] = on_call
                         await sleep(1)
-                        await on_call.start_video(movie_file, repeat=False)
+                        await on_call.start_video(
+                            movie_file,
+                            enable_experimental_lip_sync=True,
+                            repeat=False,
+                        )
                         return await msg.edit("**__Streaming Movie**__")
                         break
 
