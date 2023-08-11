@@ -36,7 +36,7 @@ async def _(client, message):
                 current_dir, f"../downloads/series/{str(uuid.uuid4())}.mp4"
             )
             series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
-            regex = r"(\dx\d|capitulo|temporada|episodio|serie|parte|ep\d|t\d)"
+            regex = r"(\dx\d|cap|capitulo|t\d|temp|temporada|ep\d|episodio|serie|parte|p\d)"
             if bool(re.search(regex, search.lower())):
                 # limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
