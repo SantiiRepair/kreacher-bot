@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 from asyncio import sleep
 import logging
@@ -34,12 +35,9 @@ async def _(client, message):
             serie = os.path.join(
                 current_dir, f"../downloads/series/{str(uuid.uuid4())}.mp4"
             )
-
-            if "capitulo" in search or "episodio" in search.lower():
-                series_channel = await assistant.get_chat(
-                    config.ES_SERIES_CHANNEL
-                )
-                print(series_channel)
+            series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
+            regex = r"(\dx\d|capitulo|temporada|episodio|serie|parte|ep\d|t\d)"
+            if bool(re.search(regex, search.lower())):
                 # limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
                     chat_id=series_channel.id,
@@ -70,10 +68,10 @@ async def _(client, message):
                             "**__The request has not been found in our database, please try another name__**"
                         )
             else:
+                # limit = movies_channel["message_count"]
                 movies_channel = await assistant.get_chat(
                     config.ES_MOVIES_CHANNEL
                 )
-                # limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
                     chat_id=movies_channel.id,
                     query=search,
