@@ -11,6 +11,7 @@ from bot import assistant, kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
 from bot.instance_of.every_vc import VOICE_CHATS
+from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
     add_to_queue,
@@ -35,6 +36,10 @@ async def play_song(client, message):
     download_as = os.path.join(
         current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
+    if message.chat.type == ChatType.PRIVATE:
+        return await message.reply(
+            "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
+        )
     if not replied and not " " in message.text:
         return await message.reply(
             "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",

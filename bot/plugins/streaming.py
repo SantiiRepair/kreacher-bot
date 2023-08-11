@@ -9,6 +9,7 @@ from bot.config import config
 from bot.helpers.progress import progress
 from pyrogram.enums import MessagesFilter
 from bot.instance_of.every_vc import VOICE_CHATS
+from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
@@ -21,6 +22,10 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 async def _(client, message):
     chat = message.chat
     try:
+        if message.chat.type == ChatType.PRIVATE:
+            return await message.reply(
+                "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
+            )
         if not " " in message.text:
             return await message.reply(
                 "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**"
@@ -57,7 +62,13 @@ async def _(client, message):
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
-                        await join(chat.id)
+                        if VOICE_CHATS.get(chat.id) is None:
+                            await msg.edit(
+                                "\U0001fa84 **__Joining the voice chat...__**"
+                            )
+                            await on_call.join(chat.id)
+                            VOICE_CHATS[chat.id] = on_call
+                        await sleep(1)
                         return await on_call.start_video(
                             serie_file, repeat=False
                         )
@@ -90,7 +101,13 @@ async def _(client, message):
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
-                        await on_call.join(chat.id)
+                        if VOICE_CHATS.get(chat.id) is None:
+                            await msg.edit(
+                                "\U0001fa84 **__Joining the voice chat...__**"
+                            )
+                            await on_call.join(chat.id)
+                            VOICE_CHATS[chat.id] = on_call
+                        await sleep(1)
                         await on_call.start_video(movie_file, repeat=False)
                         return await msg.edit("**__Streaming Movie**__")
                         break

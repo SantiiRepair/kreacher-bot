@@ -6,14 +6,14 @@ from bot.instance_of.every_vc import VOICE_CHATS
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]join"))
 async def _(client, message):
-    user = await kreacher.get_chat_member(
-        message.chat.id, message.from_user.id
-    )
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
         )
-    if not user.privileges.can_manage_chat:
+    user = await kreacher.get_chat_member(
+        message.chat.id, message.from_user.id
+    )
+    if not user.privileges:
         return await message.reply(
             "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
         )
