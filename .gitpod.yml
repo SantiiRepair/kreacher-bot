@@ -6,7 +6,7 @@
 
 tasks:
     - name: Setup & Install
-      before: sudo apt update && sudo apt install cron curl expect ffmpeg git python3 python3-pip tree
+      before: sudo apt update && sudo apt install cron curl expect ffmpeg git python3 python3-pip tree -y
       init: make install
 
 
