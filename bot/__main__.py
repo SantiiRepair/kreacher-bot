@@ -15,11 +15,10 @@ async def start_bot():
         commands=[
             BotCommand("config", "Set bot configuration"),
             BotCommand("ping", "Check server latency"),
-            BotCommand(
-                "play_song", "Play audio from else reply to audio file"
-            ),
-            BotCommand("play_video", "Stream videos in voice chat"),
+            BotCommand("play_song", "Play audio in voice chat"),
+            BotCommand("play_video", "Play video in voice chat"),
             BotCommand("speedtest", "Run server speed test"),
+            BotCommand("streaming", "Any movie or series"),
         ]
     )
     print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')

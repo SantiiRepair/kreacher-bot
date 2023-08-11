@@ -71,7 +71,7 @@ async def play_song(client, message):
                 match = re.match(regex, query)
                 if not match:
                     return await msg.edit(
-                        "**__Sorry master, but this doesn't seem to be a YouTube link__** \U0001f914"
+                        "**__Sorry, but this doesn't seem to be a YouTube link__** \U0001f914"
                     )
             search = await ytsearch(query)
             name = search[0]
@@ -89,7 +89,7 @@ async def play_song(client, message):
                     "__Can't find song.\n\nTry searching with more specific title.__",
                 )
             if chat.id in QUEUE:
-                pos = await add_to_queue(chat, name, url, ref, "audio")
+                # pos = await add_to_queue(chat, name, url, ref, "audio")
                 return await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
                     # file=thumb,
@@ -103,7 +103,7 @@ async def play_song(client, message):
                 VOICE_CHATS[chat.id] = on_call
             await sleep(2)
             await on_call.start_audio(url, repeat=False)
-            await add_to_queue(chat, name, url, ref, "audio")
+            # await add_to_queue(chat, name, url, ref, "audio")
             return await msg.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
                 # file=thumb,
