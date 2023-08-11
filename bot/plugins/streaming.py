@@ -39,17 +39,19 @@ async def _(client, message):
                 series_channel = await assistant.get_chat(
                     config.ES_SERIES_CHANNEL
                 )
-                limit = movies_channel["message_count"]
+                print(series_channel)
+                # limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
                     chat_id=series_channel.id,
                     query=search,
-                    limit=limit,
+                    limit=1000,
                     filter=MessagesFilter.VIDEO,
                 ):
                     if media.video and search.lower() in media.caption.lower():
                         await msg.edit(
                             " **__Yeehaw, I found the serie you asked for...__**"
                         )
+                        await sleep(2)
                         await msg.edit("\U0001f4be **__Downloading...__**")
                         serie_file = await assistant.download_media(
                             media.video.file_id,
@@ -57,7 +59,10 @@ async def _(client, message):
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
-                        await on_call.start_video(serie_file, repeat=False)
+                        await join(chat.id)
+                        return await on_call.start_video(
+                            serie_file, repeat=False
+                        )
                         break
 
                     else:
@@ -68,17 +73,18 @@ async def _(client, message):
                 movies_channel = await assistant.get_chat(
                     config.ES_MOVIES_CHANNEL
                 )
-                limit = movies_channel["message_count"]
+                # limit = movies_channel["message_count"]
                 async for media in assistant.search_messages(
                     chat_id=movies_channel.id,
                     query=search,
-                    limit=limit,
+                    limit=1000,
                     filter=MessagesFilter.VIDEO,
                 ):
                     if media.video and search.lower() in media.caption.lower():
                         await msg.edit(
                             " **__Yeehaw, I found the movie you asked for...__**"
                         )
+                        await sleep(2)
                         await msg.edit("\U0001f4be **__Downloading...__**")
                         movie_file = await assistant.download_media(
                             media.video.file_id,
@@ -86,13 +92,15 @@ async def _(client, message):
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
+                        await on_call.join(chat.id)
                         await on_call.start_video(movie_file, repeat=False)
-                        return await msg.edit()
+                        return await msg.edit("**__Streaming Movie**__")
+                        break
 
-                    else:
-                        return await msg.edit(
-                            "**__The request has not been found in our database, please try another name__**"
-                        )
+                else:
+                    return await msg.edit(
+                        "**__The request has not been found in our database, please try another name__**"
+                    )
     except Exception as e:
         logging.error(e)
         await msg.edit(
