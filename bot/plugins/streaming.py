@@ -1,12 +1,13 @@
 import os
 import uuid
-import asyncio
+from asyncio import sleep
 import logging
 from pyrogram import filters
 from bot import assistant, kreacher, on_call
 from bot.config import config
 from bot.helpers.progress import progress
 from pyrogram.enums import MessagesFilter
+from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.queues import (
     add_to_queue,
     clear_queue,
