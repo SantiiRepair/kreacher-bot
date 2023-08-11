@@ -14,6 +14,8 @@ async def start_bot():
     await kreacher.set_bot_commands(
         commands=[
             BotCommand("config", "Set bot configuration"),
+            BotCommand("join", "Join the voice chat"),
+            BotCommand("leave", "Leave the voice chat"),
             BotCommand("ping", "Check server latency"),
             BotCommand("play_song", "Play audio in voice chat"),
             BotCommand("play_video", "Play video in voice chat"),
