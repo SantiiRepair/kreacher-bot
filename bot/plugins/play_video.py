@@ -27,7 +27,7 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
 async def _(client, message):
-    # QUEUE = load_pkl(queues, "rb", "dict")
+    # QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     replied = await message.reply_to_message
     msg = await message.reply("\u23F3 **__Processing...__**")
@@ -175,7 +175,7 @@ async def _(client, message):
 """
 @kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
 async def playlist(message):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     user = message.get_sender()
     if not user.is_admin:
@@ -207,7 +207,7 @@ async def playlist(message):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
 async def pause(message):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     user = message.get_sender()
     if not user.is_admin:
@@ -227,7 +227,7 @@ async def pause(message):
 
 @kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
 async def resume(message):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     user = message.get_sender()
     if not user.is_admin:

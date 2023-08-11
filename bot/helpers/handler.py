@@ -10,7 +10,7 @@ actives = os.path.join(current_dir, "../dbs/actives.pkl")
 
 
 async def skip_current(chat):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)
@@ -19,7 +19,7 @@ async def skip_current(chat):
         await VOICE_CHATS[chat.id].stop()
         clear_queue(chat)
         VOICE_CHATS.pop(chat.id)
-        ACTIVE = load_pkl(actives, "rb", "list")
+        ACTIVE = await load_pkl(actives, "rb", "list")
         ACTIVE.remove(chat.id)
         dump_pkl(actives, "wb", ACTIVE)
         return 1
@@ -38,7 +38,7 @@ async def skip_current(chat):
 
 
 async def next_item(chat, x: int):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     if chat.id not in QUEUE:
         return 0
     chat_queue = get_queue(chat)

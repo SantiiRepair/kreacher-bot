@@ -113,7 +113,7 @@ async def _(client, callback):
 
 @kreacher.on_callback_query(filters.regex("next_callback"))
 async def _(client, callback):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     chat = callback.chat
     if len(callback.text.split()) < 2:
         op = await skip_current(chat)
@@ -142,7 +142,7 @@ async def _(client, callback):
 
 @kreacher.on_callback_query(filters.regex("end_callback"))
 async def _(client, callback):
-    QUEUE = load_pkl(queues, "rb", "dict")
+    QUEUE = await load_pkl(queues, "rb", "dict")
     chat = callback.chat
     QUEUE.pop(chat.id)
     dump_pkl(queues, "wb", QUEUE)
