@@ -1,4 +1,7 @@
+import os
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from tinydb import TinyDB, where
+from datetime import datetime
 from pyrogram.enums.chat_type import ChatType
 from bot import kreacher
 from pyrogram import filters
@@ -23,12 +26,32 @@ Have a... tolerable... day!__ \U0001F52E
     )
 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
 async def _(client, message):
     chat = message.chat
+    chats = os.path.join(current_dir, "../dbs/chats.json")
+    db = TinyDB(chats)
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     if message.chat.type == ChatType.PRIVATE:
+        user = await kreacher.get_users(message.from_user.id)
+        if not db.search(where("chats") == chat.id):
+            db.insert(
+                {
+                    "chats": {
+                        "id": chat.id,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "lang": user.language_code,
+                        "since": datetime.utcnow(),
+                        "subs_type": None,
+                        "subs_period": None,
+                    }
+                }
+            )
         return await kreacher.send_photo(
             chat.id,
             photo=config.START_IMG,
