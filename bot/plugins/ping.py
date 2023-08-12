@@ -5,7 +5,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]ping"))
 async def _(client, message):
-    await message.reply(
+    return await message.reply(
         "**__PONG!!__**",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -17,4 +17,3 @@ async def _(client, message):
             ]
         ),
     )
-    await message.delete()
