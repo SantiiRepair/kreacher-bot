@@ -28,7 +28,11 @@ async def _(client, callback):
                             "\u23ED\uFE0F", callback_data="next"
                         ),
                     ],
-                    [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="controls")],
+                    [
+                        InlineKeyboardButton(
+                            "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
+                        )
+                    ],
                 ]
             ),
         )
@@ -41,7 +45,7 @@ async def _(client, callback):
                     InlineKeyboardButton("\u23EA", callback_data="back"),
                     InlineKeyboardButton(
                         "\u23F8\uFE0F",
-                        callback_data="pause_or_resume",
+                        callback_data="\U0001f52e ᴄᴏɴᴛʀᴏʟs_or_resume",
                     ),
                     InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
                 ],

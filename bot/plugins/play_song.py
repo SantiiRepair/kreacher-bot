@@ -127,7 +127,7 @@ async def play_song(client, message):
                         ],
                         [
                             InlineKeyboardButton(
-                                "cʟᴏꜱᴇ", callback_data="controls"
+                                "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
                             )
                         ],
                     ]
@@ -176,7 +176,7 @@ async def play_song(client, message):
                         ],
                         [
                             InlineKeyboardButton(
-                                "cʟᴏꜱᴇ", callback_data="controls"
+                                "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
                             )
                         ],
                     ]
@@ -206,7 +206,11 @@ async def play_song(client, message):
                             callback_data="next",
                         ),
                     ],
-                    [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="controls")],
+                    [
+                        InlineKeyboardButton(
+                            "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
+                        )
+                    ],
                 ]
             ),
         )
