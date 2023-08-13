@@ -8,7 +8,7 @@ from bot import assistant, kreacher, on_call
 from bot.config import config
 from bot.helpers.progress import progress
 from pyrogram.enums import MessagesFilter
-from bot.instance_of.every_vc import VOICE_CHATS
+from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
     add_to_queue,

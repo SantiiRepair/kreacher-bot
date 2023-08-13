@@ -1,5 +1,4 @@
 import os
-import pickle
 from bot import on_call
 from bot.helpers.handler import skip_current
 from bot.helpers.queues import clear_queue, get_active_chats

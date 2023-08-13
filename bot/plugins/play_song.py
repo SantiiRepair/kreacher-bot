@@ -10,7 +10,7 @@ from bot.helpers.user_info import user_info
 from bot import kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
-from bot.instance_of.every_vc import VOICE_CHATS
+from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (

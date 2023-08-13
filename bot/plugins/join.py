@@ -1,7 +1,7 @@
 from pyrogram import filters
 from bot import on_call, kreacher
 from pyrogram.enums.chat_type import ChatType
-from bot.instance_of.every_vc import VOICE_CHATS
+from bot.dbs.instances import VOICE_CHATS
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]join"))

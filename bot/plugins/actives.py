@@ -1,7 +1,7 @@
 from bot import kreacher
 from asyncio import sleep
 from pyrogram import filters
-from bot.instance_of.every_vc import VOICE_CHATS
+from bot.dbs.instances import VOICE_CHATS
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]actives"))

@@ -1,7 +1,7 @@
 import os
 from bot import kreacher
 from bot.helpers.pkl import load_pkl, dump_pkl
-from bot.instance_of.every_vc import VOICE_CHATS
+from bot.dbs.instances import VOICE_CHATS
 from bot.helpers.handler import next_item, skip_current
 from pyrogram import filters, Client
 from pyrogram.types import CallbackQuery

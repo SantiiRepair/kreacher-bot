@@ -1,1 +1,0 @@
-VOICE_CHATS = {}
