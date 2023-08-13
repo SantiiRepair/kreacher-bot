@@ -9,7 +9,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]config"))
-async def _(client, message):
+async def _(client: Client, message: Message):
     registry = os.path.join(current_dir, "../dbs/registry.json")
     db = TinyDB(registry)
     chats = db.table("chats")
