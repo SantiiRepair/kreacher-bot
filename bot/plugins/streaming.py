@@ -55,10 +55,10 @@ async def _(client, message):
                             " **__Yeehaw, I found the serie you asked for...__**"
                         )
                         await sleep(2)
-                        await msg.edit("\U0001f4be **__Downloading...__**")
+                        await msg.edt("\U0001f4be **__Downloading...__**")
                         serie_file = await assistant.download_media(
                             media.video.file_id,
-                            file_name=movie,
+                            file_name=serie,
                             progress=progress,
                             progress_args=(client, chat, msg),
                         )
@@ -69,7 +69,7 @@ async def _(client, message):
                             await on_call.join(chat.id)
                             VOICE_CHATS[chat.id] = on_call
                         await sleep(1)
-                        return await on_call.start_video(
+                        await on_call.start_video(
                             serie_file,
                             enable_experimental_lip_sync=True,
                             repeat=False,

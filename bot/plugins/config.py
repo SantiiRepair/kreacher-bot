@@ -67,7 +67,7 @@ async def _(client: Client, message: Message):
     if message.new_chat_members and bot_me.id in [
         user.id for user in message.new_chat_members
     ]:
-        if not groups.search(Query().id == message.chat.id):
+        if not bool(groups.search(Query().id == str(message.chat.id))):
             await client.send_message(
                 message.chat.id,
                 "**__Whoops!\n\nYou can't use me without a subscription__**",
