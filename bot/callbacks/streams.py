@@ -12,8 +12,9 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 @kreacher.on_callback_query(filters.regex("pause_or_resume"))
 async def _(client, callback):
-    if VOICE_CHATS[callback.id].is_video_paused:
-        await VOICE_CHATS[callback.id].set_pause(False)
+    print(callback.chat_instance)
+    if VOICE_CHATS[callback.chat_instance].is_video_paused:
+        await VOICE_CHATS[callback.chat_instance].set_pause(False)
         return await callback.edit_message_text(
             "\U00002378 __Started Video Streaming!__",
             reply_markup=InlineKeyboardMarkup(
@@ -36,7 +37,7 @@ async def _(client, callback):
                 ]
             ),
         )
-    await VOICE_CHATS[callback.id].set_pause(True)
+    await VOICE_CHATS[callback.chat_instance].set_pause(True)
     return await callback.edit_message_text(
         "\U00002378 __Started Video Streaming!__",
         reply_markup=InlineKeyboardMarkup(
