@@ -14,14 +14,17 @@ async def start_bot():
     await kreacher.set_bot_commands(
         commands=[
             BotCommand("config", "Set bot configuration"),
+            BotCommand("help", "How to use this one"),
             BotCommand("join", "Join the voice chat"),
             BotCommand("leave", "Leave the voice chat"),
+            BotCommand("logs", "Get server log file"),
             BotCommand("me", "Info about your status"),
             BotCommand("ping", "Check server latency"),
             BotCommand("play_song", "Play audio in voice chat"),
             BotCommand("play_video", "Play video in voice chat"),
             BotCommand("speedtest", "Run server speed test"),
             BotCommand("streaming", "Any movie or series"),
+            BotCommand("subscription", "Subscription get or info"),
         ]
     )
     print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')
