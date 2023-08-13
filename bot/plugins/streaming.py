@@ -74,6 +74,8 @@ async def _(client, message):
                             enable_experimental_lip_sync=True,
                             repeat=False,
                         )
+                        await msg.edit("**__Streaming Serie**__")
+                        return await msg.pin()
                         break
 
                     else:
@@ -115,7 +117,8 @@ async def _(client, message):
                             enable_experimental_lip_sync=True,
                             repeat=False,
                         )
-                        return await msg.edit("**__Streaming Movie**__")
+                        await msg.edit("**__Streaming Movie**__")
+                        return await msg.pin()
                         break
 
                 else:

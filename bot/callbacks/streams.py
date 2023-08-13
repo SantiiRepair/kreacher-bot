@@ -17,7 +17,7 @@ async def _(client: Client, callback: CallbackQuery):
     if VOICE_CHATS[chat.id].is_video_paused:
         await VOICE_CHATS[chat.id].set_pause(False)
         return await callback.edit_message_text(
-            "\U00002378 __Started Video Streaming!__",
+            callback.message.text,
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
@@ -30,28 +30,22 @@ async def _(client: Client, callback: CallbackQuery):
                             "\u23ED\uFE0F", callback_data="next"
                         ),
                     ],
-                    [
-                        InlineKeyboardButton(
-                            "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
-                        )
-                    ],
                 ]
             ),
         )
     await VOICE_CHATS[chat.id].set_pause(True)
     return await callback.edit_message_text(
-        "\U00002378 __Started Video Streaming!__",
+        callback.message.text,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton("\u23EA", callback_data="back"),
                     InlineKeyboardButton(
                         "\u23F8\uFE0F",
-                        callback_data="\U0001f52e ᴄᴏɴᴛʀᴏʟs_or_resume",
+                        callback_data="pause_or_resume",
                     ),
-                    InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
+                    InlineKeyboardButton("\u25B6\uFE0F", callback_data="next"),
                 ],
-                [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="controls")],
             ]
         ),
     )

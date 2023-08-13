@@ -3,11 +3,11 @@ import re
 import uuid
 import logging
 from asyncio import sleep
-from pyrogram import filters
-from bot.config import config
+from pyrogram import filters, Client
+from pyrogram.types import Message
 from bot.helpers.pkl import load_pkl
 from bot.helpers.user_info import user_info
-from bot import assistant, kreacher, on_call
+from bot import kreacher, on_call
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
 from bot.instance_of.every_vc import VOICE_CHATS
@@ -28,7 +28,7 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
-async def play_song(client, message):
+async def play_song(client: Client, message: Message):
     QUEUE = await load_pkl(queues, "rb", "dict")
     chat = message.chat
     replied = message.reply_to_message
@@ -107,7 +107,7 @@ async def play_song(client, message):
             await sleep(2)
             await on_call.start_audio(url, repeat=False)
             # await add_to_queue(chat, name, url, ref, "audio")
-            return await msg.edit(
+            await msg.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
                 # file=thumb,
                 reply_markup=InlineKeyboardMarkup(
@@ -125,14 +125,10 @@ async def play_song(client, message):
                                 callback_data="next_",
                             ),
                         ],
-                        [
-                            InlineKeyboardButton(
-                                "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
-                            )
-                        ],
                     ]
                 ),
             )
+            return await msg.pin()
         if replied and replied.audio:
             name = "Audio File"
             await msg.edit("\U0001f4be **__Downloading...__**")
@@ -206,14 +202,10 @@ async def play_song(client, message):
                             callback_data="next",
                         ),
                     ],
-                    [
-                        InlineKeyboardButton(
-                            "\U0001f52e ᴄᴏɴᴛʀᴏʟs", callback_data="controls"
-                        )
-                    ],
                 ]
             ),
         )
+        return await msg.pin()
     except Exception as e:
         logging.error(e)
         await msg.edit(
