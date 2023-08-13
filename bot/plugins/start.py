@@ -4,6 +4,7 @@ from tinydb import TinyDB, Query
 from datetime import datetime
 from pyrogram.enums.chat_type import ChatType
 from bot import kreacher
+from bot.helpers.user_info import user_info
 from pyrogram import filters
 from bot.config import config
 
@@ -32,23 +33,27 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
 async def _(client, message):
     chat = message.chat
+    async for img in kreacher.get_chat_photos(message.from_user.id, limit=1):
+        photo = img
+    user = await user_info(message.from_user)
     registry = os.path.join(current_dir, "../dbs/registry.json")
     db = TinyDB(registry)
     chats = db.table("chats")
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     if message.chat.type == ChatType.PRIVATE:
-        user = await kreacher.get_users(message.from_user.id)
-        if not chats.search(Query().id == chat.id):
+        if not chats.search(Query().id == message.from_user.id):
             chats.insert(
                 {
-                    "id": chat.id,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "lang": user.language_code,
-                    "since": str(datetime.utcnow()),
-                    "subs_type": None,
-                    "subs_period": None,
+                    "id": message.from_user.id,
+                    "first_name": user["first_name"],
+                    "last_name": user["last_name"],
+                    "lang_code": user["language_code"],
+                    "linked": user["linked"],
+                    "photo": photo.file_id,
+                    "since": str(datetime.utcnow()).split(" ", 1)[0],
+                    "subscription": None,
+                    "username": f"@{user['username']}",
                 }
             )
         return await kreacher.send_photo(
@@ -59,11 +64,11 @@ async def _(client, message):
                 [
                     [
                         InlineKeyboardButton(
-                            "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
+                            "\U0001f52e ᴀᴅᴅ ᴍᴇ",
                             url=f"https://t.me/{config.BOT_USERNAME}?startgroup=true",
                         ),
                         InlineKeyboardButton(
-                            "/U00002753 ʜᴇʟᴘ", callback_data="help"
+                            "\u2139\uFE0F ʜᴇʟᴘ", callback_data="help"
                         ),
                     ]
                 ]

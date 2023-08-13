@@ -1,7 +1,7 @@
 __pycache__
 unknown_errors.txt
 cache
-logs
+# logs
 downloads
 kreacher.bot.session
 kreacher.bot.session-journal
@@ -11,6 +11,3 @@ kreacher_env
 
 .env
 :memory:.session
-
-# dbs
-chats.json.lock
