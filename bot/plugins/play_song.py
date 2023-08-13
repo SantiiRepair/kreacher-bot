@@ -48,19 +48,19 @@ async def play_song(client, message):
                     [
                         InlineKeyboardButton(
                             "sᴇᴀʀᴄʜ",
-                            callback_data="search_song_mode_callback",
+                            callback_data="search_song_mode",
                         )
                     ],
                     [
                         InlineKeyboardButton(
                             "ʏᴏᴜᴛᴜʙᴇ",
-                            callback_data="youtube_song_mode_callback",
+                            callback_data="youtube_song_mode",
                         )
                     ],
                     [
                         InlineKeyboardButton(
                             "ᴀᴜᴅɪᴏ",
-                            callback_data="audio_song_mode_callback",
+                            callback_data="audio_song_mode",
                         )
                     ],
                 ],
@@ -80,10 +80,8 @@ async def play_song(client, message):
                     )
             search = await ytsearch(query)
             name = search[0]
-            title = search[0]
             ref = search[1]
             duration = search[2]
-            videoid = search[4]
             # thumb = await gen_thumb(videoid)
             fmt = "best[height<=?720][width<=?1280]"
             hm, url = await ytdl(fmt, ref)
@@ -116,20 +114,20 @@ async def play_song(client, message):
                     [
                         [
                             InlineKeyboardButton(
-                                "\u23EA", callback_data="back_callback"
+                                "\u23EA", callback_data="back"
                             ),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
-                                callback_data="pause_or_resume_callback",
+                                callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton(
                                 "\u23ED\uFE0F",
-                                callback_data="next_callback",
+                                callback_data="next_",
                             ),
                         ],
                         [
                             InlineKeyboardButton(
-                                "cʟᴏꜱᴇ", callback_data="end_callback"
+                                "cʟᴏꜱᴇ", callback_data="controls"
                             )
                         ],
                     ]
@@ -166,19 +164,19 @@ async def play_song(client, message):
                     [
                         [
                             InlineKeyboardButton(
-                                "\u23EA", callback_data="back_callback"
+                                "\u23EA", callback_data="back"
                             ),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
-                                callback_data="pause_or_resume_callback",
+                                callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton(
-                                "\u23ED\uFE0F", callback_data="next_callback"
+                                "\u23ED\uFE0F", callback_data="next"
                             ),
                         ],
                         [
                             InlineKeyboardButton(
-                                "cʟᴏꜱᴇ", callback_data="end_callback"
+                                "cʟᴏꜱᴇ", callback_data="controls"
                             )
                         ],
                     ]
@@ -198,23 +196,17 @@ async def play_song(client, message):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton(
-                            "\u23EA", callback_data="back_callback"
-                        ),
+                        InlineKeyboardButton("\u23EA", callback_data="back"),
                         InlineKeyboardButton(
                             "\u23F8\uFE0F",
-                            callback_data="pause_or_resume_callback",
+                            callback_data="pause_or_resume",
                         ),
                         InlineKeyboardButton(
                             "\u23ED\uFE0F",
-                            callback_data="next_callback",
+                            callback_data="next",
                         ),
                     ],
-                    [
-                        InlineKeyboardButton(
-                            "cʟᴏꜱᴇ", callback_data="end_callback"
-                        )
-                    ],
+                    [InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="controls")],
                 ]
             ),
         )
