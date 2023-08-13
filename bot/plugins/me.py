@@ -32,7 +32,7 @@ async def _(client, message):
                 ]
             ]
         )
-        if user[0]["subsciption"]
+        if user[0]["subscription"]
         else InlineKeyboardMarkup(
             [
                 [
@@ -50,8 +50,8 @@ async def _(client, message):
     )
     await kreacher.download_media(user[0]["photo"], file_name=document)
     await message.reply_document(
-        caption=caption,
         document=document,
+        caption=caption,
         reply_markup=reply_markup,
     )
     os.remove(document)
