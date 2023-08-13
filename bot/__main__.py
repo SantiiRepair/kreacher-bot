@@ -24,7 +24,7 @@ async def start_bot():
             BotCommand("play_video", "Play video in voice chat"),
             BotCommand("speedtest", "Run server speed test"),
             BotCommand("streaming", "Any movie or series"),
-            BotCommand("subscription", "Subscription get or info"),
+            BotCommand("subscription", "Info or status"),
         ]
     )
     print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')
