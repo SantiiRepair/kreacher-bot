@@ -15,7 +15,8 @@
     },
     "run": {
       "name": "run",
-      "command": "make run_bot"
+      "command": "make run_bot",
+      "runAtStart": true
     },
     "session": {
       "name": "session",

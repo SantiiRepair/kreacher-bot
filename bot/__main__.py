@@ -16,6 +16,7 @@ async def start_bot():
             BotCommand("config", "Set bot configuration"),
             BotCommand("join", "Join the voice chat"),
             BotCommand("leave", "Leave the voice chat"),
+            BotCommand("me", "Info about your status"),
             BotCommand("ping", "Check server latency"),
             BotCommand("play_song", "Play audio in voice chat"),
             BotCommand("play_video", "Play video in voice chat"),
