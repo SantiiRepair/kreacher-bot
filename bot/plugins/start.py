@@ -33,7 +33,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
 async def _(client: Client, message: Message):
-    chat = message.chat
     async for img in kreacher.get_chat_photos(message.from_user.id, limit=1):
         photo = img
     user = await user_info(message.from_user)
@@ -58,7 +57,7 @@ async def _(client: Client, message: Message):
                 }
             )
         return await kreacher.send_photo(
-            chat.id,
+            message.chat.id,
             photo=config.START_IMG,
             caption=PM_START_TEXT(message.from_user.first_name),
             reply_markup=InlineKeyboardMarkup(

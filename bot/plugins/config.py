@@ -56,3 +56,20 @@ async def _(client: Client, message: Message):
         reply_markup=reply_markup,
     )
     os.remove(document)
+
+
+@kreacher.on_message(filters.new_chat_members)
+async def _(client: Client, message: Message):
+    registry = os.path.join(current_dir, "../dbs/registry.json")
+    db = TinyDB(registry)
+    groups = db.table("groups")
+    bot_me = await client.get_me()
+    if message.new_chat_members and bot_me.id in [
+        user.id for user in message.new_chat_members
+    ]:
+        if not groups.search(Query().id == message.chat.id):
+            await client.send_message(
+                message.chat.id,
+                "**__Whoops!\n\nYou can't use me without a subscription__**",
+            )
+            return await client.leave_chat(message.chat.id)
