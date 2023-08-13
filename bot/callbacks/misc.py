@@ -1,5 +1,6 @@
 import os
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import CallbackQuery
 from time import time
 from bot import kreacher
 from bot.config import config
@@ -16,7 +17,7 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_callback_query(filters.regex("song_youtube_mode"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     start = time()
     current_time = datetime.utcnow()
     delta_ping = time() - start
@@ -30,7 +31,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("song_audio_or_voice_mode"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     start = time()
     current_time = datetime.utcnow()
     delta_ping = time() - start
@@ -44,7 +45,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("pong"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     start = time()
     current_time = datetime.utcnow()
     delta_ping = time() - start
@@ -58,7 +59,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("help"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     await callback.edit_message_text(
@@ -76,7 +77,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("admin"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     await callback.edit_message_text(
         ADMIN_TEXT,
         reply_markup=InlineKeyboardMarkup(
@@ -86,7 +87,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("play"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):-
     await callback.edit_message_text(
         PLAY_TEXT,
         reply_markup=InlineKeyboardMarkup(
@@ -96,7 +97,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("start"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     if config.MANAGEMENT_MODE == "ENABLE":
         return
     if callback.chat.type == ChatType.PRIVATE:
@@ -119,7 +120,7 @@ async def _(client, callback):
 
 
 @kreacher.on_callback_query(filters.regex("cls"))
-async def _(client, callback):
+async def _(client: Client, callback: CallbackQuery):
     return await callback.delete()
 
 
