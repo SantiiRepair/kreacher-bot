@@ -87,7 +87,7 @@ async def _(client: Client, callback: CallbackQuery):
 
 
 @kreacher.on_callback_query(filters.regex("play"))
-async def _(client: Client, callback: CallbackQuery):-
+async def _(client: Client, callback: CallbackQuery):
     await callback.edit_message_text(
         PLAY_TEXT,
         reply_markup=InlineKeyboardMarkup(
