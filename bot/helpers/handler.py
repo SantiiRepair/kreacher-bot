@@ -1,5 +1,4 @@
 import os
-import pickle
 from bot.helpers.pkl import load_pkl, dump_pkl
 from bot.instance_of.every_vc import VOICE_CHATS
 from bot.helpers.queues import clear_queue, get_queue, pop_an_item

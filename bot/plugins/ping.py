@@ -8,12 +8,6 @@ async def _(client, message):
     return await message.reply(
         "**__PONG!!__**",
         reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "\U0001f3d3", callback_data="pong_callback"
-                    )
-                ]
-            ]
+            [[InlineKeyboardButton("\U0001f3d3", callback_data="pong")]]
         ),
     )
