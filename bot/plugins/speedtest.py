@@ -1,6 +1,7 @@
 import asyncio
 from speedtest import Speedtest
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import Message
 from bot import kreacher
 
 
@@ -18,7 +19,7 @@ def testspeed():
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]speedtest"))
-async def _(client, message):
+async def _(client: Client, message: Message):
     chat = message.chat
     try:
         msg = await message.reply(

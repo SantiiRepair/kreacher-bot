@@ -5,7 +5,8 @@ from datetime import datetime
 from pyrogram.enums.chat_type import ChatType
 from bot import kreacher
 from bot.helpers.user_info import user_info
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import Message
 from bot.config import config
 
 
@@ -31,7 +32,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
-async def _(client, message):
+async def _(client: Client, message: Message):
     chat = message.chat
     async for img in kreacher.get_chat_photos(message.from_user.id, limit=1):
         photo = img

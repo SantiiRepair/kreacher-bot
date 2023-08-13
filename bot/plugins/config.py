@@ -1,13 +1,14 @@
 import os
 from bot import kreacher
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import Message
 from tinydb import TinyDB, Query
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-@kreacher.on_message(filters.regex(pattern="^[!?/]me"))
+@kreacher.on_message(filters.regex(pattern="^[!?/]config"))
 async def _(client, message):
     registry = os.path.join(current_dir, "../dbs/registry.json")
     db = TinyDB(registry)

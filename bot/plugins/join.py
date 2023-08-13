@@ -1,11 +1,12 @@
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import Message
 from bot import on_call, kreacher
 from pyrogram.enums.chat_type import ChatType
 from bot.dbs.instances import VOICE_CHATS
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]join"))
-async def _(client, message):
+async def _(client: Client, message: Message):
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
