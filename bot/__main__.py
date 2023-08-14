@@ -40,6 +40,8 @@ if __name__ == "__main__":
     try:
         pyrogram.idle()
     except KeyboardInterrupt:
+        pass
+    finally:
         kreacher.disconnect()
         assistant.disconnect()
         print(f'{colored("[INFO]", "blue")}: CLIENTS DISCONNECTED')
