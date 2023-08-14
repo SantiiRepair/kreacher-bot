@@ -101,7 +101,7 @@ async def _(client: Client, message: Message):
         elif message.reply_to_message.video or message.reply_to_message.file:
             await msg.edit("🔄 **__Downloading...__**")
             media = await assistant.download_media(
-                message.reply_to_message,
+                message.reply_to_message.video,
                 file_name=download_as,
                 progress=progress,
                 progress_args=(client, message.chat, msg)
