@@ -73,10 +73,11 @@ async def _(client: Client, message: Message):
                 await sleep(2)
                 await on_call.start_video(url, with_audio=True, repeat=False)
                 await msg.delete()
-                await msg.edit(
-                    "\U00002378 **Started video streaming!**",
-                    file=thumb,
-                    reply_markup=[
+                await client.send_photo(
+                    message.chat.id,
+                    caption="\U00002378 **Started video streaming!**",
+                    photo=thumb,
+                    reply_markup=InlineKeyboardMarkup([
                         [
                             InlineKeyboardButton(
                                 "\u23EA", callback_data="back"
@@ -89,7 +90,7 @@ async def _(client: Client, message: Message):
                                 "\u23ED\uFE0F", callback_data="next"
                             ),
                         ],
-                    ],
+                    ],)
                 )
         elif message.reply_to_message.video or message.reply_to_message.file:
             await msg.edit("🔄 **__Downloading...__**")
@@ -101,10 +102,11 @@ async def _(client: Client, message: Message):
             await sleep(2)
             await on_call.start_video(media, with_audio=True, repeat=False)
             await msg.delete()
-            await message.reply(
-                "**Started video streaming!**",
-                file=thumb,
-                reply_markup=[
+            await client.send_photo(
+                message.chat.id,
+                caption="**Started video streaming!**",
+                photo=thumb,
+                reply_markup=InlineKeyboardMarkup([
                     [
                         InlineKeyboardButton("\u23EA", callback_data="back"),
                         InlineKeyboardButton(
@@ -115,7 +117,7 @@ async def _(client: Client, message: Message):
                             "\u23ED\uFE0F", callback_data="next"
                         ),
                     ],
-                ],
+                ],)
             )
     except Exception as e:
         logging.error(e)
