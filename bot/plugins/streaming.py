@@ -73,6 +73,7 @@ async def _(client, message):
                             serie_file,
                             enable_experimental_lip_sync=True,
                             repeat=False,
+                            with_audio=True,
                         )
                         await msg.edit("**__Streaming Serie**__")
                         return await msg.pin()
@@ -116,6 +117,7 @@ async def _(client, message):
                             movie_file,
                             enable_experimental_lip_sync=True,
                             repeat=False,
+                            with_audio=True,
                         )
                         await msg.edit("**__Streaming Movie**__")
                         return await msg.pin()
