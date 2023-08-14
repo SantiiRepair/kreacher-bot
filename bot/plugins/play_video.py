@@ -104,8 +104,13 @@ async def _(client: Client, message: Message):
                 message.reply_to_message,
                 file_name=download_as,
                 progress=progress,
+                progress_args=(client, message.chat, msg)
             )
-            await sleep(2)
+            if VOICE_CHATS.get(message.chat.id) is None:
+                await msg.edit("**__Joining the voice chat...__** \u23F3")
+                await on_call.join(message.chat.id)
+                VOICE_CHATS[message.chat.id] = on_call
+                await sleep(2)
             await on_call.start_video(media, with_audio=True, repeat=False)
             # await msg.delete()
             await msg.edit(
