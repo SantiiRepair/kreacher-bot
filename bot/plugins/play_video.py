@@ -35,7 +35,7 @@ async def _(client: Client, message: Message):
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         download_as = os.path.join(
-            current_dir, f"../downloads/videos/{str(uuid.uuid4())}"
+            current_dir, f"../downloads/videos/{str(uuid.uuid4())}.mp4"
         )
         if not message.reply_to_message and not " " in message.text:
             return await msg.edit(
