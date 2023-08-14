@@ -1,8 +1,10 @@
 import os
 import re
 import uuid
+import logging
 from asyncio import sleep
-from pyrogram import filters
+from pyrogram import filters, Client
+from pyrogram.types import Message
 
 # from bot.helpers.pkl import load_pkl
 from bot.helpers.queues import get_queue
@@ -12,7 +14,10 @@ from bot.dbs.instances import VOICE_CHATS
 from bot.helpers.progress import progress
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.yt import ydl
-
+from bot.helpers.queues import (
+    add_to_queue,
+    clear_queue,
+)
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
@@ -24,44 +29,34 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
-async def _(client, message):
+async def _(client: Client, message: Message):
     # QUEUE = await load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    replied = await message.reply_to_message
-    msg = await message.reply("\u23F3 **__Processing...__**")
-    await sleep(2)
-    download_as = os.path.join(
-        current_dir, f"../downloads/videos/{str(uuid.uuid4())}"
-    )
-    if not replied and not " " in message.text:
-        return await msg.edit(
-            "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
+    try:
+        msg = await message.reply("\u23F3 **__Processing...__**")
+        await sleep(2)
+        download_as = os.path.join(
+            current_dir, f"../downloads/videos/{str(uuid.uuid4())}"
         )
-
-    elif " " in message.text:
-        url = message.text.split(" ", 1)[1]
-        if not "http" in url:
+        if not message.reply_to_message and not " " in message.text:
             return await msg.edit(
-                "❗ __Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
+                "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
             )
-        regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-        match = re.match(regex, url)
-        if VOICE_CHATS.get(chat.id) is None:
-            try:
-                await msg.edit("**__Joining the voice chat...__** \u23F3")
-                await on_call.join(chat.id)
-                VOICE_CHATS[chat.id] = on_call
-                await sleep(2)
-            except Exception as e:
-                await msg.edit(
-                    f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+
+        elif " " in message.text:
+            url = message.text.split(" ", 1)[1]
+            if not "http" in url:
+                return await msg.edit(
+                    "❗ __Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
                 )
-                await VOICE_CHATS[chat.id].stop()
-                VOICE_CHATS.pop(chat.id)
-                return await sleep(2)
-        if match:
-            await msg.edit("🔄 **__Starting YouTube video stream...__**")
-            try:
+            regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
+            match = re.match(regex, url)
+            if VOICE_CHATS.get(message.chat.id) is None:
+                await msg.edit("**__Joining the voice chat...__** \u23F3")
+                await on_call.join(message.chat.id)
+                VOICE_CHATS[message.chat.id] = on_call
+                await sleep(2)
+            if match:
+                await msg.edit("🔄 **__Starting YouTube video stream...__**")
                 meta = ydl.extract_info(url=url, download=False)
                 formats = meta.get("formats", [meta])
                 for f in formats:
@@ -72,62 +67,37 @@ async def _(client, message):
                 thumbid = oppp["thumbnails"][0]["url"]
                 split = thumbid.split("?")
                 thumb = split[0].strip()
-            except Exception as e:
+
+            else:
+                await msg.edit("🔄 **__Starting live video stream...__**")
+                await sleep(2)
+                await on_call.start_video(url, with_audio=True, repeat=False)
+                await msg.delete()
                 await msg.edit(
-                    f"❌ __Master, YouTube download error!__ \n\n`Error: {e}`",
+                    "\U00002378 **Started video streaming!**",
+                    file=thumb,
+                    reply_markup=[
+                        [
+                            InlineKeyboardButton(
+                                "\u23EA", callback_data="back"
+                            ),
+                            InlineKeyboardButton(
+                                "\u23F8\uFE0F",
+                                callback_data="pause_or_resume",
+                            ),
+                            InlineKeyboardButton(
+                                "\u23ED\uFE0F", callback_data="next"
+                            ),
+                        ],
+                    ],
                 )
-                print(e)
-                await VOICE_CHATS[chat.id].stop()
-                VOICE_CHATS.pop(chat.id)
-                return await sleep(2)
-
-        else:
-            await msg.edit("🔄 **__Starting live video stream...__**")
-
-        try:
-            await sleep(2)
-            await on_call.start_video(url, with_audio=True, repeat=False)
-            await msg.delete()
-            await msg.edit(
-                "\U00002378 **Started video streaming!**",
-                file=thumb,
-                reply_markup=[
-                    [
-                        InlineKeyboardButton(
-                            "\u23EA", callback_data="back_callback"
-                        ),
-                        InlineKeyboardButton(
-                            "\u23F8\uFE0F",
-                            callback_data="pause_or_resume_callback",
-                        ),
-                        InlineKeyboardButton(
-                            "\u23ED\uFE0F", callback_data="next_callback"
-                        ),
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "cʟᴏꜱᴇ", callback_data="end_callback"
-                        )
-                    ],
-                ],
+        elif message.reply_to_message.video or message.reply_to_message.file:
+            await msg.edit("🔄 **__Downloading...__**")
+            media = await assistant.download_media(
+                message.reply_to_message,
+                file_name=download_as,
+                progress=progress,
             )
-        except Exception as e:
-            await msg.edit(
-                f"❌ **An error occoured!** \n\n`Error: {e}`",
-            )
-            await VOICE_CHATS[chat.id].stop()
-            VOICE_CHATS.pop(chat.id)
-            return await sleep(2)
-
-    elif replied.video or replied.file:
-        await msg.edit("🔄 **__Downloading...__**")
-        media = await assistant.download_media(
-            replied,
-            file_name=download_as,
-            progress=progress,
-        )
-
-        try:
             await sleep(2)
             await on_call.start_video(media, with_audio=True, repeat=False)
             await msg.delete()
@@ -136,38 +106,26 @@ async def _(client, message):
                 file=thumb,
                 reply_markup=[
                     [
-                        InlineKeyboardButton(
-                            "\u23EA", callback_data="back_callback"
-                        ),
+                        InlineKeyboardButton("\u23EA", callback_data="back"),
                         InlineKeyboardButton(
                             "\u23F8\uFE0F",
-                            callback_data="pause_or_resume_callback",
+                            callback_data="pause_or_resume",
                         ),
                         InlineKeyboardButton(
-                            "\u23ED\uFE0F", callback_data="next_callback"
+                            "\u23ED\uFE0F", callback_data="next"
                         ),
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "cʟᴏꜱᴇ", callback_data="end_callback"
-                        )
                     ],
                 ],
             )
-        except Exception as e:
-            await msg.edit(
-                f"❌ **An error occoured!** \n\n`Error: {e}`",
-            )
-            print(e)
-            await VOICE_CHATS[chat.id].stop()
-            VOICE_CHATS.pop(chat.id)
-            return await sleep(2)
-
-    else:
+    except Exception as e:
+        logging.error(e)
         await msg.edit(
-            "__\U0001F9D9 Do you want to search for a YouTube video?__"
+            f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
-        return await sleep(2)
+        if message.chat.id in VOICE_CHATS:
+            await VOICE_CHATS[message.chat.id].stop()
+            await clear_queue(message.chat)
+            VOICE_CHATS.pop(message.chat.id)
 
 
 """

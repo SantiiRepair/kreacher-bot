@@ -28,10 +28,8 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
-async def play_song(client: Client, message: Message):
+async def _(client: Client, message: Message):
     QUEUE = await load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    replied = message.reply_to_message
     data = await user_info(message.from_user)
     download_as = os.path.join(
         current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
@@ -40,7 +38,7 @@ async def play_song(client: Client, message: Message):
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
         )
-    if not replied and not " " in message.text:
+    if not message.reply_to_message and not " " in message.text:
         return await message.reply(
             "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
             reply_markup=InlineKeyboardMarkup(
@@ -91,8 +89,8 @@ async def play_song(client: Client, message: Message):
                 return await msg.edit(
                     "__Can't find song.\n\nTry searching with more specific title.__",
                 )
-            if chat.id in QUEUE:
-                # pos = await add_to_queue(chat, name, url, ref, "audio")
+            if message.chat.id in QUEUE:
+                # pos = await add_to_queue(message.chat, name, url, ref, "audio")
                 return await msg.edit(
                     f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
                     # file=thumb,
@@ -100,13 +98,13 @@ async def play_song(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            elif VOICE_CHATS.get(chat.id) is None:
+            elif VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
-                await on_call.join(chat.id)
-                VOICE_CHATS[chat.id] = on_call
+                await on_call.join(message.chat.id)
+                VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
             await on_call.start_audio(url, repeat=False)
-            # await add_to_queue(chat, name, url, ref, "audio")
+            # await add_to_queue(message.chat, name, url, ref, "audio")
             await msg.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
                 # file=thumb,
@@ -129,31 +127,33 @@ async def play_song(client: Client, message: Message):
                 ),
             )
             return await msg.pin()
-        if replied and replied.audio:
+        if message.reply_to_message and message.reply_to_message.audio:
             name = "Audio File"
             await msg.edit("\U0001f4be **__Downloading...__**")
             media = await client.download_media(
-                replied.audio,
+                message.reply_to_message.audio,
                 file_name=download_as,
                 progress=progress,
-                progress_args=(client, chat, msg),
+                progress_args=(client, message.chat, msg),
             )
-        elif replied and replied.voice:
+        elif message.reply_to_message and message.reply_to_message.voice:
             name = "Voice Note"
             await msg.edit("\U0001f4be **__Downloading...__**")
             media = await client.download_media(
-                replied.voice,
+                message.reply_to_message.voice,
                 file_name=download_as,
                 progress=progress,
-                progress_args=(client, chat, msg),
+                progress_args=(client, message.chat, msg),
             )
-        proto = f"https://t.me/c/{chat.id}/{message.reply_to_message.id}"
+        proto = (
+            f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
+        )
         msg_linked = proto.replace("/c/-100", "/c/")
-        if chat.id in QUEUE:
-            # pos = add_to_queue(chat, name, url, ref, "audio")
+        if message.chat.id in QUEUE:
+            # pos = add_to_queue(message.chat, name, url, ref, "audio")
             await msg.delete()
             return await kreacher.send_photo(
-                chat.id,
+                message.chat.id,
                 caption=f"**__Added to queue at__** \n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
                 photo=ngantri,
                 reply_markup=InlineKeyboardMarkup(
@@ -178,15 +178,15 @@ async def play_song(client: Client, message: Message):
                     ]
                 ),
             )
-        elif VOICE_CHATS.get(chat.id) is None:
+        elif VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
-            await on_call.join(chat.id)
-            VOICE_CHATS[chat.id] = on_call
+            await on_call.join(message.chat.id)
+            VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
         await on_call.start_audio(media, repeat=False)
         await msg.delete()
         return await kreacher.send_photo(
-            chat.id,
+            message.chat.id,
             caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
             photo=fotoplay,
             reply_markup=InlineKeyboardMarkup(
@@ -211,7 +211,7 @@ async def play_song(client: Client, message: Message):
         await msg.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
-        if chat.id in VOICE_CHATS:
-            await VOICE_CHATS[chat.id].stop()
-            await clear_queue(chat)
-            VOICE_CHATS.pop(chat.id)
+        if message.chat.id in VOICE_CHATS:
+            await VOICE_CHATS[message.chat.id].stop()
+            await clear_queue(message.chat)
+            VOICE_CHATS.pop(message.chat.id)
