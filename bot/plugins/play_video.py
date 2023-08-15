@@ -104,7 +104,7 @@ async def _(client: Client, message: Message):
                 message.reply_to_message.video,
                 file_name=download_as,
                 progress=progress,
-                progress_args=(client, message.chat, msg)
+                progress_args=(client, message.chat, msg),
             )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("**__Joining the voice chat...__** \u23F3")
