@@ -77,7 +77,7 @@ async def _(client: Client, message: Message):
                 return await msg.pin()
             regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
             match = re.match(regex, query)
-            if not match:
+            if "http" in query and not match:
                 return await msg.edit(
                     "**__Sorry, but this doesn't seem to be a YouTube link__** \U0001f914"
                 )
