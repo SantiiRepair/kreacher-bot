@@ -1,13 +1,14 @@
-__pycache__
-unknown_errors.txt
-cache
 logs
+cache
+models
 downloads
+__pycache__
+kreacher_env
+unknown_errors.txt
 kreacher.bot.session
 kreacher.bot.session-journal
 kreacher.client.session
 kreacher.client.session-journal
-kreacher_env
 
 .env
 :memory:.session
