@@ -18,9 +18,3 @@ async def audio_ended(gc, source):
 async def video_ended(gc, source):
     logging.info(f"video ended: {source}")
     os.remove(source)
-
-
-@on_call.on_playout_ended
-async def media_ended(gc, source, media_type):
-    logging.info(f"{media_type} ended: {source}")
-    os.remove(source)
