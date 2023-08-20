@@ -1,5 +1,4 @@
 import PyPDF2
-import pyttsx3
 import os
 import uuid
 from asyncio import sleep
@@ -8,6 +7,7 @@ from pyrogram import filters, Client
 from pyrogram.types import Message
 from bot import kreacher, on_call
 from bot.helpers.progress import progress
+from bot.helpers.absvr import absvr
 from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
@@ -21,7 +21,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
 async def _(client: Client, message: Message):
     counter = 11
-    engine = pyttsx3.init()
     book = os.path.join(
         current_dir, f"../downloads/books/{str(uuid.uuid4())}.pdf"
     )
@@ -48,9 +47,7 @@ async def _(client: Client, message: Message):
                 current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.mp3"
             )
             text = pdf.pages[counter].extract_text()
-            if not os.path.exists(os.path.dirname(audiobook)):
-                os.makedirs(os.path.dirname(audiobook))
-            engine.save_to_file(text, audiobook)
+            await absvr(text, audiobook)
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
