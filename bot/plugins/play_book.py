@@ -20,7 +20,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
 async def _(client: Client, message: Message):
-    counter = 0
+    counter = 11
     engine = pyttsx3.init()
     book = os.path.join(
         current_dir, f"../downloads/books/{str(uuid.uuid4())}.pdf"
@@ -50,6 +50,7 @@ async def _(client: Client, message: Message):
             )
             page = pdfRead.getPage(counter)
             text = page.extractText()
+            print(text)
             if not os.path.exists(os.path.dirname(audiobook)):
                 os.makedirs(os.path.dirname(audiobook))
             audiobook_file = open(audiobook, "wb")
