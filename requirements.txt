@@ -10,6 +10,8 @@ python-crontab==3.0.0
 pylint==2.17.5
 pyrogram==2.0.106
 python-dotenv==1.0.0
+pyttsx3==2.90
+PyPDF3==1.0.6
 requests==2.31.0
 speedtest-cli==2.1.3
 termcolor==2.3.0
