@@ -50,17 +50,17 @@ async def _(client: Client, message: Message):
             text = pdf.pages[counter].extract_text()
             if not os.path.exists(os.path.dirname(audiobook)):
                 os.makedirs(os.path.dirname(audiobook))
-            audiobook_file = open(audiobook, "wb")
-            engine.save_to_file(text, audiobook_file)
+            engine.save_to_file(text, audiobook)
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
+            await sleep(2)
             await on_call.start_audio(audiobook, repeat=False)
             await msg.edit("**__Started audiobook__**")
             os.remove(audiobook)
             counter += 1
-        #os.remove(book)
+        # os.remove(book)
     except Exception as e:
         logging.error(e)
         await msg.edit(
@@ -70,3 +70,5 @@ async def _(client: Client, message: Message):
             await VOICE_CHATS[message.chat.id].stop()
             await clear_queue(message.chat)
             VOICE_CHATS.pop(message.chat.id)
+        os.remove(book)
+        os.remove(audiobook)
