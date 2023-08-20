@@ -7,7 +7,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 models = os.path.join(current_dir, "../models")
 
 
-async def tts(text: str, path: str, to_lang="", lang="en_us", slow=False):
+async def tts(text: str, path: str, to_lang="", lang="en_us"):
     mdn = ""
     if lang.lower() == "en_us":
         mdn += "en_US-amy-medium"
