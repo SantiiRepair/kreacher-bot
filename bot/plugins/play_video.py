@@ -43,85 +43,12 @@ async def _(client: Client, message: Message):
 
         elif " " in message.text:
             query = message.text.split(maxsplit=1)[1]
-            if not "http" in query:
-                return await msg.edit(
-                    "❗ __Try with an:\n\nLive video stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
-                )
-            regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-            match = re.match(regex, query)
-            if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("**__Joining the voice chat...__** \u23F3")
-                await on_call.join(message.chat.id)
-                VOICE_CHATS[message.chat.id] = on_call
-                await sleep(2)
-            if match:
-                await msg.edit("🔄 **__Starting YouTube video stream...__**")
-                search = await ytsearch(query)
-                name = search[0]
-                ref = search[1]
-                duration = search[2]
-                # thumb = await gen_thumb(videoid)
-                fmt = (
-                    "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
-                )
-                hm, url = await ytdl(fmt, ref)
-                if hm == 0:
-                    await msg.edit(f"`{url}`")
-                if search == 0:
-                    return await msg.edit(
-                        "__Can't find song.\n\nTry searching with more specific title.__",
-                    )
-                if message.chat.id in QUEUE:
-                    # pos = await add_to_queue(message.chat, name, url, ref, "audio")
-                    return await msg.edit(
-                        f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
-                        # file=thumb,
-                        reply_markup=InlineKeyboardMarkup(
-                            [
-                                [
-                                    InlineKeyboardButton(
-                                        "cʟᴏꜱᴇ", callback_data="cls"
-                                    )
-                                ]
-                            ]
-                        ),
-                    )
-                elif VOICE_CHATS.get(message.chat.id) is None:
-                    await msg.edit(
-                        "\U0001fa84 **__Joining the voice chat...__**"
-                    )
-                    await on_call.join(message.chat.id)
-                    VOICE_CHATS[message.chat.id] = on_call
-                await sleep(2)
-                await on_call.start_video(url, repeat=False, with_audio=True)
-                # await add_to_queue(message.chat, name, url, ref, "audio")
-                await msg.edit(
-                    f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
-                    # file=thumb,
-                    reply_markup=InlineKeyboardMarkup(
-                        [
-                            [
-                                InlineKeyboardButton(
-                                    "\u23EA", callback_data="back"
-                                ),
-                                InlineKeyboardButton(
-                                    "\u23F8\uFE0F",
-                                    callback_data="pause_or_resume",
-                                ),
-                                InlineKeyboardButton(
-                                    "\u23ED\uFE0F",
-                                    callback_data="next",
-                                ),
-                            ],
-                        ]
-                    ),
-                )
-                return await msg.pin()
-            else:
+
+            if "cdn" in query:
                 await msg.edit("🔄 **__Starting live video stream...__**")
                 await sleep(2)
                 await on_call.start_video(
-                    url,
+                    query,
                     enable_experimental_lip_sync=True,
                     repeat=False,
                     with_audio=True,
@@ -147,6 +74,69 @@ async def _(client: Client, message: Message):
                         ],
                     ),
                 )
+                return await msg.pin()
+            regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
+            match = re.match(regex, query)
+            if not match:
+                return await msg.edit(
+                    "**__Sorry, but this doesn't seem to be a YouTube link__** \U0001f914"
+                )
+            search = await ytsearch(query)
+            name = search[0]
+            ref = search[1]
+            duration = search[2]
+            # thumb = await gen_thumb(videoid)
+            fmt = "best[height<=?720][width<=?1280]"
+            hm, url = await ytdl(fmt, ref)
+            if hm == 0:
+                await msg.edit(f"`{url}`")
+            if search == 0:
+                return await msg.edit(
+                    "__Can't find song.\n\nTry searching with more specific title.__",
+                )
+            if message.chat.id in QUEUE:
+                # pos = await add_to_queue(message.chat, name, url, ref, "audio")
+                return await msg.edit(
+                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
+                    # file=thumb,
+                    reply_markup=InlineKeyboardMarkup(
+                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                    ),
+                )
+            elif VOICE_CHATS.get(message.chat.id) is None:
+                await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+                await on_call.join(message.chat.id)
+                VOICE_CHATS[message.chat.id] = on_call
+            await sleep(2)
+            await on_call.start_video(
+                url,
+                enable_experimental_lip_sync=True,
+                repeat=False,
+                with_audio=True,
+            )
+            # await add_to_queue(message.chat, name, url, ref, "audio")
+            await msg.edit(
+                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
+                # file=thumb,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "\u23EA", callback_data="back"
+                            ),
+                            InlineKeyboardButton(
+                                "\u23F8\uFE0F",
+                                callback_data="pause_or_resume",
+                            ),
+                            InlineKeyboardButton(
+                                "\u23ED\uFE0F",
+                                callback_data="next",
+                            ),
+                        ],
+                    ]
+                ),
+            )
+            return await msg.pin()
         elif message.reply_to_message.video or message.reply_to_message.file:
             await msg.edit("🔄 **__Downloading...__**")
             media = await assistant.download_media(
