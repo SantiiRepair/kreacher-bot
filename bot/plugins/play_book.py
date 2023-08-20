@@ -1,4 +1,4 @@
-import PyPDF3
+import PyPDF2
 import pyttsx3
 import os
 import uuid
@@ -37,20 +37,17 @@ async def _(client: Client, message: Message):
         msg = await message.reply("**__Searching...__**")
         await sleep(2)
         await msg.edit("\U0001f4be **__Downloading...__**")
-        pdf = await message.reply_to_message.download(
+        f = await message.reply_to_message.download(
             file_name=book,
             progress=progress,
             progress_args=(client, message.chat, msg),
         )
-        book_file = open(pdf, "rb")
-        pdfRead = PyPDF3.PdfFileReader(book_file)
-        while counter <= pdfRead.numPages:
+        pdf = PyPDF2.PdfReader(open(f, "rb"))
+        while counter <= len(pdf.pages):
             audiobook = os.path.join(
                 current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.mp3"
             )
-            page = pdfRead.getPage(counter)
-            text = page.extractText()
-            print(text)
+            text = pdf.pages[counter].extract_text()
             if not os.path.exists(os.path.dirname(audiobook)):
                 os.makedirs(os.path.dirname(audiobook))
             audiobook_file = open(audiobook, "wb")
