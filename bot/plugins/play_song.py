@@ -120,7 +120,7 @@ async def _(client: Client, message: Message):
                             ),
                             InlineKeyboardButton(
                                 "\u23ED\uFE0F",
-                                callback_data="next_",
+                                callback_data="next",
                             ),
                         ],
                     ]
