@@ -7,7 +7,7 @@ from pyrogram import filters, Client
 from pyrogram.types import Message
 from bot import kreacher, on_call
 from bot.helpers.progress import progress
-from bot.helpers.absvr import absvr
+from bot.helpers.tts import tts
 from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
@@ -57,7 +57,7 @@ async def _(client: Client, message: Message):
             text += pdf.pages[int(page_number)].extract_text()
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
-        await absvr(text, audiobook)
+        await tts(text, audiobook)
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
