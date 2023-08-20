@@ -36,7 +36,7 @@ async def _(client: Client, message: Message):
             return await message.reply(
                 "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**"
             )
-        msg = await message.reply("**__Searching...__**")
+        msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         await msg.edit("\U0001f4be **__Downloading...__**")
         f = await message.reply_to_message.download(
@@ -55,6 +55,7 @@ async def _(client: Client, message: Message):
             if not page_number.isdigit():
                 return await msg.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
+        await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
         await absvr(text, audiobook)
         await sleep(2)
