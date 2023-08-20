@@ -1,16 +1,13 @@
 import PyPDF3
 import pyttsx3
 import os
-import re
 import uuid
 from asyncio import sleep
 import logging
 from pyrogram import filters, Client
 from pyrogram.types import Message
-from bot import assistant, kreacher, on_call
-from bot.config import config
+from bot import kreacher, on_call
 from bot.helpers.progress import progress
-from pyrogram.enums import MessagesFilter
 from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
@@ -40,7 +37,7 @@ async def _(client: Client, message: Message):
         msg = await message.reply("**__Searching...__**")
         await sleep(2)
         await msg.edit("\U0001f4be **__Downloading...__**")
-        pdf = await message.download(
+        pdf = await message.reply_to_message.download(
             file_name=book,
             progress=progress,
             progress_args=(client, message.chat, msg),
@@ -53,12 +50,19 @@ async def _(client: Client, message: Message):
             )
             page = pdfRead.getPage(counter)
             text = page.extractText()
-            engine.save_to_file(text, audiobook)
+            if not os.path.exists(os.path.dirname(audiobook)):
+                os.makedirs(os.path.dirname(audiobook))
+            audiobook_file = open(audiobook, "wb")
+            engine.save_to_file(text, audiobook_file)
+            if VOICE_CHATS.get(message.chat.id) is None:
+                await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+                await on_call.join(message.chat.id)
+                VOICE_CHATS[message.chat.id] = on_call
             await on_call.start_audio(audiobook, repeat=False)
-            VOICE_CHATS[message.chat.id] = on_call
+            await msg.edit("**__Started audiobook__**")
             os.remove(audiobook)
             counter += 1
-        os.remove(book)
+        #os.remove(book)
     except Exception as e:
         logging.error(e)
         await msg.edit(

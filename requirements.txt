@@ -6,6 +6,7 @@ black==23.7.0
 numpy==1.24.4
 opencv-python-headless==4.8.0.74
 pillow==10.0.0
+pydub==0.25.1
 python-crontab==3.0.0
 pylint==2.17.5
 pyrogram==2.0.106
@@ -20,5 +21,4 @@ tinydb==4.8.0
 tronpy==0.4.0
 virtualenv==20.24.2
 web3==6.8.0
-youtube-search-python==1.6.6
 yt-dlp==2023.7.6
