@@ -46,14 +46,18 @@ async def _(client: Client, message: Message):
         )
         pdf = PyPDF2.PdfReader(open(f, "rb"))
         if not " " in message.text:
+            await msg.edit("**__Grouping pages...__**")
             for pgs in range(len(pdf.pages)):
                 text += pdf.pages[pgs].extract_text()
+            await msg.edit(f"**__{len(pdf.pages)} pages were grouped__**")
         elif " " in message.text:
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
                 return await msg.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
+        await msg.edit("**__Generating an audiobook__**")
         await absvr(text, audiobook)
+        await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
             await on_call.join(message.chat.id)
