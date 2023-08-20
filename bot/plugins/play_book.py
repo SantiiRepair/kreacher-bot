@@ -20,9 +20,12 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
 async def _(client: Client, message: Message):
-    counter = 11
+    text = ""
     book = os.path.join(
         current_dir, f"../downloads/books/{str(uuid.uuid4())}.pdf"
+    )
+    audiobook = os.path.join(
+        current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.mp3"
     )
     try:
         if message.chat.type == ChatType.PRIVATE:
@@ -42,22 +45,22 @@ async def _(client: Client, message: Message):
             progress_args=(client, message.chat, msg),
         )
         pdf = PyPDF2.PdfReader(open(f, "rb"))
-        while counter <= len(pdf.pages):
-            audiobook = os.path.join(
-                current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.mp3"
-            )
-            text = pdf.pages[counter].extract_text()
-            await absvr(text, audiobook)
-            if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
-                await on_call.join(message.chat.id)
-                VOICE_CHATS[message.chat.id] = on_call
-            await sleep(2)
-            await on_call.start_audio(audiobook, repeat=False)
-            await msg.edit("**__Started audiobook__**")
-            os.remove(audiobook)
-            counter += 1
-        # os.remove(book)
+        if not " " in message.text:
+            for pgs in range(len(pdf.pages)):
+                text += pdf.pages[pgs].extract_text()
+        elif " " in message.text:
+            page_number = message.text.split(maxsplit=1)[1]
+            if not page_number.isdigit():
+                return await msg.edit("**__This is not a number__**")
+            text += pdf.pages[int(page_number)].extract_text()
+        await absvr(text, audiobook)
+        if VOICE_CHATS.get(message.chat.id) is None:
+            await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+            await on_call.join(message.chat.id)
+            VOICE_CHATS[message.chat.id] = on_call
+        await sleep(2)
+        await on_call.start_audio(audiobook, repeat=False)
+        await msg.edit("**__Started audiobook__**")
     except Exception as e:
         logging.error(e)
         await msg.edit(
