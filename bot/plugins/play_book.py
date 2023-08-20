@@ -57,7 +57,7 @@ async def _(client: Client, message: Message):
             text += pdf.pages[int(page_number)].extract_text()
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
-        await tts(text, audiobook)
+        await tts(text, path=audiobook, to_lang="es")
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
