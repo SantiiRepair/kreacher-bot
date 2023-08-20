@@ -31,12 +31,12 @@ async def tts(text: str, path: str, to_lang="", lang="en_us"):
         if to_lang:
             translation = await translator(text, to_lang)
             await bash(
-                f"echo '{translation}' | piper \\ --model {mdn} \\ --download-dir {models} \\ -f {path}"
+                f"echo '{translation}' | piper --download-dir {models} --model {mdn} --output_file {path}"
             )
             return
-        print(f"echo '{text}' | piper \\ --model {mdn} \\ --download-dir {models} \\ -f {path}")
+        print(f"echo '{text}' | piper --download-dir {models} --model {mdn} --output_file {path}")
         await bash(
-            f"echo '{text}' | piper \\ --model {mdn} \\ --download-dir {models} \\ -f {path}"
+            f"echo '{text}' | piper --download-dir {models} --model {mdn} --output_file {path}"
         )
     except Exception as e:
         logging.error(e)
