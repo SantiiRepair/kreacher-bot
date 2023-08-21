@@ -43,8 +43,8 @@ async def _(client: Client, message: Message):
             progress=progress,
             progress_args=(client, message.chat, msg),
         )
-        with open(f, "rb") as d:
-            pdf = PyPDF2.PdfReader(d)
+        # pylint: disable=consider-using-with
+        pdf = PyPDF2.PdfReader(open(f, "rb"))
         if not " " in message.text:
             await msg.edit("**__Grouping pages...__**")
             for pgs in range(len(pdf.pages)):

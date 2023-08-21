@@ -21,7 +21,7 @@ async def _(client: Client, message: Message):
     document = os.path.join(
         current_dir, f"../downloads/photos/{user[0]['id']}.png"
     )
-    caption = f"**ID**: `{user[0]['id']}`\n\n**Name**: [{user[0]['first_name']}]({user[0]['linked']})\n**Alias**: {user[0]['username']}\n**Subscription**: {user[0]['subscription']}\n**Since**: {user[0]['since']}"
+    caption = f"**ID**: `{user[0]['id']}`\n\n**Name**: [{user[0]['first_name']}]({user[0]['mention']})\n**Alias**: {user[0]['username']}\n**Subscription**: {user[0]['subscription']}\n**Since**: {user[0]['since']}"
     reply_markup = (
         InlineKeyboardMarkup(
             [

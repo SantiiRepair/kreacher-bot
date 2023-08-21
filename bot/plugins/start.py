@@ -33,8 +33,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
 async def _(client: Client, message: Message):
+    photos = []
     async for img in kreacher.get_chat_photos(message.from_user.id, limit=1):
-        photo = img
+        photos.append(img)
     user = await user_info(message.from_user)
     registry = os.path.join(current_dir, "../dbs/registry.json")
     db = TinyDB(registry)
@@ -49,8 +50,8 @@ async def _(client: Client, message: Message):
                     "first_name": user["first_name"],
                     "last_name": user["last_name"],
                     "lang_code": user["language_code"],
-                    "linked": user["linked"],
-                    "photo": photo.file_id,
+                    "mention": user["mention"],
+                    "photo": photos[0].file_id,
                     "since": str(datetime.utcnow()).split(" ", 1)[0],
                     "subscription": None,
                     "username": f"@{user['username']}",

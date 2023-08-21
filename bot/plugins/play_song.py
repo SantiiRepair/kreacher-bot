@@ -14,7 +14,6 @@ from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
-    add_to_queue,
     clear_queue,
 )
 
@@ -92,7 +91,7 @@ async def _(client: Client, message: Message):
             if message.chat.id in QUEUE:
                 # pos = await add_to_queue(message.chat, name, url, ref, "audio")
                 return await msg.edit(
-                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
+                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     # file=thumb,
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
@@ -106,7 +105,7 @@ async def _(client: Client, message: Message):
             await on_call.start_audio(url, repeat=False)
             # await add_to_queue(message.chat, name, url, ref, "audio")
             await msg.edit(
-                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
+                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['mention']})",
                 # file=thumb,
                 reply_markup=InlineKeyboardMarkup(
                     [
@@ -148,13 +147,13 @@ async def _(client: Client, message: Message):
         proto = (
             f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
         )
-        msg_linked = proto.replace("/c/-100", "/c/")
+        msg_mention = proto.replace("/c/-100", "/c/")
         if message.chat.id in QUEUE:
             # pos = add_to_queue(message.chat, name, url, ref, "audio")
             await msg.delete()
             return await kreacher.send_photo(
                 message.chat.id,
-                caption=f"**__Added to queue at__** \n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
+                caption=f"**__Added to queue at__** \n\n **Title:** [{name}]({msg_mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
                 photo=ngantri,
                 reply_markup=InlineKeyboardMarkup(
                     [
@@ -187,7 +186,7 @@ async def _(client: Client, message: Message):
         await msg.delete()
         await kreacher.send_photo(
             message.chat.id,
-            caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
+            caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
             photo=fotoplay,
             reply_markup=InlineKeyboardMarkup(
                 [

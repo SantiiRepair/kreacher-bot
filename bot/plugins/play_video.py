@@ -97,7 +97,7 @@ async def _(client: Client, message: Message):
             if message.chat.id in QUEUE:
                 # pos = await add_to_queue(message.chat, name, url, ref, "audio")
                 return await msg.edit(
-                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['linked']})",
+                    f"__Added to queue at {pos}\n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     # file=thumb,
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
@@ -116,7 +116,7 @@ async def _(client: Client, message: Message):
             )
             # await add_to_queue(message.chat, name, url, ref, "audio")
             await msg.edit(
-                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['linked']})",
+                f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['mention']})",
                 # file=thumb,
                 reply_markup=InlineKeyboardMarkup(
                     [
