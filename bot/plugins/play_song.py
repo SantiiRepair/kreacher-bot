@@ -98,7 +98,7 @@ async def _(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            elif VOICE_CHATS.get(message.chat.id) is None:
+            if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
@@ -178,14 +178,14 @@ async def _(client: Client, message: Message):
                     ]
                 ),
             )
-        elif VOICE_CHATS.get(message.chat.id) is None:
+        if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
             await on_call.join(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
         await on_call.start_audio(media, repeat=False)
         await msg.delete()
-        return await kreacher.send_photo(
+        await kreacher.send_photo(
             message.chat.id,
             caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_linked})\n **Requested by:** [{data['first_name']}]({data['linked']})",
             photo=fotoplay,

@@ -11,7 +11,7 @@ async def get_active_chats() -> list:
     return ACTIVE
 
 
-async def add_to_queue(chat, name, url, ref, type):
+async def add_to_queue(chat, name, url, ref, typeof):
     try:
         QUEUE = await load_pkl(queues, "rb", "dict")
         ACTIVE = await load_pkl(actives, "rb", "list")
@@ -22,7 +22,7 @@ async def add_to_queue(chat, name, url, ref, type):
         if chat.id not in ACTIVE:
             ACTIVE.append(chat.id)
             await dump_pkl(actives, "wb", ACTIVE)
-        QUEUE[chat.id] = [[name, url, ref, type]]
+        QUEUE[chat.id] = [[name, url, ref, typeof]]
         await dump_pkl(queues, "wb", QUEUE)
     except Exception as e:
         raise e

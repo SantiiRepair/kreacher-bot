@@ -42,7 +42,7 @@ def _get_voice(lang="es_es", gender="female") -> str:
             case "ru_ru":
                 mdn += "ru_RU-irina-medium"
         return mdn
-    elif gender == "male":
+    if gender == "male":
         match lang.lower():
             case "en_us":
                 mdn += "en_US-amy-medium"

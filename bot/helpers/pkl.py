@@ -2,15 +2,15 @@ import pickle
 import logging
 
 
-async def load_pkl(path, mode, type):
+async def load_pkl(path, mode, typeof):
     try:
         with open(path, mode) as file:
             pkl = pickle.load(file)
         return pkl
     except EOFError:
-        if type == "list":
+        if typeof == "list":
             return []
-        if type == "dict":
+        if typeof == "dict":
             return {}
 
 
