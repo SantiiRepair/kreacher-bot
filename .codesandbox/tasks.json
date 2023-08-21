@@ -8,14 +8,15 @@
   ],
 
   // These tasks can be run from CodeSandbox. Running one will open a log in the app.
-  "lint": {
-    "name": "lint",
-    "command": "make lint"
-  },
+
   "tasks": {
     "format": {
       "name": "format",
       "command": "make format"
+    },
+    "lint": {
+      "name": "lint",
+      "command": "make lint"
     },
     "run": {
       "name": "run",
