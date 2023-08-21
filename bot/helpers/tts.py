@@ -9,26 +9,26 @@ models = os.path.join(current_dir, "../models")
 
 async def tts(text: str, path: str, to_lang="", lang="en_us"):
     mdn = ""
-    if lang.lower() == "en_us":
-        mdn += "en_US-amy-medium"
-    elif lang.lower() == "en_gb":
-        mdn += "en_GB-alba-medium"
-    elif lang.lower() == "es_es":
-        mdn += "es_ES-davefx-medium"
-    elif lang.lower() == "es_mx":
-        mdn += "es_MX-ald-medium"
-    elif lang.lower() == "fr_fr":
-        mdn += "fr_FR-siwis-medium"
-    elif lang.lower() == "pt_br":
-        mdn += "pt_BR-faber-medium"
-    elif lang.lower() == "pt_pt":
-        mdn += "pt_PT-tugão-medium"
-    elif lang.lower() == "ru_ru":
-        mdn += "ru_RU-irina-medium"
+    match lang.lower():
+        case "en_us":
+            mdn += "en_US-amy-medium"
+        case "en_gb":
+            mdn += "en_GB-alba-medium"
+        case "es_es":
+            mdn += "es_ES-davefx-medium"
+        case "es_mx":
+            mdn += "es_MX-ald-medium"
+        case "fr_fr":
+            mdn += "fr_FR-siwis-medium"
+        case "pt_br":
+            mdn += "pt_BR-faber-medium"
+        case "pt_pt":
+            mdn += "pt_PT-tugão-medium"
+        case "ru_ru":
+            mdn += "ru_RU-irina-medium"
     try:
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
-        await bash(f"piper -c {os.path.dirname(path)}")
         if to_lang:
             translation = await translator(text, to_lang)
             await bash(
