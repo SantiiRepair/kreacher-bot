@@ -13,9 +13,6 @@ async def tts(text: str, path: str):
             os.makedirs(models)
         elif not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
-        print(
-            f"echo '{text}' | piper -m {voice} --download-dir {models} --data-dir {models} -f {path}"
-        )
         await bash(
             f"echo '{text}' | piper -m {voice} --download-dir {models} --data-dir {models} -f {path}"
         )
