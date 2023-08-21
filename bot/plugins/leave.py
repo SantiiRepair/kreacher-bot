@@ -1,23 +1,18 @@
 from bot import kreacher
 from pyrogram import filters, Client
 from pyrogram.types import Message
+from bot.decorators.cmdp import cmd_protected
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import clear_queue
 from bot.dbs.instances import VOICE_CHATS
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]leave"))
+@cmd_protected
 async def _(client: Client, message: Message):
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
-        )
-    user = await kreacher.get_chat_member(
-        message.chat.id, message.from_user.id
-    )
-    if not user.privileges:
-        return await message.reply(
-            "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
         )
     try:
         chat = message.chat
