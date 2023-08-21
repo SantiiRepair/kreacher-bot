@@ -15,14 +15,6 @@ def bytes_to_string(byte_count):
 
 async def progress(current_bytes, total_bytes, client, chat, msg):
     try:
-        """logging.info(
-            "{} {} out of {} ({:.2%})".format(
-                "Progress",
-                bytes_to_string(current_bytes),
-                bytes_to_string(total_bytes),
-                current_bytes / total_bytes,
-            )
-        )"""
         await client.edit_message_text(
             chat_id=chat.id,
             message_id=msg.id,

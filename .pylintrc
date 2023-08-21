@@ -61,7 +61,13 @@ confidence=
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
 disable=missing-docstring,
-        consider-using-with,    
+        consider-using-with,   
+        broad-exception-caught,
+        consider-using-f-string,
+        unspecified-encoding,
+        trailing-newlines,
+        unused-argument,
+        broad-exception-raised,
         too-many-public-methods,
         too-many-lines,
         bare-except,
