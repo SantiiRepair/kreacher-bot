@@ -25,7 +25,7 @@ async def _(client: Client, message: Message):
         current_dir, f"../downloads/books/{str(uuid.uuid4())}.pdf"
     )
     audiobook = os.path.join(
-        current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.mp3"
+        current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.wav"
     )
     try:
         if message.chat.type == ChatType.PRIVATE:

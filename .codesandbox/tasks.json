@@ -1,26 +1,30 @@
 {
-    // These tasks will run in order when initializing your CodeSandbox project.
-    "setupTasks": [
-      {
-        "name": "Install Dependencies",
-        "command": "make install"
-      }
-    ],
-  
-    // These tasks can be run from CodeSandbox. Running one will open a log in the app.
-    "tasks": {
-      "format": {
-        "name": "format",
-        "command": "make format"
-      },
-      "run": {
-        "name": "run",
-        "command": "make run_bot",
-        "runAtStart": true
-      },
-      "session": {
-        "name": "session",
-        "command": "make session_string"
-      }
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "make install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "lint": {
+    "name": "lint",
+    "command": "make lint"
+  },
+  "tasks": {
+    "format": {
+      "name": "format",
+      "command": "make format"
+    },
+    "run": {
+      "name": "run",
+      "command": "make run_bot",
+      "runAtStart": true
+    },
+    "session": {
+      "name": "session",
+      "command": "make session_string"
     }
   }
+}

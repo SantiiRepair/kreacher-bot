@@ -28,6 +28,7 @@ async def tts(text: str, path: str, to_lang="", lang="en_us"):
     try:
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
+        await bash(f"piper -c {os.path.dirname(path)}")
         if to_lang:
             translation = await translator(text, to_lang)
             await bash(
