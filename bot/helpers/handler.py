@@ -25,15 +25,15 @@ async def skip_current(chat):
     name = chat_queue[1][0]
     url = chat_queue[1][1]
     link = chat_queue[1][2]
-    type = chat_queue[1][3]
-    if type == "audio":
+    media_type = chat_queue[1][3]
+    if media_type == "audio":
         await VOICE_CHATS[chat.id].start_audio(url, repeat=False)
-    elif type == "video":
+    elif media_type == "video":
         await VOICE_CHATS[chat.id].start_video(
             url, with_audio=True, repeat=False
         )
     pop_an_item(chat)
-    return [name, link, type]
+    return [name, link, media_type]
 
 
 async def next_item(chat, x: int):

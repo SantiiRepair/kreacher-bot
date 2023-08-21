@@ -42,7 +42,7 @@ async def _(client: Client, message: Message):
     )
 
 
-@kreacher.on_message(filters.regex(pattern="^/start help"))
+@kreacher.on_message(filters.regex(pattern="^[!?/]start+help"))
 async def _(client, message):
     if config.MANAGEMENT_MODE == "ENABLE":
         return

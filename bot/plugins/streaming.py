@@ -12,7 +12,6 @@ from pyrogram.enums import MessagesFilter
 from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from bot.helpers.queues import (
-    add_to_queue,
     clear_queue,
 )
 
@@ -79,54 +78,49 @@ async def _(client: Client, message: Message):
                     return await msg.pin()
                     break
 
-                else:
-                    return await msg.edit(
-                        "**__The request has not been found in our database, please try another name__**"
-                    )
-            else:
-                # limit = movies_channel["message_count"]
-                movies_channel = await assistant.get_chat(
-                    config.ES_MOVIES_CHANNEL
+                return await msg.edit(
+                    "**__The request has not been found in our database, please try another name__**"
                 )
-                async for media in assistant.search_messages(
-                    chat_id=movies_channel.id,
-                    query=search,
-                    limit=1000,
-                    filter=MessagesFilter.VIDEO,
-                ):
-                    if media.video and search.lower() in media.caption.lower():
-                        await msg.edit(
-                            " **__Yeehaw, I found the movie you asked for...__**"
-                        )
-                        await sleep(2)
-                        await msg.edit("\U0001f4be **__Downloading...__**")
-                        movie_file = await assistant.download_media(
-                            media.video.file_id,
-                            file_name=movie,
-                            progress=progress,
-                            progress_args=(client, chat, msg),
-                        )
-                        if VOICE_CHATS.get(chat.id) is None:
-                            await msg.edit(
-                                "\U0001fa84 **__Joining the voice chat...__**"
-                            )
-                            await on_call.join(chat.id)
-                            VOICE_CHATS[chat.id] = on_call
-                        await sleep(1)
-                        await on_call.start_video(
-                            movie_file,
-                            enable_experimental_lip_sync=True,
-                            repeat=False,
-                            with_audio=True,
-                        )
-                        await msg.edit("**__Streaming Movie**__")
-                        return await msg.pin()
-                        break
-
-                else:
-                    return await msg.edit(
-                        "**__The request has not been found in our database, please try another name__**"
+            # limit = movies_channel["message_count"]
+            movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
+            async for media in assistant.search_messages(
+                chat_id=movies_channel.id,
+                query=search,
+                limit=1000,
+                filter=MessagesFilter.VIDEO,
+            ):
+                if media.video and search.lower() in media.caption.lower():
+                    await msg.edit(
+                        " **__Yeehaw, I found the movie you asked for...__**"
                     )
+                    await sleep(2)
+                    await msg.edit("\U0001f4be **__Downloading...__**")
+                    movie_file = await assistant.download_media(
+                        media.video.file_id,
+                        file_name=movie,
+                        progress=progress,
+                        progress_args=(client, chat, msg),
+                    )
+                    if VOICE_CHATS.get(chat.id) is None:
+                        await msg.edit(
+                            "\U0001fa84 **__Joining the voice chat...__**"
+                        )
+                        await on_call.join(chat.id)
+                        VOICE_CHATS[chat.id] = on_call
+                    await sleep(1)
+                    await on_call.start_video(
+                        movie_file,
+                        enable_experimental_lip_sync=True,
+                        repeat=False,
+                        with_audio=True,
+                    )
+                    await msg.edit("**__Streaming Movie**__")
+                    return await msg.pin()
+                    break
+
+                return await msg.edit(
+                    "**__The request has not been found in our database, please try another name__**"
+                )
     except Exception as e:
         logging.error(e)
         await msg.edit(

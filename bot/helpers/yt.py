@@ -42,9 +42,9 @@ async def ytsearch(query: str):
         return 0
 
 
-async def ytdl(format: str, link: str):
+async def ytdl(fmt: str, link: str):
     try:
-        stdout, stderr = await bash(f'yt-dlp -g -f "{format}" {link}')
+        stdout, stderr = await bash(f'yt-dlp -g -f "{fmt}" {link}')
         if stdout:
             return 1, stdout.split("\n")[0]
         return 0, stderr
