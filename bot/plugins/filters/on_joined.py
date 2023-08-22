@@ -16,9 +16,16 @@ async def _(client: Client, message: Message):
     if message.new_chat_members and bot_me.id in [
         user.id for user in message.new_chat_members
     ]:
-        if not bool(groups.search(Query().id == str(message.chat.id))):
+        if not bool(groups.search(Query().id == message.chat.id)):
             await client.send_message(
                 message.chat.id,
                 "**__Whoops!\n\nYou can't use me without a subscription__**",
             )
-            await client.leave_chat(message.chat.id)
+            return await client.leave_chat(message.chat.id)
+        groups.insert(
+            {
+                "id": message.chat.id,
+                "group_name": message.chat.title,
+                "subscription": None,
+            }
+        )
