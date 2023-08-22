@@ -47,7 +47,7 @@ async def _(client: Client, message: Message):
         pdf = PyPDF2.PdfReader(open(f, "rb"))
         if not " " in message.text:
             await msg.edit("**__Grouping pages...__**")
-            for pgs in range(len(pdf.pages)):
+            for pgs in enumerate(pdf.pages):
                 text += pdf.pages[pgs].extract_text()
             await msg.edit(f"**__{len(pdf.pages)} pages were grouped__**")
         elif " " in message.text:

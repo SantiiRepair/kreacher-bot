@@ -75,7 +75,7 @@ async def _(client: Client, message: Message):
                         with_audio=True,
                     )
                     await msg.edit("**__Streaming Serie**__")
-                    return await msg.pin()
+                    await msg.pin()
                     break
 
                 return await msg.edit(
@@ -115,7 +115,7 @@ async def _(client: Client, message: Message):
                         with_audio=True,
                     )
                     await msg.edit("**__Streaming Movie**__")
-                    return await msg.pin()
+                    await msg.pin()
                     break
 
                 return await msg.edit(

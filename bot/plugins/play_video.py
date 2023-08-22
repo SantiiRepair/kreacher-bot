@@ -13,7 +13,6 @@ from bot.helpers.progress import progress
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.yt import ytdl, ytsearch
 from bot.helpers.queues import (
-    add_to_queue,
     clear_queue,
 )
 
@@ -41,7 +40,7 @@ async def _(client: Client, message: Message):
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
             )
 
-        elif " " in message.text:
+        if " " in message.text:
             query = message.text.split(maxsplit=1)[1]
 
             if "cdn" in query:
@@ -103,7 +102,7 @@ async def _(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            elif VOICE_CHATS.get(message.chat.id) is None:
+            if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
@@ -137,7 +136,7 @@ async def _(client: Client, message: Message):
                 ),
             )
             return await msg.pin()
-        elif message.reply_to_message.video or message.reply_to_message.file:
+        if message.reply_to_message.video or message.reply_to_message.file:
             await msg.edit("🔄 **__Downloading...__**")
             media = await assistant.download_media(
                 message.reply_to_message.video,
@@ -181,77 +180,3 @@ async def _(client: Client, message: Message):
             await VOICE_CHATS[message.chat.id].stop()
             await clear_queue(message.chat)
             VOICE_CHATS.pop(message.chat.id)
-
-
-"""
-@kreacher.on(events.NewMessage(pattern="^[!?/]playlist"))
-async def playlist(message):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    user = message.get_sender()
-    if not user.is_admin:
-        await message.reply(
-            "Sorry, you must be an administrator to execute this command."
-        )
-        return
-    if chat.id in QUEUE:
-        chat_queue = get_queue(chat)
-        if len(chat_queue) == 1:
-            await message.reply(
-                f"**�PlAYLIST:**\n• [{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
-                link_preview=False,
-            )
-        else:
-            PLAYLIST = f"**🎧 PLAYLIST:**\n**• [{chat_queue[0][0]}]({chat_queue[0][2]})** | `{chat_queue[0][3]}` \n\n**• Upcoming Streaming:**"
-            l = len(chat_queue)
-            for x in range(1, l):
-                hmm = chat_queue[x][0]
-                hmmm = chat_queue[x][2]
-                hmmmm = chat_queue[x][3]
-                PLAYLIST = (
-                    PLAYLIST + "\n" + f"**#{x}** - [{hmm}]({hmmm}) | `{hmmmm}`"
-                )
-            await message.reply(PLAYLIST, link_preview=False)
-    else:
-        await message.reply("**Ntg is Streaming**")
-
-
-@kreacher.on(events.NewMessage(pattern="^[!?/]pause"))
-async def pause(message):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    user = message.get_sender()
-    if not user.is_admin:
-        await message.reply(
-            "Sorry, you must be an administrator to execute this command."
-        )
-        return
-    if chat.id in QUEUE:
-        try:
-            await VOICE_CHATS[chat.id].pause_stream(chat.id)
-            await message.reply("**Streaming Paused**")
-        except Exception as e:
-            await message.reply(f"**ERROR:** `{e}`")
-    else:
-        await message.reply("**Nothing Is Playing**")
-
-
-@kreacher.on(events.NewMessage(pattern="^[!?/]resume"))
-async def resume(message):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    chat = message.chat
-    user = message.get_sender()
-    if not user.is_admin:
-        await message.reply(
-            "Sorry, you must be an administrator to execute this command."
-        )
-        return
-    if chat.id in QUEUE:
-        try:
-            await VOICE_CHATS[chat.id].resume_stream(chat.id)
-            await message.reply("**Streaming Started Back 🔙**")
-        except Exception as e:
-            await message.reply(f"**ERROR:** `{e}`")
-    else:
-        await message.reply("**Nothing Is Streaming**")
-"""

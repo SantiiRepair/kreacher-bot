@@ -20,7 +20,7 @@ format:
 
 # lint all project looking for issues
 lint:
-	pylint --disable=C0301,C0103 --recursive yes --jobs=4 .
+	pylint --recursive yes --jobs=4 .
 
 # generate string session of your telegram account
 session_string:

@@ -61,3 +61,4 @@ def _get_voice(lang="es_es", gender="female") -> str:
             case "ru_ru":
                 mdn += "ru_RU-irina-medium"
         return mdn
+    return ValueError("Wrong country code, not found model")
