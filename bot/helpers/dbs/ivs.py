@@ -12,7 +12,6 @@ async def new_invoice(message: Message, net: str, sub_type: str):
     registry = os.path.join(current_dir, "../dbs/registry.json")
     db = TinyDB(registry)
     ivs = db.table("invoices")
-    txs = db.table("transactions")
     user = await user_info(message.from_user)
     match net:
         case "tron":

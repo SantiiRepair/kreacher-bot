@@ -1,6 +1,7 @@
 import os
 from pyrogram import filters, Client
 from pyrogram.types import CallbackQuery
+from bot.plugins.start import PM_START_TEXT
 from time import time
 from bot import kreacher
 from bot.config import config
