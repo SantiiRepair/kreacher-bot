@@ -1,30 +1,27 @@
+import logging
 import functools
-from bot import kreacher
+from pyrogram import Client
 from pyrogram.types import Message
 from pyrogram.enums.chat_type import ChatType
 
 
-def cmd_protected(func):
+def only_admins(func):
     @functools.wraps(func)
-    async def _(message: Message):
-        is_admin = False
+    async def _(client: Client, message: Message):
         if not message.chat.type == ChatType.PRIVATE:
             try:
-                _u = await kreacher.get_chat_member(
+                user = await client.get_chat_member(
                     message.chat.id, message.from_user.id
                 )
-                if not _u.privileges:
-                    is_admin = False
+                if not user.privileges:
                     return await message.reply(
                         "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
                     )
-                is_admin = True
-            except Exception:
-                is_admin = False
-        if is_admin:
-            await func(message, _u)
+            except Exception as e:
+                logging.error(e)
+            await func(client, message)
         else:
-            await message.reply(
+            return await message.reply(
                 "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
             )
 
