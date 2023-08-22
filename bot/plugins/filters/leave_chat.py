@@ -9,7 +9,7 @@ c = os.path.dirname(os.path.abspath(__file__))
 
 @kreacher.on_message(filters.new_chat_members)
 async def _(client: Client, message: Message):
-    registry = os.path.join(c, "../dbs/registry.json")
+    registry = os.path.join(c, "../../dbs/registry.json")
     db = TinyDB(registry)
     groups = db.table("groups")
     bot_me = await client.get_me()
