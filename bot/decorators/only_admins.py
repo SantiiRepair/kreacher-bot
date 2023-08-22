@@ -19,10 +19,6 @@ def only_admins(func):
                     )
             except Exception as e:
                 logging.error(e)
-            await func(client, message)
-        else:
-            return await message.reply(
-                "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
-            )
+        await func(client, message)
 
     return _

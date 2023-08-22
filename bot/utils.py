@@ -1,13 +1,18 @@
+import os
 import sys
 import logging
 import importlib
+from glob import glob
 from pathlib import Path
 from termcolor import colored
 
 
 async def loader():
-    folders = ["callbacks", "plugins", "tasks"]
-
+    c = os.path.dirname(os.path.abspath(__file__))
+    folders = ["callbacks", "tasks"]
+    folders.extend(glob(f"{c}/plugins/*", recursive=True))
+    for e in glob(f"{c}/plugins/*", recursive=True):
+        folders.append(e.split("/", 3)[3])
     for folder in folders:
         folder_path = Path(f"bot/{folder}")
         for file in folder_path.glob("*.py"):
@@ -20,5 +25,5 @@ async def loader():
             sys.modules[module_name] = module
 
             print(
-                f'{colored("[INFO]", "blue")}: Bot has started {colored(module_name, "yellow")}'
+                f'{colored("[INFO]", "blue")}: Bot has started {colored(module_name.replace("/", "."), "yellow")}'
             )
