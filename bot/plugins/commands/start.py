@@ -28,7 +28,7 @@ Have a... tolerable... day!__ \U0001F52E
     )
 
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+c = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]start"))
@@ -37,7 +37,7 @@ async def _(client: Client, message: Message):
     async for img in kreacher.get_chat_photos(message.from_user.id, limit=1):
         photos.append(img)
     user = await user_info(message.from_user)
-    registry = os.path.join(current_dir, "../dbs/registry.json")
+    registry = os.path.join(c, "../../dbs/registry.json")
     db = TinyDB(registry)
     chats = db.table("chats")
     if config.MANAGEMENT_MODE == "ENABLE":

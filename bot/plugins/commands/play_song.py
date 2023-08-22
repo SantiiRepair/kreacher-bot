@@ -22,8 +22,8 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(current_dir, "../dbs/queues.pkl")
+c = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(c, "../../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
@@ -31,7 +31,7 @@ async def _(client: Client, message: Message):
     QUEUE = await load_pkl(queues, "rb", "dict")
     data = await user_info(message.from_user)
     download_as = os.path.join(
-        current_dir, f"../downloads/songs/{str(uuid.uuid4())}.mp3"
+        c, f"../../downloads/songs/{str(uuid.uuid4())}.mp3"
     )
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(

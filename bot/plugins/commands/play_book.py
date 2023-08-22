@@ -14,17 +14,15 @@ from bot.helpers.queues import (
     clear_queue,
 )
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+c = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
 async def _(client: Client, message: Message):
     text = ""
-    book = os.path.join(
-        current_dir, f"../downloads/books/{str(uuid.uuid4())}.pdf"
-    )
+    book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
     audiobook = os.path.join(
-        current_dir, f"../downloads/audiobooks/{str(uuid.uuid4())}.wav"
+        c, f"../../downloads/audiobooks/{str(uuid.uuid4())}.wav"
     )
     try:
         if message.chat.type == ChatType.PRIVATE:

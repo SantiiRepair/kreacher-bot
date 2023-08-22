@@ -14,8 +14,8 @@ async def _(client: Client, message: Message):
                 f"**__Only [{dev.first_name}](https://t.me/{dev.username}), can execute this command__** \U0001f6ab",
                 disable_web_page_preview=True,
             )
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        document = os.path.join(current_dir, "../logs/logs.txt")
+        c = os.path.dirname(os.path.abspath(__file__))
+        document = os.path.join(c, "../../logs/logs.txt")
         await message.reply_document(document=document)
     except Exception as e:
         logging.error(e)

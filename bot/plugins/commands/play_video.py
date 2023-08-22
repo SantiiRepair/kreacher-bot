@@ -20,9 +20,9 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+c = os.path.dirname(os.path.abspath(__file__))
 
-queues = os.path.join(current_dir, "../dbs/queues.pkl")
+queues = os.path.join(c, "../../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
@@ -33,11 +33,11 @@ async def _(client: Client, message: Message):
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         download_as = os.path.join(
-            current_dir, f"../downloads/videos/{str(uuid.uuid4())}.mp4"
+            c, f"../../downloads/videos/{str(uuid.uuid4())}.mp4"
         )
         if not message.reply_to_message and not " " in message.text:
             return await msg.edit(
-                "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video link.\n\nReply to an video to start video streaming!__",
+                "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
             )
 
         if " " in message.text:
