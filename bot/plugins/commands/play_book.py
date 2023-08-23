@@ -81,7 +81,7 @@ async def _(client: Client, message: Message):
             # text += epub.get_items_of_type(ITEM_DOCUMENT)
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
-        await tts(text, path=audiobook)
+        await tts(text=text, output_file=audiobook)
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
