@@ -25,7 +25,7 @@ async def tts(text: str, output_file: str):
             data_dir=models,
             download_dir=models,
             output_file=output_file,
-            debug=True
+            debug=True,
         )
     except Exception as e:
         logging.error(e)
@@ -82,7 +82,7 @@ async def _ptts(
     data_dir=[str(Path.cwd())],
     download_dir="",
     output_dir="",
-    output_raw="",
+    output_raw=False,
     debug=False,
     use_cuda=False,
     update_voices=False,
@@ -117,12 +117,12 @@ async def _ptts(
             voices_info=voices_info,
         )
 
-    # model_path, config_path = find_voice(model, data_dir)
-    print(f"{models}/{model}.onnx")
+    model_path, config_path = find_voice(model, data_dir)
+    print(model_path)
 
     # Load voice
     voice = PiperVoice.load(
-        f"{models}/{model}.onnx", use_cuda=use_cuda
+        model_path, config_path=config_path, use_cuda=use_cuda
     )
 
     synthesize_args = {
