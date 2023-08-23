@@ -58,15 +58,13 @@ async def _(client: Client, message: Message):
                 text += pdf.pages[pgs].extract_text()
             await msg.edit(f"**__{len(pdf.pages)} pages were grouped__**")
         elif " " not in message.text and "epub" in file_type:
-            epub_pages = 0
             epub = epublib.read_epub(f)
             await msg.edit("**__Grouping pages...__**")
-            for item in epub.get_items():
+            for index, item in enumerate(epub.get_items(), start=1):
                 if item.get_type() == ITEM_DOCUMENT:
                     h.feed(item.get_body_content().decode())
                     text += h.text
-                    epub_pages += 1
-            await msg.edit(f"**__{epub_pages} pages were grouped__**")
+            await msg.edit(f"**__{index} pages were grouped__**")
         elif " " in message.text and file_type == "pdf":
             pdf = PyPDF2.PdfReader(open(f, "rb"))
             page_number = message.text.split(maxsplit=1)[1]
@@ -74,15 +72,13 @@ async def _(client: Client, message: Message):
                 return await msg.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
         elif " " in message.text and "epub" in file_type:
-            index = 0
             epub = epublib.read_epub(f)
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
-                return await msg.edit("**__This is not a number__**")
+                return await msg.edit("__This is not a number__")
             if "." in page_number:
-                return await msg.edit("**__Only integer numbers allowed__**")
-            for item in epub.get_items():
-                index += 1
+                return await msg.edit("__Only integer numbers allowed__")
+            for index, item in enumerate(epub.get_items(), start=1):
                 if (
                     index == int(page_number)
                     and item.get_type() == ITEM_DOCUMENT
