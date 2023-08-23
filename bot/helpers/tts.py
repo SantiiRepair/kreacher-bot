@@ -8,8 +8,8 @@ from typing import Any, Dict
 from piper import PiperVoice
 from piper.download import ensure_voice_exists, find_voice, get_voices
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-models = os.path.join(current_dir, "../models")
+c = os.path.dirname(os.path.abspath(__file__))
+models = os.path.join(c, "../models")
 
 
 async def tts(text: str, output_file: str):
@@ -22,7 +22,7 @@ async def tts(text: str, output_file: str):
         await _ptts(
             text=text,
             model=model,
-            data_dirs=models,
+            data_dir=models,
             download_dir=models,
             output_file=output_file,
         )
@@ -96,9 +96,7 @@ async def _ptts(
     model_path = Path(model)
     if not model_path.exists():
         # Load voice info
-        voices_info = get_voices(
-            download_dir=download_dir, update_voices=update_voices
-        )
+        voices_info = get_voices(download_dir, update_voices=update_voices)
 
         # Resolve aliases for backwards compatibility with old voice names
         aliases_info: Dict[str, Any] = {}
@@ -108,18 +106,20 @@ async def _ptts(
 
         voices_info.update(aliases_info)
         ensure_voice_exists(
-            name=model,
+            model,
             data_dirs=data_dir,
             download_dir=download_dir,
             voices_info=voices_info,
         )
-        model_path, config_path = find_voice(name=model, data_dirs=data_dir)
+
+        model_path, config_path = find_voice(model, data_dir)
         print(model_path)
 
     # Load voice
     voice = PiperVoice.load(
-        model_path=model_path, config_path=config_path, use_cuda=use_cuda
+        model_path, config_path=config_path, use_cuda=use_cuda
     )
+
     synthesize_args = {
         "speaker_id": speaker,
         "length_scale": length_scale,
@@ -127,6 +127,7 @@ async def _ptts(
         "noise_w": noise_w,
         "sentence_silence": sentence_silence,
     }
+
     if output_raw:
         # Read line-by-line
         for line in sys.stdin:
@@ -139,6 +140,7 @@ async def _ptts(
             for audio_bytes in audio_stream:
                 sys.stdout.buffer.write(audio_bytes)
                 sys.stdout.buffer.flush()
+
     elif output_dir:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
