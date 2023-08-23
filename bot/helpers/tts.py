@@ -107,7 +107,7 @@ async def _ptts(
         ensure_voice_exists(
             name=model,
             data_dirs=data_dirs,
-            download_dir=data_dirs,
+            download_dir=download_dir,
             voices_info=voices_info,
         )
         model_path, config_path = find_voice(name=model, data_dirs=data_dirs)
