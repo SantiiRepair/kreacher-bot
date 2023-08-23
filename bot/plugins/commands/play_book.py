@@ -1,5 +1,6 @@
 import os
 import uuid
+import shutup
 import PyPDF2
 import logging
 from asyncio import sleep
@@ -16,6 +17,7 @@ from bot.helpers.queues import (
     clear_queue,
 )
 
+shutup.please()
 c = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -25,9 +27,7 @@ async def _(client: Client, message: Message):
     text = ""
     h = _HTMLFilter()
     book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
-    audiobook = os.path.join(
-        c, f"../../tmp/{str(uuid.uuid4())}.wav"
-    )
+    audiobook = os.path.join(c, f"../../tmp/{str(uuid.uuid4())}.wav")
     try:
         if not message.reply_to_message:
             return await message.reply(
