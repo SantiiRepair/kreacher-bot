@@ -77,9 +77,9 @@ def _get_model(lang="es_es", gender="female") -> str:
 async def _ptts(
     text: str,
     model: str,
-    data_dirs: str,
-    download_dir: str,
+    data_dir: str,
     output_file: str,
+    download_dir="",
     output_dir="",
     output_raw="",
     use_cuda=False,
@@ -90,8 +90,11 @@ async def _ptts(
     noise_w="",
     sentence_silence="",
 ):
-    mdp = Path(model)
-    if not mdp.exists():
+    if not download_dir:
+        # Download to first data directory by default
+        download_dir = data_dir
+    model_path = Path(model)
+    if not model_path.exists():
         # Load voice info
         voices_info = get_voices(
             download_dir=download_dir, update_voices=update_voices
@@ -106,12 +109,13 @@ async def _ptts(
         voices_info.update(aliases_info)
         ensure_voice_exists(
             name=model,
-            data_dirs=data_dirs,
+            data_dirs=data_dir,
             download_dir=download_dir,
             voices_info=voices_info,
         )
-        model_path, config_path = find_voice(name=model, data_dirs=data_dirs)
+        model_path, config_path = find_voice(name=model, data_dirs=data_dir)
         print(model_path)
+
     # Load voice
     voice = PiperVoice.load(
         model_path=model_path, config_path=config_path, use_cuda=use_cuda
