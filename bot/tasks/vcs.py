@@ -3,9 +3,9 @@ import logging
 from bot import on_call
 
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(current_dir, "../dbs/queues.pkl")
-actives = os.path.join(current_dir, "../dbs/actives.pkl")
+c = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(c, "../dbs/queues.pkl")
+actives = os.path.join(c, "../dbs/actives.pkl")
 
 
 @on_call.on_audio_playout_ended

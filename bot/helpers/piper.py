@@ -1,10 +1,11 @@
+import os
 import sys
 import time
 import wave
 import logging
 from pathlib import Path
 from piper import PiperVoice
-from typing import Any, Dict, Generator, Tuple, Union
+from typing import Any, Dict, Iterable, Tuple, Union
 from piper.download import ensure_voice_exists, get_voices
 
 
@@ -32,9 +33,7 @@ async def ptts(
         # Download to first data directory by default
         download_dir = data_dir
     model_path = Path(model)
-    data_dirs = Path(data_dir).glob("*.onnx")
-    for d in data_dirs:
-        print(d)
+    data_dirs = os.listdir(data_dir)
     if not model_path.exists():
         # Load voice info
         voices_info = get_voices(download_dir, update_voices=update_voices)
@@ -109,15 +108,13 @@ async def ptts(
 
 
 def _find_voice(
-    name: str, data_dirs: Generator[Union[str, Path]]
+    name: str, data_dirs: Iterable[Union[str, Path]]
 ) -> Tuple[Path, Path]:
-    for data_dir in data_dirs:
-        data_dir = Path(data_dir)
-        onnx_path = data_dir / f"{name}.onnx"
-        config_path = data_dir / f"{name}.onnx.json"
-
-        if onnx_path.exists() and config_path.exists():
-            return onnx_path, config_path
+    onnx_path = Path(f"{os.path.dirname(data_dirs[0])}/{name}.onnx")
+    config_path = Path(f"{os.path.dirname(data_dirs[0])}/{name}.onnx.json")
+    print(onnx_path, config_path)
+    if onnx_path.exists() and config_path.exists():
+        return onnx_path, config_path
 
     raise ValueError(f"Missing files for voice {name}")
 
