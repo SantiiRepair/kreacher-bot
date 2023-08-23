@@ -103,8 +103,10 @@ async def _(client: Client, message: Message):
             await VOICE_CHATS[message.chat.id].stop()
             await clear_queue(message.chat)
             VOICE_CHATS.pop(message.chat.id)
-        os.remove(book)
-        os.remove(audiobook)
+        if os.path.exists(book):
+            os.remove(book)
+        elif os.path.exists(audiobook):
+            os.remove(audiobook)
 
 
 class _HTMLFilter(HTMLParser):

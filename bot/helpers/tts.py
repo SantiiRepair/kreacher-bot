@@ -29,6 +29,7 @@ async def tts(text: str, output_file: str):
         )
     except Exception as e:
         logging.error(e)
+        raise e
 
 
 def _get_model(lang="es_es", gender="female") -> str:
@@ -116,12 +117,12 @@ async def _ptts(
             voices_info=voices_info,
         )
 
-        model_path, config_path = find_voice(model, data_dir)
-        print(model_path)
+    # model_path, config_path = find_voice(model, data_dir)
+    print(f"{models}/{model}.onnx")
 
     # Load voice
     voice = PiperVoice.load(
-        model_path, config_path=config_path, use_cuda=use_cuda
+        f"{models}/{model}.onnx", use_cuda=use_cuda
     )
 
     synthesize_args = {
