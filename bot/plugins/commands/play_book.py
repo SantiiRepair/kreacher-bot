@@ -26,7 +26,7 @@ async def _(client: Client, message: Message):
     h = _HTMLFilter()
     book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
     audiobook = os.path.join(
-        c, f"../../downloads/audiobooks/{str(uuid.uuid4())}.wav"
+        c, f"../../tmp/audiobooks/{str(uuid.uuid4())}.wav"
     )
     try:
         if not message.reply_to_message:
@@ -94,6 +94,8 @@ async def _(client: Client, message: Message):
             for image in epub.get_items_of_type(ITEM_IMAGE):
                 print(image)
         await msg.edit("**__Started audiobook__**")
+        if os.path.exists(book):
+            os.remove(book)
     except Exception as e:
         logging.error(e)
         await msg.edit(
