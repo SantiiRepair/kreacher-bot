@@ -1,19 +1,15 @@
 import os
 import logging
-from bot import kreacher, config
-from pyrogram import filters, Client
+from bot import kreacher
 from pyrogram.types import Message
+from pyrogram import filters, Client
+from bot.decorators.only_dev import only_dev
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]logs"))
+@only_dev
 async def _(client: Client, message: Message):
     try:
-        dev = await client.get_users(config.MANTAINER)
-        if not dev.id == message.from_user.id:
-            return await message.reply(
-                f"**__Only [{dev.first_name}](https://t.me/{dev.username}), can execute this command__** \U0001f6ab",
-                disable_web_page_preview=True,
-            )
         c = os.path.dirname(os.path.abspath(__file__))
         document = os.path.join(c, "../../logs/logs.txt")
         await message.reply_document(document=document)
