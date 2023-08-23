@@ -79,13 +79,16 @@ async def _(client: Client, message: Message):
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
                 return await msg.edit("**__This is not a number__**")
-            for item in epub.get_items():
-                index += 1
-                if index == page_number and item.get_type() == ITEM_DOCUMENT:
-                    h.feed(item.get_body_content().decode())
-                    text += h.text
-                    print(text)
-                    break
+            if "." in page_number:
+                return await msg.edit("**__Only integer numbers allowed__**")
+            if (
+                int(page_number) <= len(epub.pages)
+                and item.get_type() == ITEM_DOCUMENT
+            ):
+                item = epub.get_items()[int(page_number)]
+                h.feed(item.get_body_content().decode())
+                text += h.text
+                print(text)
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
         await tts(text=text, output_file=audiobook)
