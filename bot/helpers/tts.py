@@ -90,8 +90,8 @@ async def _ptts(
     noise_w="",
     sentence_silence="",
 ):
-    model_path = Path(model)
-    if not model_path.exists():
+    mdp = Path(model)
+    if not mdp.exists():
         # Load voice info
         voices_info = get_voices(
             download_dir=download_dir, update_voices=update_voices
@@ -111,7 +111,7 @@ async def _ptts(
             voices_info=voices_info,
         )
         model_path, config_path = find_voice(name=model, data_dirs=data_dirs)
-
+        print(model_path)
     # Load voice
     voice = PiperVoice.load(
         model_path=model_path, config_path=config_path, use_cuda=use_cuda
