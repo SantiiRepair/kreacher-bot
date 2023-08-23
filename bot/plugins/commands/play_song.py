@@ -37,7 +37,7 @@ async def _(client: Client, message: Message):
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
         )
-    if not message.reply_to_message and not " " in message.text:
+    if not message.reply_to_message and " " not in message.text:
         return await message.reply(
             "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
             reply_markup=InlineKeyboardMarkup(

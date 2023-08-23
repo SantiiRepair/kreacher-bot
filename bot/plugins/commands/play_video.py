@@ -35,7 +35,7 @@ async def _(client: Client, message: Message):
         download_as = os.path.join(
             c, f"../../downloads/videos/{str(uuid.uuid4())}.mp4"
         )
-        if not message.reply_to_message and not " " in message.text:
+        if not message.reply_to_message and " " not in message.text:
             return await msg.edit(
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
             )
