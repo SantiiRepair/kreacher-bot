@@ -8,6 +8,7 @@ c = os.path.dirname(os.path.abspath(__file__))
 models = os.path.join(c, "../models")
 tmp = os.path.join(c, "../tmp")
 
+
 async def tts(text: str, output_file: str):
     model = get_model()
     try:
