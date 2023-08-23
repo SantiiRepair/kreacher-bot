@@ -1,3 +1,4 @@
+import io
 import os
 import uuid
 import shutup
@@ -83,6 +84,7 @@ async def _(client: Client, message: Message):
                 if index == page_number and item.get_type() == ITEM_DOCUMENT:
                     h.feed(item.get_body_content().decode())
                     text += h.text
+                    print(text)
                     break
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
@@ -96,8 +98,15 @@ async def _(client: Client, message: Message):
         await on_call.start_audio(audiobook, repeat=False)
         if "epub" in file_type:
             epub = epublib.read_epub(f)
-            for image in epub.get_items_of_type(ITEM_IMAGE):
-                print(image)
+            for item in epub.get_items_of_type(ITEM_IMAGE):
+                photo = io.BytesIO(item.get_content())
+                break
+            await msg.delete()
+            return await client.send_photo(
+                message.chat.id,
+                photo=photo,
+                caption="**__Started audiobook__**",
+            )
         await msg.edit("**__Started audiobook__**")
         if os.path.exists(book):
             os.remove(book)
