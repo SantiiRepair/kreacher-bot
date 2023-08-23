@@ -1,15 +1,17 @@
-import PyPDF2
 import os
 import uuid
-from asyncio import sleep
+import PyPDF2
 import logging
-from pyrogram import filters, Client
-from pyrogram.types import Message
-from bot import kreacher, on_call
-from bot.helpers.progress import progress
+from asyncio import sleep
 from bot.helpers.tts import tts
+from bot import kreacher, on_call
+from pyrogram.types import Message
+from html.parser import HTMLParser
+from pyrogram import filters, Client
+from bot.helpers.progress import progress
 from bot.dbs.instances import VOICE_CHATS
-from pyrogram.enums.chat_type import ChatType
+from bot.decorators.only_grps_chnns import only_grps_chnns
+from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
 from bot.helpers.queues import (
     clear_queue,
 )
@@ -18,23 +20,27 @@ c = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
+@only_grps_chnns
 async def _(client: Client, message: Message):
     text = ""
+    h = HTMLParser()
     book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
     audiobook = os.path.join(
         c, f"../../downloads/audiobooks/{str(uuid.uuid4())}.wav"
     )
     try:
-        if message.chat.type == ChatType.PRIVATE:
-            return await message.reply(
-                "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
-            )
         if not message.reply_to_message:
             return await message.reply(
                 "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**"
             )
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
+        file_type = message.reply_to_message.document.mime_type.split("/", 1)[
+            1
+        ]
+        book = os.path.join(
+            c, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}"
+        )
         await msg.edit("\U0001f4be **__Downloading...__**")
         f = await message.reply_to_message.download(
             file_name=book,
@@ -42,17 +48,34 @@ async def _(client: Client, message: Message):
             progress_args=(client, message.chat, msg),
         )
 
-        pdf = PyPDF2.PdfReader(open(f, "rb"))
-        if not " " in message.text:
+        if " " not in message.text and file_type == "pdf":
+            pdf = PyPDF2.PdfReader(open(f, "rb"))
             await msg.edit("**__Grouping pages...__**")
             for pgs in range(len(pdf.pages)):
                 text += pdf.pages[pgs].extract_text()
             await msg.edit(f"**__{len(pdf.pages)} pages were grouped__**")
-        elif " " in message.text:
+        elif " " not in message.text and file_type == "epub":
+            epub = epublib.read_epub(f)
+            await msg.edit("**__Grouping pages...__**")
+            for item in epub.get_items():
+                if item.get_type() == ITEM_DOCUMENT:
+                    h.feed(item.get_body_content().decode())
+                    text += h.text
+            await msg.edit(f"**__{len(pdf.pages)} pages were grouped__**")
+        elif " " in message.text and file_type == "pdf":
+            pdf = PyPDF2.PdfReader(open(f, "rb"))
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
                 return await msg.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
+        elif " " in message.text and file_type == "epub":
+            epub = epublib.read_epub(f)
+            page_number = message.text.split(maxsplit=1)[1]
+            if not page_number.isdigit():
+                return await msg.edit("**__This is not a number__**")
+            # h.feed(epub.get_items().get_body_content().decode())
+            # text += h.text
+            # text += epub.get_items_of_type(ITEM_DOCUMENT)
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
         await tts(text, path=audiobook)
@@ -63,6 +86,8 @@ async def _(client: Client, message: Message):
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
         await on_call.start_audio(audiobook, repeat=False)
+        for image in epub.get_items_of_type(ITEM_IMAGE):
+            print(book)
         await msg.edit("**__Started audiobook__**")
     except Exception as e:
         logging.error(e)
