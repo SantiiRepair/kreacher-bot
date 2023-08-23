@@ -17,6 +17,7 @@ from bot.helpers.queues import (
     clear_queue,
 )
 
+# used to hide ebooklib annoying warnings
 shutup.please()
 c = os.path.dirname(os.path.abspath(__file__))
 
