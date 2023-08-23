@@ -26,7 +26,7 @@ async def _(client: Client, message: Message):
     h = _HTMLFilter()
     book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
     audiobook = os.path.join(
-        c, f"../../tmp/audiobooks/{str(uuid.uuid4())}.wav"
+        c, f"../../tmp/{str(uuid.uuid4())}.wav"
     )
     try:
         if not message.reply_to_message:
