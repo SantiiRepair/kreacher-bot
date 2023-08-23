@@ -73,13 +73,17 @@ async def _(client: Client, message: Message):
                 return await msg.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
         elif " " in message.text and "epub" in file_type:
+            index = 0
             epub = epublib.read_epub(f)
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
                 return await msg.edit("**__This is not a number__**")
-            # h.feed(epub.get_items().get_body_content().decode())
-            # text += h.text
-            # text += epub.get_items_of_type(ITEM_DOCUMENT)
+            for item in epub.get_items():
+                index += 1
+                if index == page_number and item.get_type() == ITEM_DOCUMENT:
+                    h.feed(item.get_body_content().decode())
+                    text += h.text
+                    break
         await sleep(2)
         await msg.edit("**__Generating an audiobook__**")
         await tts(text=text, output_file=audiobook)
