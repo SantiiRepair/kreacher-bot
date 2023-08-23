@@ -25,10 +25,10 @@ async def tts(text: str, output_file: str):
             data_dir=models,
             download_dir=models,
             output_file=output_file,
+            debug=True
         )
     except Exception as e:
         logging.error(e)
-        raise e
 
 
 def _get_model(lang="es_es", gender="female") -> str:
@@ -77,19 +77,23 @@ def _get_model(lang="es_es", gender="female") -> str:
 async def _ptts(
     text: str,
     model: str,
-    data_dir: str,
     output_file: str,
+    data_dir=[str(Path.cwd())],
     download_dir="",
     output_dir="",
     output_raw="",
+    debug=False,
     use_cuda=False,
     update_voices=False,
-    speaker="",
-    length_scale="",
-    noise_scale="",
-    noise_w="",
-    sentence_silence="",
+    speaker=0,
+    length_scale=0.0,
+    noise_scale=0.0,
+    noise_w=0.0,
+    sentence_silence=0.0,
 ):
+    _LOGGER = logging.getLogger(Path(__file__).stem)
+    logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
+    _LOGGER.debug(_ptts)
     if not download_dir:
         # Download to first data directory by default
         download_dir = data_dir
@@ -155,7 +159,7 @@ async def _ptts(
             with wave.open(str(wav_path), "wb") as wav_file:
                 voice.synthesize(line, wav_file, **synthesize_args)
 
-            logging.info("Wrote %s", wav_path)
+            _LOGGER.info("Wrote %s", wav_path)
     else:
         if (not output_file) or (output_file == "-"):
             # Write to stdout
