@@ -1,5 +1,4 @@
 import os
-
 import uuid
 import logging
 from asyncio import sleep
@@ -45,33 +44,44 @@ async def _(client: Client, message: Message):
             limit=1000,
             filter=MessagesFilter.VIDEO,
         ):
-            results.append(f"{serie.video.file_id};{serie.caption};serie")
+            results.append(
+                {
+                    "type": "serie",
+                    "caption": serie.caption,
+                    "file_id": serie.video.file_id,
+                }
+            )
         async for movie in assistant.search_messages(
             chat_id=movies_channel.id,
             query=search,
             limit=1000,
             filter=MessagesFilter.VIDEO,
         ):
-            results.append(f"{movie.video.file_id};{movie.caption};movie")
+            results.append(
+                {
+                    "type": "movie",
+                    "caption": movie.caption,
+                    "file_id": movie.video.file_id,
+                }
+            )
         for media in results:
-            data = media.split(";", 2)
-            similary = SequenceMatcher(None, search, data[1]).ratio()
+            similary = SequenceMatcher(None, search, media["caption"]).ratio()
             if similary >= 0.3:
                 await msg.edit(
-                    f"**__Yeehaw, I found the {data[2]} you asked for...__**"
+                    f"**__Yeehaw, I found the {media['type']} you asked for...__**"
                 )
                 await sleep(2)
                 await msg.edit("\U0001f4be **__Downloading...__**")
-                if data[2] == "serie":
+                if media["type"] == "serie":
                     video = await assistant.download_media(
-                        data[0],
+                        media["file_id"],
                         file_name=serie_name,
                         progress=progress,
                         progress_args=(client, message.chat, msg),
                     )
-                if data[2] == "movie":
+                if media["type"] == "movie":
                     video = await assistant.download_media(
-                        data[0],
+                        media["file_id"],
                         file_name=movie_name,
                         progress=progress,
                         progress_args=(client, message.chat, msg),
@@ -82,14 +92,14 @@ async def _(client: Client, message: Message):
                     )
                     await on_call.join(message.chat.id)
                     VOICE_CHATS[message.chat.id] = on_call
-                await sleep(1)
+                await sleep(2)
                 await on_call.start_video(
                     video,
                     enable_experimental_lip_sync=True,
                     repeat=False,
                     with_audio=True,
                 )
-                await msg.edit(f"**__Streaming {data[2].upper()}__**")
+                await msg.edit(f"**__Streaming {media['type'].upper()}__**")
                 await msg.pin()
                 break
 
