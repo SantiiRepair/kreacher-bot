@@ -3,7 +3,7 @@
   "setupTasks": [
     {
       "name": "Install Dependencies",
-      "command": "make install"
+      "command": "pip3 install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6 && pip3 install -r requirements.txt"
     }
   ],
 
@@ -14,18 +14,25 @@
       "name": "format",
       "command": "make format"
     },
+    "install": {
+      "name": "install",
+      "command": "pip3 install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6 && pip3 install -r requirements.txt",
+      "restartOn": {
+        "files": ["requirements.txt"]
+      }
+    },
     "lint": {
       "name": "lint",
-      "command": "make lint"
+      "command": "pylint --recursive yes --jobs=4 ."
     },
     "run": {
       "name": "run",
-      "command": "make run_bot",
+      "command": "python3 -m bot",
       "runAtStart": true
     },
     "session": {
       "name": "session",
-      "command": "make session_string"
+      "command": "python3 ./session/session.py"
     }
   }
 }
