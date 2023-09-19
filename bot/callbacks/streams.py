@@ -1,10 +1,12 @@
 import os
 from bot import kreacher
-from bot.helpers.pkl import load_pkl, dump_pkl
-from bot.dbs.instances import VOICE_CHATS
-from bot.helpers.handler import next_item, skip_current
 from pyrogram import filters, Client
 from pyrogram.types import CallbackQuery
+from bot.dbs.instances import VOICE_CHATS
+from bot.helpers.pkl import load_pkl, dump_pkl
+from bot.decorators.only_managers import only_managers
+from bot.helpers.handler import next_item, skip_current
+
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,10 +14,11 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 
 
 @kreacher.on_callback_query(filters.regex("pause_or_resume"))
+@only_managers
 async def _(client: Client, callback: CallbackQuery):
-    chat = callback.message.chat
-    if VOICE_CHATS[chat.id].is_video_paused:
-        await VOICE_CHATS[chat.id].set_pause(False)
+    if callback.message.from_user.id
+    if VOICE_CHATS[callback.message.chat.id].is_video_paused:
+        await VOICE_CHATS[callback.message.chat.id].set_pause(False)
         return await callback.edit_message_text(
             callback.message.text,
             reply_markup=InlineKeyboardMarkup(
@@ -31,7 +34,7 @@ async def _(client: Client, callback: CallbackQuery):
                 ]
             ),
         )
-    await VOICE_CHATS[chat.id].set_pause(True)
+    await VOICE_CHATS[callback.message.chat.id].set_pause(True)
     return await callback.edit_message_text(
         callback.message.text,
         reply_markup=InlineKeyboardMarkup(
