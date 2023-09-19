@@ -16,7 +16,7 @@ from bot.helpers.queues import (
     clear_queue,
 )
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+c = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]streaming"))
@@ -31,12 +31,9 @@ async def _(client: Client, message: Message):
         msg = await message.reply("**__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
-        movie_name = os.path.join(
-            current_dir, f"../downloads/movies/{str(uuid.uuid4())}.mp4"
-        )
-        serie_name = os.path.join(
-            current_dir, f"../downloads/series/{str(uuid.uuid4())}.mp4"
-        )
+        movie_name = os.path.join(c, f"../../downloads/movies/{str(uuid.uuid4())}.mp4")
+        serie_name = os.path.join(c, f"../../downloads/series/{str(uuid.uuid4())}.mp4")
+        tmp = os.path.join(c, f"../../tmp")
         series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
         movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
         async for serie in assistant.search_messages(
@@ -72,11 +69,13 @@ async def _(client: Client, message: Message):
                     f"**__Yeehaw, I found the {media['type']} you asked for...__**"
                 )
                 await sleep(1)
-                image_scraper = ImageScraper(search_key=f"{media['caption']} poster")
+                image_scraper = ImageScraper(
+                    tmp, search_key=f"{media['caption']} poster"
+                )
                 image_urls = image_scraper.find_image_urls()
-                image_scraper.save_images(image_urls)
+                photo = image_scraper.save_images(image_urls, keep_filenames=True)
                 await sleep(1)
-                await msg.edit("\U0001f4be **__Downloading...__**")
+                await msg.edit("💾 **__Downloading...__**")
                 if media["type"] == "serie":
                     video = await assistant.download_media(
                         media["file_id"],
@@ -92,7 +91,7 @@ async def _(client: Client, message: Message):
                         progress_args=(client, message.chat, msg),
                     )
                 if VOICE_CHATS.get(message.chat.id) is None:
-                    await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+                    await msg.edit("🪄 **__Joining the voice chat...__**")
                     await on_call.join(message.chat.id)
                     VOICE_CHATS[message.chat.id] = on_call
                 await sleep(2)
@@ -102,7 +101,12 @@ async def _(client: Client, message: Message):
                     repeat=False,
                     with_audio=True,
                 )
-                await msg.edit(f"**__Streaming {media['type'].upper()}__**")
+                await msg.delete()
+                await client.send_photo(
+                    message.chat.id,
+                    photo=photo,
+                    caption=f"**__Streaming {media['type'].upper()}__**",
+                )
                 await msg.pin()
                 break
 

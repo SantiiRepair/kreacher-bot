@@ -1,10 +1,10 @@
 import os
 import logging
+from pyrogram import Client
 from termcolor import colored
 from bot.config import config
-from pyrogram import Client
 from pytgcalls import GroupCallFactory
-
+from bot.utils.driver import get_driver
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 folder = os.path.join(current_dir, "logs")
@@ -50,3 +50,4 @@ _factory = GroupCallFactory(assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYRO
 on_call = _factory.get_group_call()
 assistant.start()
 kreacher.start()
+driver = get_driver()

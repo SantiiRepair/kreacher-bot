@@ -96,7 +96,7 @@ async def _(client: Client, message: Message):
                     ),
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+                await msg.edit("🪄 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
@@ -124,7 +124,7 @@ async def _(client: Client, message: Message):
             return await msg.pin()
         if message.reply_to_message and message.reply_to_message.audio:
             name = "Audio File"
-            await msg.edit("\U0001f4be **__Downloading...__**")
+            await msg.edit("💾 **__Downloading...__**")
             media = await client.download_media(
                 message.reply_to_message.audio,
                 file_name=download_as,
@@ -133,7 +133,7 @@ async def _(client: Client, message: Message):
             )
         elif message.reply_to_message and message.reply_to_message.voice:
             name = "Voice Note"
-            await msg.edit("\U0001f4be **__Downloading...__**")
+            await msg.edit("💾 **__Downloading...__**")
             media = await client.download_media(
                 message.reply_to_message.voice,
                 file_name=download_as,
@@ -168,7 +168,7 @@ async def _(client: Client, message: Message):
                 ),
             )
         if VOICE_CHATS.get(message.chat.id) is None:
-            await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+            await msg.edit("🪄 **__Joining the voice chat...__**")
             await on_call.join(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)

@@ -40,7 +40,7 @@ async def _(client: Client, message: Message):
         file_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
         book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}")
 
-        await msg.edit("\U0001f4be **__Downloading...__**")
+        await msg.edit("💾 **__Downloading...__**")
         f = await message.reply_to_message.download(
             file_name=book,
             progress=progress,
@@ -83,7 +83,7 @@ async def _(client: Client, message: Message):
         await tts(text=text, output_file=audiobook)
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
-            await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+            await msg.edit("🪄 **__Joining the voice chat...__**")
             await on_call.join(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)

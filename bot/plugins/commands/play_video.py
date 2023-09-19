@@ -99,7 +99,7 @@ async def _(client: Client, message: Message):
                     ),
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("\U0001fa84 **__Joining the voice chat...__**")
+                await msg.edit("🪄 **__Joining the voice chat...__**")
                 await on_call.join(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)

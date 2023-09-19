@@ -18,7 +18,7 @@ async def progress(current_bytes, total_bytes, client, chat, msg):
         await client.edit_message_text(
             chat_id=chat.id,
             message_id=msg.id,
-            text=f"\U0001f4be **__Downloading...__** **{(current_bytes / total_bytes):.2%}**",
+            text=f"💾 **__Downloading...__** **{(current_bytes / total_bytes):.2%}**",
         )
 
     except Exception as e:

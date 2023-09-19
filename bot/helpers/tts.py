@@ -2,7 +2,7 @@ import os
 import uuid
 import logging
 from bot.helpers.bash import bash
-from bot.helpers.piper import get_model
+from bot.utils.piper import get_model
 
 c = os.path.dirname(os.path.abspath(__file__))
 models = os.path.join(c, "../models")
