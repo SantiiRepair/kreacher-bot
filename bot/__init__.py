@@ -11,15 +11,10 @@ folder = os.path.join(current_dir, "logs")
 
 if not os.path.exists(folder):
     os.makedirs(folder)
-if (
-    os.path.exists(f"{folder}/logs.txt")
-    and os.stat(f"{folder}/logs.txt").st_size > 0
-):
+if os.path.exists(f"{folder}/logs.txt") and os.stat(f"{folder}/logs.txt").st_size > 0:
     with open(f"{folder}/logs.txt", "w") as f:
         f.truncate(0)
-        print(
-            f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY'
-        )
+        print(f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
         f.close()
 elif not os.path.exists(f"{folder}/logs.txt"):
     try:
@@ -51,9 +46,7 @@ kreacher = Client(
     api_hash=config.API_HASH,
     bot_token=config.BOT_TOKEN,
 )
-_factory = GroupCallFactory(
-    assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
-)
+_factory = GroupCallFactory(assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM)
 on_call = _factory.get_group_call()
 assistant.start()
 kreacher.start()

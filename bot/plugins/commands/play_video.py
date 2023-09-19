@@ -32,9 +32,7 @@ async def _(client: Client, message: Message):
     try:
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
-        download_as = os.path.join(
-            c, f"../../downloads/videos/{str(uuid.uuid4())}.mp4"
-        )
+        download_as = os.path.join(c, f"../../downloads/videos/{str(uuid.uuid4())}.mp4")
         if not message.reply_to_message and " " not in message.text:
             return await msg.edit(
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
@@ -59,9 +57,7 @@ async def _(client: Client, message: Message):
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton(
-                                    "\u23EA", callback_data="back"
-                                ),
+                                InlineKeyboardButton("\u23EA", callback_data="back"),
                                 InlineKeyboardButton(
                                     "\u23F8\uFE0F",
                                     callback_data="pause_or_resume",
@@ -120,9 +116,7 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton(
-                                "\u23EA", callback_data="back"
-                            ),
+                            InlineKeyboardButton("\u23EA", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
@@ -157,16 +151,12 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton(
-                                "\u23EA", callback_data="back"
-                            ),
+                            InlineKeyboardButton("\u23EA", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
                             ),
-                            InlineKeyboardButton(
-                                "\u23ED\uFE0F", callback_data="next"
-                            ),
+                            InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
                         ],
                     ],
                 ),

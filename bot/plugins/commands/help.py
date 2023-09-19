@@ -18,9 +18,7 @@ async def _(client: Client, message: Message):
                     [
                         InlineKeyboardButton(
                             "Help and Commands!",
-                            url="t.me/{}?start=help".format(
-                                config.BOT_USERNAME
-                            ),
+                            url="t.me/{}?start=help".format(config.BOT_USERNAME),
                         )
                     ]
                 ]

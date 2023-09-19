@@ -37,12 +37,8 @@ async def _(client: Client, message: Message):
             )
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
-        file_type = message.reply_to_message.document.mime_type.split("/", 1)[
-            1
-        ]
-        book = os.path.join(
-            c, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}"
-        )
+        file_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
+        book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}")
 
         await msg.edit("\U0001f4be **__Downloading...__**")
         f = await message.reply_to_message.download(
@@ -79,10 +75,7 @@ async def _(client: Client, message: Message):
             if "." in page_number:
                 return await msg.edit("__Only integer numbers allowed__")
             for index, item in enumerate(epub.get_items(), start=1):
-                if (
-                    index == int(page_number)
-                    and item.get_type() == ITEM_DOCUMENT
-                ):
+                if index == int(page_number) and item.get_type() == ITEM_DOCUMENT:
                     h.feed(item.get_body_content().decode())
                     text += h.text
         await sleep(2)

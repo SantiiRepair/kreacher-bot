@@ -111,9 +111,7 @@ async def _(client: Client, callback: CallbackQuery):
                             "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
                             url=f"https://t.me/{config:BOT_USERNAME}?startgroup=true",
                         ),
-                        InlineKeyboardButton(
-                            "/U0002753 ʜᴇʟᴘ", callback_data="help"
-                        ),
+                        InlineKeyboardButton("/U0002753 ʜᴇʟᴘ", callback_data="help"),
                     ]
                 ]
             ),

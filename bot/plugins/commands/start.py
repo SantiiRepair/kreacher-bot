@@ -68,9 +68,7 @@ async def _(client: Client, message: Message):
                             "\U0001f52e ᴀᴅᴅ ᴍᴇ",
                             url=f"https://t.me/{config.BOT_USERNAME}?startgroup=true",
                         ),
-                        InlineKeyboardButton(
-                            "\u2139\uFE0F ʜᴇʟᴘ", callback_data="help"
-                        ),
+                        InlineKeyboardButton("\u2139\uFE0F ʜᴇʟᴘ", callback_data="help"),
                     ]
                 ]
             ),

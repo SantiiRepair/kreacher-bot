@@ -26,9 +26,7 @@ async def _(client: Client, callback: CallbackQuery):
                             "\u25B6\uFE0F",
                             callback_data="pause_or_resume",
                         ),
-                        InlineKeyboardButton(
-                            "\u23ED\uFE0F", callback_data="next"
-                        ),
+                        InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
                     ],
                 ]
             ),

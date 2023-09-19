@@ -29,9 +29,7 @@ async def skip_current(chat):
     if media_type == "audio":
         await VOICE_CHATS[chat.id].start_audio(url, repeat=False)
     elif media_type == "video":
-        await VOICE_CHATS[chat.id].start_video(
-            url, with_audio=True, repeat=False
-        )
+        await VOICE_CHATS[chat.id].start_video(url, with_audio=True, repeat=False)
     pop_an_item(chat)
     return [name, link, media_type]
 

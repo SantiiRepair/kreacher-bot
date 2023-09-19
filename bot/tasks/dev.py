@@ -20,9 +20,7 @@ async def send_log():
             user.id,
             "__Master, Master, the log file was flushed successfully.__",
         )
-        print(
-            f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY'
-        )
+        print(f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
 
     except Exception as e:
         await kreacher.send_message(

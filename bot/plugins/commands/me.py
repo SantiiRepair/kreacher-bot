@@ -34,16 +34,8 @@ async def _(client: Client, message: Message):
         if user[0]["subscription"]
         else InlineKeyboardMarkup(
             [
-                [
-                    InlineKeyboardButton(
-                        "\U0001f4b3 ɴᴏʀᴍᴀʟ", callback_data="normal"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        "\U0001f4b3 ᴘʀᴇᴍɪᴜᴍ", callback_data="premium"
-                    )
-                ],
+                [InlineKeyboardButton("\U0001f4b3 ɴᴏʀᴍᴀʟ", callback_data="normal")],
+                [InlineKeyboardButton("\U0001f4b3 ᴘʀᴇᴍɪᴜᴍ", callback_data="premium")],
             ]
         )
     )

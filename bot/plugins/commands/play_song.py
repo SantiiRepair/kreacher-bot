@@ -30,9 +30,7 @@ queues = os.path.join(c, "../../dbs/queues.pkl")
 async def _(client: Client, message: Message):
     QUEUE = await load_pkl(queues, "rb", "dict")
     data = await user_info(message.from_user)
-    download_as = os.path.join(
-        c, f"../../downloads/songs/{str(uuid.uuid4())}.mp3"
-    )
+    download_as = os.path.join(c, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
@@ -110,9 +108,7 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton(
-                                "\u23EA", callback_data="back"
-                            ),
+                            InlineKeyboardButton("\u23EA", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
@@ -144,9 +140,7 @@ async def _(client: Client, message: Message):
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
-        proto = (
-            f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
-        )
+        proto = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
         msg_mention = proto.replace("/c/-100", "/c/")
         if message.chat.id in QUEUE:
             # pos = add_to_queue(message.chat, name, url, ref, "audio")
@@ -158,16 +152,12 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton(
-                                "\u23EA", callback_data="back"
-                            ),
+                            InlineKeyboardButton("\u23EA", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
                             ),
-                            InlineKeyboardButton(
-                                "\u23ED\uFE0F", callback_data="next"
-                            ),
+                            InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
                         ],
                         [
                             InlineKeyboardButton(
