@@ -7,6 +7,9 @@ from pyrogram.enums.chat_type import ChatType
 
 
 def only_managers(func):
+    """
+    Allow only admins and user requester to use any command.
+    """
     @functools.wraps(func)
     async def _(client: Client, any):
         try:
@@ -29,8 +32,8 @@ def only_managers(func):
                             text="**__You are not my master or played user, you cannot execute this action.__** \U0001f621",
                             show_alert=True,
                         )
+            await func(client, any)      
         except Exception as e:
             logging.error(e)
-        await func(client, any)
 
     return _
