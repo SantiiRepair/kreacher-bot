@@ -2,14 +2,12 @@ aiofile==3.8.7
 aiofiles==23.1.0
 aiohttp==3.8.5
 av==10.0.0
-black==23.7.0
 EbookLib==0.18
 google-images-search==1.4.6
 numpy==1.24.4
 opencv-python-headless==4.8.0.74
 pillow==10.0.0
 python-crontab==3.0.0
-pylint==2.17.5
 pyrogram==2.0.106
 python-dotenv==1.0.0
 PyPDF2==3.0.1
