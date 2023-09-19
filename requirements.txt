@@ -7,7 +7,6 @@ google-images-search==1.4.6
 numpy==1.24.4
 opencv-python-headless==4.8.0.74
 pillow==10.0.0
-piper-tts==1.2.0
 python-crontab==3.0.0
 pyrogram==2.0.106
 python-dotenv==1.0.0

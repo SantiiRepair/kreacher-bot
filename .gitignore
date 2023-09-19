@@ -14,5 +14,3 @@ kreacher.client.session-journal
 
 .env
 :memory:.session
-
-# .codesandbox/
