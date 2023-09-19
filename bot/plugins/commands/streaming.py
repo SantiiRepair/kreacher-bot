@@ -10,6 +10,7 @@ from pyrogram.enums import MessagesFilter
 from bot.helpers.progress import progress
 from bot.dbs.instances import VOICE_CHATS
 from bot import assistant, kreacher, on_call
+from bot.scrapers.images import ImageScraper
 from bot.decorators.only_grps_chnns import only_grps_chnns
 from bot.helpers.queues import (
     clear_queue,
@@ -70,7 +71,11 @@ async def _(client: Client, message: Message):
                 await msg.edit(
                     f"**__Yeehaw, I found the {media['type']} you asked for...__**"
                 )
-                await sleep(2)
+                await sleep(1)
+                image_scraper = ImageScraper(search_key=f"{media['caption']} poster")
+                image_urls = image_scraper.find_image_urls()
+                image_scraper.save_images(image_urls)
+                await sleep(1)
                 await msg.edit("\U0001f4be **__Downloading...__**")
                 if media["type"] == "serie":
                     video = await assistant.download_media(

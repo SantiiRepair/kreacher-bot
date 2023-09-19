@@ -1,7 +1,3 @@
-# create virtual enviroment ro run the bot
-create_env:
-	virtualenv kreacher_env
-
 #  build in docker container
 docker_build:
 	docker build . -t kreacher
@@ -20,7 +16,7 @@ format:
 
 # lint all project looking for issues
 lint:
-	pylint --disable=C0301,C0103 --recursive yes --jobs=4 .
+	pylint --recursive yes --jobs=4 .
 
 # generate string session of your telegram account
 session_string:
@@ -29,8 +25,4 @@ session_string:
 # command to run bot in normal mode
 run_bot:
 	python3 -m bot
-
-# command to run bot in virtual enviroment
-run_virtual env:
-	make_create env && make install && source kreacher_env/bin/activate && bash python3 -m kreacher
 
