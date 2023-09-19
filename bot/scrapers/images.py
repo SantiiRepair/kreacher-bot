@@ -4,11 +4,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-import time
 import urllib.request
 from urllib.parse import urlparse
 import os
 import requests
+from asyncio import sleep
 import io
 from PIL import Image
 import re
@@ -45,7 +45,7 @@ class ImageScraper:
         self.max_resolution = max_resolution
         self.max_missed = max_missed
 
-    async def find_image_urls(self) -> Union[List, None]:
+    def find_image_urls(self) -> Union[List, None]:
         """
         This function search and return a list of image urls based on the search key.
         """
@@ -56,7 +56,7 @@ class ImageScraper:
         indx_1 = 0
         indx_2 = 0
         search_string = '//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img'
-        time.sleep(3)
+        sleep(3)
         while self.number_of_images > count and missed_count < self.max_missed:
             if indx_2 > 0:
                 try:
@@ -79,20 +79,18 @@ class ImageScraper:
                         missed_count = missed_count + 1
             else:
                 try:
-                    imgurl = self.driver.find_element(
+                    self.driver.find_element(
                         By.XPATH, search_string % (indx_1 + 1)
-                    )
-                    imgurl.click()
+                    ).click()
                     missed_count = 0
                     indx_1 = indx_1 + 1
                 except Exception:
                     try:
-                        imgurl = self.driver.find_element(
+                        self.driver.find_element(
                             By.XPATH,
                             '//*[@id="islrg"]/div[1]/div[%s]/div[%s]/a[1]/div[1]/img'
                             % (indx_1, indx_2 + 1),
-                        )
-                        imgurl.click()
+                        ).click()
                         missed_count = 0
                         indx_2 = indx_2 + 1
                         search_string = (
@@ -103,7 +101,7 @@ class ImageScraper:
                         missed_count = missed_count + 1
 
             try:
-                time.sleep(1)
+                sleep(1)
                 class_names = ["n3VNCb", "iPVvYb", "r48jcc", "pT0Scc"]
                 images = [
                     self.driver.find_elements(By.CLASS_NAME, class_name)
@@ -113,7 +111,7 @@ class ImageScraper:
                 for image in images:
                     src_link = image.get_attribute("src")
                     if ("http" in src_link) and (not "encrypted" in src_link):
-                        print(f"[INFO] {self.search_key} \t #{count} \t {src_link}")
+                        # print(f"[INFO] {self.search_key} \t #{count} \t {src_link}")
                         image_urls.append(src_link)
                         count += 1
                         break
@@ -126,9 +124,9 @@ class ImageScraper:
                         "window.scrollTo(0, " + str(indx_1 * 60) + ");"
                     )
                 self.driver.find_element(By.CLASS_NAME, "mye4qd").click()
-                time.sleep(3)
+                sleep(3)
             except Exception:
-                time.sleep(1)
+                sleep(1)
         return image_urls
 
     def save_images(self, image_urls: list, keep_filenames: bool) -> Union[str, None]:

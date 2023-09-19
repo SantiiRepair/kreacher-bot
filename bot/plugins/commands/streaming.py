@@ -68,13 +68,12 @@ async def _(client: Client, message: Message):
                 await msg.edit(
                     f"**__Yeehaw, I found the {media['type']} you asked for...__**"
                 )
-                await sleep(1)
+                await sleep(2)
                 image_scraper = ImageScraper(
                     tmp, search_key=f"{media['caption']} poster"
                 )
                 image_urls = image_scraper.find_image_urls()
                 photo = image_scraper.save_images(image_urls, keep_filenames=True)
-                await sleep(1)
                 await msg.edit("💾 **__Downloading...__**")
                 if media["type"] == "serie":
                     video = await assistant.download_media(
