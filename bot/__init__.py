@@ -32,7 +32,6 @@ logging.basicConfig(
 )
 
 BOT_USERNAME = config.BOT_USERNAME
-ASSISTANT_ID = config.ASSISTANT_ID
 
 assistant = Client(
     "kreacher.client",
