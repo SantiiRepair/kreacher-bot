@@ -15,7 +15,6 @@ queues = os.path.join(current_dir, "../dbs/queues.pkl")
 @kreacher.on_callback_query(filters.regex("pause_or_resume"))
 @only_managers
 async def _(client: Client, callback: CallbackQuery):
-
     if VOICE_CHATS[callback.message.chat.id].is_video_paused:
         await VOICE_CHATS[callback.message.chat.id].set_pause(False)
         return await callback.edit_message_text(
