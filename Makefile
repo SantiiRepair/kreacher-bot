@@ -1,7 +1,7 @@
 .PHONY: install
 
 run-container:
-	docker-compose up -d --build
+	docker-compose up -d
 
 install:
 	pip install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6
