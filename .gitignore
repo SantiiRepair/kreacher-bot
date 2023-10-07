@@ -7,10 +7,8 @@ downloads
 __pycache__
 kreacher_env
 unknown_errors.txt
-kreacher.bot.session
-kreacher.bot.session-journal
-kreacher.client.session
-kreacher.client.session-journal
+*.session
+*.session-journal
 
 .env
-:memory:.session
+/.codesandbox
