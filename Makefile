@@ -1,28 +1,17 @@
-#  build in docker container
-docker_build:
-	docker build . -t kreacher
-
-# run docker container
-docker_run:
-	docker run kreacher
-
-# install deps required to run this project
 install:
-	pip3 install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6 && pip3 install -r requirements.txt
+	pip install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6
+	pip install -r requirements-dev.txt
+	pip install -r requirements.txt
 
-# format files in the project
 format:
-	black . --line-length 79
+	black .
 
-# lint all project looking for issues
 lint:
 	pylint --recursive yes --jobs=4 .
 
-# generate string session of your telegram account
-session_string:
+session:
 	python3 ./session/session.py
 
-# command to run bot in normal mode
-run_bot:
+start:
 	python3 -m bot
 
