@@ -1,6 +1,0 @@
-#!/bin/bash
-
-pip3 install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6 && pip install -r requirements.txt
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
-rm -rf google-chrome-stable_current_amd64.deb; apt-get update

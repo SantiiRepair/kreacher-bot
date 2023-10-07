@@ -1,4 +1,46 @@
 version: "1"
 services:
-  app:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+    expose:
+     - 5050
+  bot:
     build: .
+    depends_on:
+      - db
+      - cache
+
+volumes:
+  db:
+    driver: local
+  pgadmin:
+    driver: local
+  cache:
+    driver: local
