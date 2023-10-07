@@ -4,7 +4,7 @@ RUN apt-get install cron ffmpeg tree -y
 RUN pip install --upgrade pip
 COPY . /kreacher/
 WORKDIR /kreacher/
-RUN pip install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6 && pip install -r requirements.txt
+RUN make install
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 RUN rm -rf google-chrome-stable_current_amd64.deb; apt-get update
