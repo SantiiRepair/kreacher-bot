@@ -1,7 +1,7 @@
 version: "1"
 services:
   db:
-    image: postgres:14.1-alpine
+    image: postgres:16.0-alpine3.18
     restart: always
     env_file:
       - ./.env
@@ -11,7 +11,7 @@ services:
       - db:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
   cache:
-    image: redis:6.2-alpine
+    image: redis:7.2.1-alpine3.18
     restart: always
     ports:
       - '6379:6379'
@@ -22,7 +22,7 @@ services:
     image: dpage/pgadmin4
     restart: always
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin
     env_file:
       - ./.env
     depends_on:
