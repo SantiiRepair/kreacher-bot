@@ -3,21 +3,22 @@ services:
   db:
     image: postgres:16.0-alpine3.18
     restart: always
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
     env_file:
       - ./.env
     ports:
       - '5432:5432'
-    volumes: 
-      - db:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
   cache:
     image: redis:7.2.1-alpine3.18
     restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    user: root
     volumes: 
       - cache:/data
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    ports:
+      - '6379:6379'
   pgadmin:
     image: dpage/pgadmin4
     restart: always
