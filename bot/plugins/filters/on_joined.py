@@ -1,3 +1,4 @@
+"""
 import os
 from bot import kreacher
 from tinydb import TinyDB, Query
@@ -29,3 +30,4 @@ async def _(client: Client, message: Message):
                 "subscription": None,
             }
         )
+"""
