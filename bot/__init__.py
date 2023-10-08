@@ -1,32 +1,31 @@
 import os
 import logging
+from redis import Redis
 from pyrogram import Client
 from termcolor import colored
 from bot.config import config
 from pytgcalls import GroupCallFactory
 from bot.utils.driver import get_driver
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-folder = os.path.join(current_dir, "logs")
-
-if not os.path.exists(folder):
-    os.makedirs(folder)
-if os.path.exists(f"{folder}/logs.txt") and os.stat(f"{folder}/logs.txt").st_size > 0:
-    with open(f"{folder}/logs.txt", "w") as f:
+_logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+_logs_file = "{}/logs.log".format(_logs_dir)
+if not os.path.exists(_logs_dir):
+    os.makedirs(_logs_dir)
+if os.path.exists(_logs_file) and os.stat(_logs_file).st_size > 0:
+    with open(_logs_file, "w") as f:
         f.truncate(0)
         print(f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
-        f.close()
-elif not os.path.exists(f"{folder}/logs.txt"):
+elif not os.path.exists(_logs_file):
     try:
-        with open(f"{folder}/logs.txt", "w") as f:
+        with open(_logs_file, "w") as f:
             f.write("")
         print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
     except Exception as e:
-        logging.err(e)
+        logging.error(e)
 
 
 logging.basicConfig(
-    filename=f"{folder}/logs.txt",
+    filename=_logs_file,
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
@@ -44,6 +43,12 @@ kreacher = Client(
     api_id=config.API_ID,
     api_hash=config.API_HASH,
     bot_token=config.BOT_TOKEN,
+)
+r = Redis(
+    host="localhost",
+    port=6379,
+    username="default",
+    password="secret",
 )
 _factory = GroupCallFactory(assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM)
 on_call = _factory.get_group_call()

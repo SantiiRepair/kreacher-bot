@@ -74,7 +74,7 @@ async def _(client: Client, message: Message):
                     tmp, search_key=f"{media['caption']} poster"
                 )
                 image_urls = image_scraper.find_image_urls()
-                photo = image_scraper.save_images(image_urls, keep_filenames=True)                
+                photo = image_scraper.save_images(image_urls, keep_filenames=True)
                 if media["type"] == "serie":
                     video = await assistant.download_media(
                         media["file_id"],

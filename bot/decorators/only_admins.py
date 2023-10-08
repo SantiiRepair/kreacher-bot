@@ -9,6 +9,7 @@ def only_admins(func):
     """
     Allow only admins to use any command.
     """
+
     @functools.wraps(func)
     async def _(client: Client, message: Message):
         if not message.chat.type == ChatType.PRIVATE:
