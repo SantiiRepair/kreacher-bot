@@ -88,5 +88,24 @@ def get_last_queue_position(group_id: str) -> Union[int, None]:
     value = list(queue.values())[-1]
     return value["position"]
 
-
+def update_is_played():
+def next_in_queue(group_id: str) -> Union[Tuple, None]:
+    values = ()
+    queue = r.hgetall("queues")
+    value = queue[group_id]
+    if group_id not in queue:
+        return None
+    for i in range(len(value)):
+        if value[i].get("is_playing"):
+            next = value[i + 1]
+            values = (
+                next["from_user"],
+                next["is_playing"],
+                next["position"],
+                next["date"],
+                next["file"],
+                next["type"],
+            )
+            return values
+    return None
 # ------------------------------------------------------------------------
