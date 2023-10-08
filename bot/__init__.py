@@ -8,7 +8,7 @@ from pytgcalls import GroupCallFactory
 from bot.utils.driver import get_driver
 
 _logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-_logs_file = "{}/kreacher.log".format(_logs_dir)
+_logs_file = os.path.join(_logs_dir, "kreacher.log")
 if not os.path.exists(_logs_dir):
     os.makedirs(_logs_dir)
 if os.path.exists(_logs_file) and os.stat(_logs_file).st_size > 0:
@@ -32,26 +32,31 @@ logging.basicConfig(
 
 BOT_USERNAME = config.BOT_USERNAME
 
-assistant = Client(
-    "kreacher.client",
-    api_id=config.API_ID,
-    api_hash=config.API_HASH,
-    session_string=config.SESSION_STRING,
-)
+# Bot Client
 kreacher = Client(
-    "kreacher.bot",
+    "bot.kreacher",
     api_id=config.API_ID,
     api_hash=config.API_HASH,
     bot_token=config.BOT_TOKEN,
 )
+
+# UserBot Client
+assistant = Client(
+    "userbot.assistant",
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    session_string=config.SESSION_STRING,
+)
+
 r = Redis(
     host="localhost",
-    port=6379,
-    username="default",
-    password="secret",
+    port=config.REDIS_PORT,
+    password=config.REDIS_PASSWORD,
 )
-_factory = GroupCallFactory(assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM)
-on_call = _factory.get_group_call()
-assistant.start()
+
+on_call = GroupCallFactory(
+    assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
+).get_group_call()
 kreacher.start()
+assistant.start()
 driver = get_driver()

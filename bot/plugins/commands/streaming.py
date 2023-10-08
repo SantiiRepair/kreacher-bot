@@ -16,7 +16,7 @@ from bot.helpers.queues import (
     clear_queue,
 )
 
-c = os.path.dirname(os.path.abspath(__file__))
+_cwd = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]streaming"))
@@ -31,9 +31,13 @@ async def _(client: Client, message: Message):
         msg = await message.reply("**__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
-        movie_name = os.path.join(c, f"../../downloads/movies/{str(uuid.uuid4())}.mp4")
-        serie_name = os.path.join(c, f"../../downloads/series/{str(uuid.uuid4())}.mp4")
-        tmp = os.path.join(c, f"../../tmp")
+        movie_name = os.path.join(
+            _cwd, f"../../downloads/movies/{str(uuid.uuid4())}.mp4"
+        )
+        serie_name = os.path.join(
+            _cwd, f"../../downloads/series/{str(uuid.uuid4())}.mp4"
+        )
+        tmp = os.path.join(_cwd, f"../../tmp")
         series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
         movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
         async for serie in assistant.search_messages(

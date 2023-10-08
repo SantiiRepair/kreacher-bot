@@ -20,7 +20,7 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
-c = os.path.dirname(os.path.abspath(__file__))
+_cwd = os.path.dirname(os.path.abspath(__file__))
 
 queues = os.path.join(c, "../../dbs/queues.pkl")
 
@@ -32,7 +32,9 @@ async def _(client: Client, message: Message):
     try:
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
-        download_as = os.path.join(c, f"../../downloads/videos/{str(uuid.uuid4())}.mp4")
+        file_name = os.path.join(
+            _cwd, f"../../downloads/videos/{str(uuid.uuid4())}.mp4"
+        )
         if not message.reply_to_message and " " not in message.text:
             return await msg.edit(
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
@@ -40,7 +42,6 @@ async def _(client: Client, message: Message):
 
         if " " in message.text:
             query = message.text.split(maxsplit=1)[1]
-
             if "cdn" in query:
                 await msg.edit("🔄 **__Starting live video stream...__**")
                 await sleep(2)
@@ -134,7 +135,7 @@ async def _(client: Client, message: Message):
             await msg.edit("🔄 **__Downloading...__**")
             media = await assistant.download_media(
                 message.reply_to_message.video,
-                file_name=download_as,
+                file_name=file_name,
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )

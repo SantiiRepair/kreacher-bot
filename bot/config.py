@@ -17,6 +17,8 @@ class Config(object):
         self.MANAGEMENT_MODE = os.getenv("MANAGEMENT_MODE")
         self.MANTAINER = os.getenv("MANTAINER")
         self.SESSION_STRING = os.getenv("SESSION_STRING")
+        self.REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+        self.REDIS_PORT = os.getenv("REDIS_PORT")
 
 
 config = Config()
