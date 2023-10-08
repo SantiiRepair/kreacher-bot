@@ -1,7 +1,6 @@
 tmp
 logs
 cache
-models
 downloads
 __pycache__
 kreacher_env
