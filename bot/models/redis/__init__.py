@@ -8,7 +8,7 @@ def add_to_queue(
     is_playing: bool,
     date: str,
     file: str,
-    type: str,
+    type_of: str,
     position=1,
 ) -> bool:
     """Add or create queue in `group_id` field"""
@@ -19,7 +19,7 @@ def add_to_queue(
             "position": position,
             "date": date,
             "file": file,
-            "type": type,
+            "type_of": type_of,
         }
     ]
     queue = r.hgetall("queues")
@@ -49,7 +49,7 @@ def next_in_queue(group_id: str) -> Union[Tuple, None]:
                 next["position"],
                 next["date"],
                 next["file"],
-                next["type"],
+                next["type_of"],
             )
             return values
     return None
@@ -69,7 +69,7 @@ def previous_in_queue(group_id: str) -> Union[Tuple, None]:
                 previous["position"],
                 previous["date"],
                 previous["file"],
-                previous["type"],
+                previous["type_of"],
             )
             return values
     return None
