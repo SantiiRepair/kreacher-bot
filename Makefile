@@ -14,7 +14,7 @@ format:
 lint:
 	pylint --recursive yes --jobs=4 .
 
-session:
+session-string:
 	python ./session/session.py
 
 start: install
