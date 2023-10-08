@@ -1,7 +1,6 @@
-from bot import kreacher
+from pyrogram.types import message
 from pyrogram import filters, Client
-from pyrogram.types import Message
-from bot.dbs.instances import VOICE_CHATS
+from bot import kreacher, VOICE_CHATS
 from bot.helpers.queues import clear_queue
 from bot.decorators.only_admins import only_admins
 from bot.decorators.only_grps_chnns import only_grps_chnns

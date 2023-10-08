@@ -7,10 +7,9 @@ from pyrogram import filters, Client
 from pyrogram.types import Message
 from bot.helpers.pkl import load_pkl
 from bot.helpers.user_info import user_info
-from bot import kreacher, on_call
+from bot import kreacher, on_call, VOICE_CHATS
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
-from bot.dbs.instances import VOICE_CHATS
 from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
@@ -22,7 +21,7 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
-c = os.path.dirname(os.path.abspath(__file__))
+_cwd = os.path.dirname(os.path.abspath(__file__))
 queues = os.path.join(c, "../../dbs/queues.pkl")
 
 
@@ -30,7 +29,7 @@ queues = os.path.join(c, "../../dbs/queues.pkl")
 async def _(client: Client, message: Message):
     QUEUE = await load_pkl(queues, "rb", "dict")
     data = await user_info(message.from_user)
-    download_as = os.path.join(c, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
+    file_name = os.path.join(_cwd, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
@@ -97,7 +96,7 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("🪄 **__Joining the voice chat...__**")
-                await on_call.join(message.chat.id)
+                await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
             await on_call.start_audio(url, repeat=False)
@@ -127,7 +126,7 @@ async def _(client: Client, message: Message):
             await msg.edit("💾 **__Downloading...__**")
             media = await client.download_media(
                 message.reply_to_message.audio,
-                file_name=download_as,
+                file_name=file_name,
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
@@ -136,7 +135,7 @@ async def _(client: Client, message: Message):
             await msg.edit("💾 **__Downloading...__**")
             media = await client.download_media(
                 message.reply_to_message.voice,
-                file_name=download_as,
+                file_name=file_name,
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
@@ -169,7 +168,7 @@ async def _(client: Client, message: Message):
             )
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("🪄 **__Joining the voice chat...__**")
-            await on_call.join(message.chat.id)
+            await on_call.start(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
         await on_call.start_audio(media, repeat=False)

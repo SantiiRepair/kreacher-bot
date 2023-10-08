@@ -1,8 +1,7 @@
-from bot import kreacher
 from asyncio import sleep
 from pyrogram.types import Message
 from pyrogram import filters, Client
-from bot.dbs.instances import VOICE_CHATS
+from bot import kreacher, VOICE_CHATS
 from bot.decorators.only_dev import only_dev
 
 

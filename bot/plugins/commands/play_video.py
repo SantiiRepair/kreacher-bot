@@ -7,8 +7,7 @@ from pyrogram import filters, Client
 from pyrogram.types import Message
 from bot.helpers.pkl import load_pkl
 from bot.helpers.user_info import user_info
-from bot import assistant, kreacher, on_call
-from bot.dbs.instances import VOICE_CHATS
+from bot import assistant, kreacher, on_call, VOICE_CHATS
 from bot.helpers.progress import progress
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.yt import ytdl, ytsearch
@@ -22,7 +21,7 @@ thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
 _cwd = os.path.dirname(os.path.abspath(__file__))
 
-queues = os.path.join(c, "../../dbs/queues.pkl")
+queues = os.path.join(_cwd, "../../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
@@ -101,7 +100,7 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("🪄 **__Joining the voice chat...__**")
-                await on_call.join(message.chat.id)
+                await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
             await on_call.start_video(
@@ -141,7 +140,7 @@ async def _(client: Client, message: Message):
             )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("**__Joining the voice chat...__** \u23F3")
-                await on_call.join(message.chat.id)
+                await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
                 await sleep(2)
             await on_call.start_video(media, with_audio=True, repeat=False)

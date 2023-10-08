@@ -1,11 +1,11 @@
 import os
+from bot import VOICE_CHATS
 from bot.helpers.pkl import load_pkl, dump_pkl
-from bot.dbs.instances import VOICE_CHATS
 from bot.helpers.queues import clear_queue, get_queue, pop_an_item
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(current_dir, "../dbs/queues.pkl")
-actives = os.path.join(current_dir, "../dbs/actives.pkl")
+_cwd = os.path.dirname(os.path.abspath(__file__))
+queues = os.path.join(_cwd, "../dbs/queues.pkl")
+actives = os.path.join(_cwd, "../dbs/actives.pkl")
 
 
 async def skip_current(chat):

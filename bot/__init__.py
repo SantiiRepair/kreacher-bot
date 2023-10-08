@@ -7,6 +7,9 @@ from bot.config import config
 from pytgcalls import GroupCallFactory
 from bot.utils.driver import get_driver
 
+VOICE_CHATS = {}
+BOT_USERNAME = config.BOT_USERNAME
+
 _logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
 _logs_file = os.path.join(_logs_dir, "kreacher.log")
 if not os.path.exists(_logs_dir):
@@ -29,8 +32,6 @@ logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
-
-BOT_USERNAME = config.BOT_USERNAME
 
 # Bot Client
 kreacher = Client(

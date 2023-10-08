@@ -6,12 +6,11 @@ import PyPDF2
 import logging
 from asyncio import sleep
 from bot.helpers.tts import tts
-from bot import kreacher, on_call
+from bot import kreacher, on_call, VOICE_CHATS
 from pyrogram.types import Message
 from html.parser import HTMLParser
 from pyrogram import filters, Client
 from bot.helpers.progress import progress
-from bot.dbs.instances import VOICE_CHATS
 from bot.decorators.only_grps_chnns import only_grps_chnns
 from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
 from bot.helpers.queues import (
@@ -20,7 +19,7 @@ from bot.helpers.queues import (
 
 # used to hide ebooklib annoying warnings
 shutup.please()
-c = os.path.dirname(os.path.abspath(__file__))
+_cwd = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
@@ -28,8 +27,6 @@ c = os.path.dirname(os.path.abspath(__file__))
 async def _(client: Client, message: Message):
     text = ""
     h = _HTMLFilter()
-    book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.pdf")
-    audiobook = os.path.join(c, f"../../tmp/{str(uuid.uuid4())}.wav")
     try:
         if not message.reply_to_message:
             return await message.reply(
@@ -38,11 +35,13 @@ async def _(client: Client, message: Message):
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         file_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
-        book = os.path.join(c, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}")
-
+        file_name = os.path.join(
+            _cwd, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}"
+        )
+        audiobook = os.path.join(_cwd, f"../../tmp/{str(uuid.uuid4())}.wav")
         await msg.edit("💾 **__Downloading...__**")
         f = await message.reply_to_message.download(
-            file_name=book,
+            file_name=file_name,
             progress=progress,
             progress_args=(client, message.chat, msg),
         )
@@ -84,7 +83,7 @@ async def _(client: Client, message: Message):
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("🪄 **__Joining the voice chat...__**")
-            await on_call.join(message.chat.id)
+            await on_call.start(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
         await on_call.start_audio(audiobook, repeat=False)
