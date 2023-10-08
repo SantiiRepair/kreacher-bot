@@ -18,7 +18,7 @@ async def tts(text: str, output_file: str):
             os.makedirs(os.path.dirname(output_file))
         elif not os.path.exists(tmp):
             os.makedirs(tmp)
-        tmpf = f"{tmp}/{uuid.uuid4()}.txt"
+        tmpf = os.path.join(c, f"../{tmp}/{uuid.uuid4()}.txt")
         with open(tmpf, "w") as temp_text:
             temp_text.write(text)
             temp_text.close()
