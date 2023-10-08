@@ -1,16 +1,16 @@
-import os
+import sys
 from pyrogram import Client
-from dotenv import load_dotenv
 
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    path = os.path.join(current_dir, "../.env")
-    load_dotenv(path)
+    try:
+        api_id = input("Enter your Telegram API ID: ")
+        api_hash = input("Enter your Telegram API HASH: ")
 
-    api_id = os.getenv("API_ID")
-    api_hash = os.getenv("API_HASH")
-
-    app = Client(":memory:", api_id=api_id, api_hash=api_hash)
-    with app:
-        print(app.export_session_string())
+        app = Client(":memory:", api_id=api_id, api_hash=api_hash)
+        with app:
+            print(app.export_session_string())
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sys.exit(print("\n\nAborted!"))
