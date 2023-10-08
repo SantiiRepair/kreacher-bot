@@ -11,6 +11,7 @@ piper-tts==1.2.0
 pyrogram==2.0.106
 python-dotenv==1.0.0
 PyPDF2==3.0.1
+redis==5.0.1
 requests==2.31.0
 selenium==4.11.2
 shutup==0.2.0
