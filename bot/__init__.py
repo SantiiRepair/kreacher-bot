@@ -8,7 +8,7 @@ from pytgcalls import GroupCallFactory
 from bot.utils.driver import get_driver
 
 _logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-_logs_file = "{}/logs.log".format(_logs_dir)
+_logs_file = "{}/kreacher.log".format(_logs_dir)
 if not os.path.exists(_logs_dir):
     os.makedirs(_logs_dir)
 if os.path.exists(_logs_file) and os.stat(_logs_file).st_size > 0:

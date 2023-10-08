@@ -11,7 +11,7 @@ from bot.decorators.only_dev import only_dev
 async def _(client: Client, message: Message):
     try:
         c = os.path.dirname(os.path.abspath(__file__))
-        document = os.path.join(c, "../../logs/logs.log")
+        document = os.path.join(c, "../../logs/kreacher.log")
         await message.reply_document(document=document)
     except Exception as e:
         logging.error(e)
