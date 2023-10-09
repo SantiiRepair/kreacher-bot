@@ -167,8 +167,8 @@ async def _(client: Client, message: Message):
             )
             return await msg.edit(
                 f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
-                    reply_markup=InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                 ),
             )
         if message.chat.id not in get_queues():

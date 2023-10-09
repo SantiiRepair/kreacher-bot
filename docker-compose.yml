@@ -9,7 +9,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "$($POSTGRES_PORT):$($POSTGRES_PORT)"
+      - "$POSTGRES_PORT:$POSTGRES_PORT"
   cache:
     image: redis:7.2.1-alpine3.18
     restart: always
@@ -18,7 +18,7 @@ services:
       - cache:/data
     command: redis-server --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
-      - "$($REDIS_PORT):$($REDIS_PORT)"
+      - "$REDIS_PORT:$REDIS_PORT"
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -32,7 +32,7 @@ services:
       - "5050:80"
     expose:
      - 5050
-  bot:
+  app:
     build: .
     depends_on:
       - db

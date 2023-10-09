@@ -1,7 +1,10 @@
 .PHONY: install
 
-run-container:
-	docker-compose up -d
+run-containers:
+	docker-compose up -d --remove-orphans
+
+remove-containers:
+	docker-compose down --volumes
 
 install:
 	pip install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6
@@ -17,6 +20,6 @@ lint:
 session-string:
 	python ./session/session.py
 
-start: install
+start:
 	python -m bot
 

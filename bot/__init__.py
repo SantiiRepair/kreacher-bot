@@ -16,7 +16,7 @@ VOICE_CHATS = {}
 # ------------------------------------------------------------------------------
 
 _API_ID = config.API_ID
-_API_HASH = config.API_ID
+_API_HASH = config.API_HASH
 _BOT_TOKEN = config.BOT_TOKEN
 _SESSION_STRING = config.SESSION_STRING
 _POSTGRES_DB = config.POSTGRES_DB
