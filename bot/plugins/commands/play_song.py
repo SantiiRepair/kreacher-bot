@@ -3,26 +3,26 @@ import re
 import uuid
 import logging
 from asyncio import sleep
-from pyrogram import filters, Client
 from pyrogram.types import Message
+from pyrogram import filters, Client
+from pyrogram.enums.chat_type import ChatType
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 from bot.helpers.pkl import load_pkl
 from bot.helpers.user_info import user_info
 from bot import kreacher, on_call, VOICE_CHATS
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
-from pyrogram.enums.chat_type import ChatType
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.queues import (
     clear_queue,
 )
-
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
 _cwd = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(c, "../../dbs/queues.pkl")
+queues = os.path.join(_cwd, "../../dbs/queues.pkl")
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))

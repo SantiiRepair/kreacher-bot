@@ -22,7 +22,7 @@ def add_to_queue(
             "type_of": type_of,
         }
     ]
-    queue = r.hgetall("queues")
+    queue: dict = r.hgetall("queues")
     if group_id in queue:
         queue[group_id].append(values)
         hset = r.hset("queues", group_id, queue[group_id])
@@ -37,43 +37,43 @@ def add_to_queue(
 
 def next_in_queue(group_id: str) -> Union[Tuple, None]:
     """Get next media in queue"""
-    queue = r.hgetall("queues")
-    value = queue[group_id]
+    queue: dict = r.hgetall("queues")
+    values: list = queue[group_id]
     if group_id not in queue:
         return None
-    for i in range(len(value)):
-        if value[i].get("is_playing"):
-            next = value[i + 1]
-            values = (
-                next["from_user"],
-                next["is_playing"],
-                next["position"],
-                next["date"],
-                next["file"],
-                next["type_of"],
+    for i in range(len(values)):
+        if values[i].get("is_playing"):
+            _next = values[i + 1]
+            tdo = (
+                _next["from_user"],
+                _next["is_playing"],
+                _next["position"],
+                _next["date"],
+                _next["file"],
+                _next["type_of"],
             )
-            return values
+            return tdo
     return None
 
 
 def previous_in_queue(group_id: str) -> Union[Tuple, None]:
     """Get previous media in queue"""
-    queue = r.hgetall("queues")
-    value = queue[group_id]
+    queue: dict = r.hgetall("queues")
+    values: list = queue[group_id]
     if group_id not in queue:
         return None
-    for i in range(len(value)):
-        if value[i].get("is_playing"):
-            previous = value[i - 1]
-            values = (
-                previous["from_user"],
-                previous["is_playing"],
-                previous["position"],
-                previous["date"],
-                previous["file"],
-                previous["type_of"],
+    for i in range(len(values)):
+        if values[i].get("is_playing"):
+            _previous = values[i - 1]
+            tdo = (
+                _previous["from_user"],
+                _previous["is_playing"],
+                _previous["position"],
+                _previous["date"],
+                _previous["file"],
+                _previous["type_of"],
             )
-            return values
+            return tdo
     return None
 
 
@@ -84,10 +84,10 @@ def remove_queue(group_id: str) -> None:
 
 def get_current_position_in_queue(group_id: str) -> Union[int, None]:
     """Get the current position of the media that is playing"""
-    queue = r.hgetall("queues")
+    queue: dict = r.hgetall("queues")
     if group_id not in queue:
         return None
-    values = queue[group_id].values()[-1]
+    values: dict = queue[group_id][-1]
     for i in range(len(values)):
         if values[i].get("is_playing"):
             return values[i]["position"]
@@ -96,17 +96,17 @@ def get_current_position_in_queue(group_id: str) -> Union[int, None]:
 
 def get_last_position_in_queue(group_id: str) -> Union[int, None]:
     """Get the last position of the media that will be played in the queue"""
-    queue = r.hgetall("queues")
+    queue: dict = r.hgetall("queues")
     if group_id not in queue:
         return None
-    value = queue[group_id].values()[-1]
+    value: dict = queue[group_id][-1]
     return value["position"]
 
 
-def update_is_played_in_queue(action: str) -> None:
+def update_is_played_in_queue(group_id: str, action: str) -> None:
     """Update `is_playing` status in queue"""
-    queue = r.hgetall("queues")
-    values = queue[group_id]
+    queue: dict = r.hgetall("queues")
+    values: list = queue[group_id]
     if group_id not in queue:
         return None
     for i in range(len(values)):

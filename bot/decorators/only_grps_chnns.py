@@ -5,6 +5,8 @@ from pyrogram.enums.chat_type import ChatType
 
 
 def only_grps_chnns(func):
+    """Command can be used in groups and channels only."""
+
     @functools.wraps(func)
     async def _(client: Client, message: Message):
         if message.chat.type == ChatType.PRIVATE:

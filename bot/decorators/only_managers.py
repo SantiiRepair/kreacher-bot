@@ -7,16 +7,16 @@ from pyrogram.enums.chat_type import ChatType
 
 
 def only_managers(func):
-    """
-    Allow only admins and user requester to use any command.
-    """
+    """Allow only admins and user requester to use any command."""
 
     @functools.wraps(func)
-    async def _(client: Client, any):
+    async def _(client: Client, anything):
         try:
             if isinstance(any, Message):
                 if not any.chat.type == ChatType.PRIVATE:
-                    user = await client.get_chat_member(any.chat.id, any.from_user.id)
+                    user = await client.get_chat_member(
+                        anything.chat.id, anything.from_user.id
+                    )
                     if not user.privileges:
                         return await any.reply(
                             "**__You are not my master, you do not order me what to do, bye__** \U0001f621"

@@ -5,9 +5,7 @@ from pyrogram.types import Message
 
 
 def only_dev(func):
-    """
-    Allow only dev to use any command.
-    """
+    """Allow only dev to use any command."""
 
     @functools.wraps(func)
     async def _(client: Client, message: Message):
