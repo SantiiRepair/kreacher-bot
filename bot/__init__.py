@@ -74,8 +74,10 @@ assistant = Client(
 
 engine = db.create_engine(
     f"postgresql://{_POSTGRES_USER}:{_POSTGRES_PASSWORD}@{_POSTGRES_HOST}:{POSTGRES_PORT}/{_POSTGRES_DB}"
+    , echo=True
 )
 conn = _engine.connect()
+db_metadata = db.MetaData()
 
 # ------------------------------------------------------------------------------
 

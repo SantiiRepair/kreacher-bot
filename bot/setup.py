@@ -6,6 +6,7 @@ from glob import glob
 from pathlib import Path
 from termcolor import colored
 
+
 async def setup_db():
     _metadata = db.MetaData()
 
@@ -19,6 +20,8 @@ async def setup_db():
     )
 
     metadata.create_all(engine)
+
+
 async def setup_plugins():
     cwd = os.path.dirname(os.path.abspath(__file__))
     folders = ["callbacks", "tasks"]
