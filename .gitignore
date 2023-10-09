@@ -5,8 +5,11 @@ downloads
 __pycache__
 kreacher_env
 unknown_errors.txt
+
 *.session
 *.session-journal
 
 .env
 .codesandbox
+
+*.lock

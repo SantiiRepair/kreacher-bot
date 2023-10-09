@@ -1,19 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-import urllib.request
-from urllib.parse import urlparse
+import io
 import os
 import requests
-from asyncio import sleep
-import io
 from PIL import Image
-import re
-from bot import driver
+from asyncio import sleep
 from typing import List, Union
+from urllib.parse import urlparse
+from selenium.webdriver.common.by import By
+
+from bot import driver
 
 
 class ImageScraper:
@@ -25,7 +19,6 @@ class ImageScraper:
         min_resolution=(0, 0),
         max_resolution=(1920, 1080),
         max_missed=10,
-        driver=driver,
     ):
         image_path = os.path.join(image_path, search_key)
         if not isinstance(number_of_images, int):
@@ -46,9 +39,7 @@ class ImageScraper:
         self.max_missed = max_missed
 
     def find_image_urls(self) -> Union[List, None]:
-        """
-        This function search and return a list of image urls based on the search key.
-        """
+        """Search and return a list of image urls based on the search key."""
         self.driver.get(self.url)
         image_urls = []
         count = 0
@@ -111,7 +102,6 @@ class ImageScraper:
                 for image in images:
                     src_link = image.get_attribute("src")
                     if ("http" in src_link) and (not "encrypted" in src_link):
-                        # print(f"[INFO] {self.search_key} \t #{count} \t {src_link}")
                         image_urls.append(src_link)
                         count += 1
                         break
@@ -130,9 +120,7 @@ class ImageScraper:
         return image_urls
 
     def save_images(self, image_urls: list, keep_filenames: bool) -> Union[str, None]:
-        """
-        This function takes in an array of image urls and save it into the given image path/directory.
-        """
+        """Takes in an array of image urls and save it into the given path."""
         for i, image_url in enumerate(image_urls):
             try:
                 search_string = "".join(e for e in self.search_key if e.isalnum())
@@ -163,7 +151,7 @@ class ImageScraper:
                             rgb_im.save(image_path)
                             return image_path
                         image_resolution = image_from_web.size
-                        if image_resolution != None:
+                        if image_resolution is not None:
                             if (
                                 image_resolution[0] < self.min_resolution[0]
                                 or image_resolution[1] < self.min_resolution[1]

@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "kreacher-bot"
+version = "1.0.0"
+description = "🔮 Kreacher can stream books, songs, videos, movies and series in any group or channel via voice chat."
+authors = ["Santiago Ramirez <santiirepair@gmail.com>"]
+repository = "https://github.com/SantiiRepair/kreacher-bot"
+license = "GPL-3.0"
+
+
+[tool.black]
+target-version = ['py311']
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[build-system]
+requires = ["poetry-core"]
+python_requires = ">=3.10"
+build-backend = "poetry.core.masonry.api"
