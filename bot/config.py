@@ -20,6 +20,7 @@ class Config(object):
         self.POSTGRES_DB = os.getenv("POSTGRES_DB")
         self.POSTGRES_USER = os.getenv("POSTGRES_USER")
         self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+        self.REDIS_HOST = os.getenv("REDIS_HOST")
         self.REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
         self.REDIS_PORT = os.getenv("REDIS_PORT")
 

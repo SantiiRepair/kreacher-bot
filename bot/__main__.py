@@ -1,13 +1,13 @@
 import asyncio
-import pyrogram
-from bot.util import loader
+from pyrogram import idle
 from termcolor import colored
-from bot import kreacher, assistant
 from pyrogram.types import BotCommand
+
+from bot.util import setup_db, setup_plugins
+from bot import kreacher, assistant
 
 
 async def start_bot():
-    await loader()
     print(f'{colored("[INFO]", "blue")}: LOADING BOT DETAILS')
     bot_me = await kreacher.get_me()
     print(f'{colored("[INFO]", "blue")}: BOT ID {bot_me.id}')
@@ -15,7 +15,6 @@ async def start_bot():
         commands=[
             BotCommand("config", "Set bot configuration"),
             BotCommand("help", "How to use this one"),
-            BotCommand("join", "Join the voice chat"),
             BotCommand("leave", "Leave the voice chat"),
             BotCommand("me", "Info about your status"),
             BotCommand("ping", "Check server latency"),
@@ -24,21 +23,22 @@ async def start_bot():
             BotCommand("play_video", "Play video in voice chat"),
             BotCommand("speedtest", "Run server speed test"),
             BotCommand("streaming", "Any movie or series"),
-            BotCommand("subscription", "Info or status"),
         ]
     )
     print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(start_bot())
+ay = asyncio.get_event_loop()
+ay.run_until_complete(setup_db())
+ay.run_until_complete(setup_plugins())
+ay.run_until_complete(start_bot())
 
 print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
 
 
 if __name__ == "__main__":
     try:
-        pyrogram.idle()
+        idle()
     except KeyboardInterrupt:
         pass
     finally:

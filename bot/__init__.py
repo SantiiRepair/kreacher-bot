@@ -9,22 +9,26 @@ from pytgcalls import GroupCallFactory
 from bot.config import config
 from bot.utils.driver import get_driver
 
-# PyTgcalls Instances
+# ------------------------------------------------------------------------------
+
 VOICE_CHATS = {}
 
-# CONFIG
+# ------------------------------------------------------------------------------
+
 _API_ID = config.API_ID
 _API_HASH = config.API_ID
 _BOT_TOKEN = config.BOT_TOKEN
 _SESSION_STRING = config.SESSION_STRING
-_REDIS_PORT = config.REDIS_PORT
-_REDIS_PASSWORD = config.REDIS_PASSWORD
 _POSTGRES_DB = config.POSTGRES_DB
 _POSTGRES_USER = config._POSTGRES_USER
 _POSTGRES_PASSWORD = config.POSTGRES_PASSWORD
 _POSTGRES_HOST = config.POSTGRES_HOST
 _POSTGRES_PORT = config.POSTGRES_PORT
+_REDIS_HOST = config.REDIS_HOST
+_REDIS_PORT = config.REDIS_PORT
+_REDIS_PASSWORD = config.REDIS_PASSWORD
 
+# ------------------------------------------------------------------------------
 
 _logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
 _logs_file = os.path.join(_logs_dir, "kreacher.log")
@@ -42,6 +46,7 @@ elif not os.path.exists(_logs_file):
     except Exception as e:
         logging.error(e)
 
+# ------------------------------------------------------------------------------
 
 logging.basicConfig(
     filename=_logs_file,
@@ -49,7 +54,8 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# Bot Client
+# ------------------------------------------------------------------------------
+
 kreacher = Client(
     "bot.kreacher",
     api_id=API_ID,
@@ -57,7 +63,6 @@ kreacher = Client(
     bot_token=_BOT_TOKEN,
 )
 
-# UserBot Client
 assistant = Client(
     "userbot.assistant",
     api_id=_API_ID,
@@ -65,20 +70,29 @@ assistant = Client(
     session_string=_SESSION_STRING,
 )
 
-_engine = db.create_engine(
+# ------------------------------------------------------------------------------
+
+engine = db.create_engine(
     f"postgresql://{_POSTGRES_USER}:{_POSTGRES_PASSWORD}@{_POSTGRES_HOST}:{POSTGRES_PORT}/{_POSTGRES_DB}"
 )
 conn = _engine.connect()
 
+# ------------------------------------------------------------------------------
+
 r = Redis(
-    host="localhost",
+    host=_REDIS_HOST,
     port=_REDIS_PORT,
     password=_REDIS_PASSWORD,
 )
 
+# ------------------------------------------------------------------------------
+
 on_call = GroupCallFactory(
     assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
 ).get_group_call()
+
+# ------------------------------------------------------------------------------
+
 kreacher.start()
 assistant.start()
 driver = get_driver()

@@ -6,12 +6,24 @@ from glob import glob
 from pathlib import Path
 from termcolor import colored
 
+async def setup_db():
+    _metadata = db.MetaData()
 
-async def loader():
-    c = os.path.dirname(os.path.abspath(__file__))
+    Student = db.Table(
+        "Student",
+        _metadata,
+        db.Column("Id", db.Integer(), primary_key=True),
+        db.Column("Name", db.String(255), nullable=False),
+        db.Column("Major", db.String(255), default="Math"),
+        db.Column("Pass", db.Boolean(), default=True),
+    )
+
+    metadata.create_all(engine)
+async def setup_plugins():
+    cwd = os.path.dirname(os.path.abspath(__file__))
     folders = ["callbacks", "tasks"]
-    folders.extend(glob(f"{c}/plugins/*", recursive=True))
-    for e in glob(f"{c}/plugins/*", recursive=True):
+    folders.extend(glob(f"{cwd}/plugins/*", recursive=True))
+    for e in glob(f"{cwd}/plugins/*", recursive=True):
         folders.append(e.split("/", 3)[3])
     for folder in folders:
         folder_path = Path(f"bot/{folder}")
