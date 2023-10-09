@@ -12,7 +12,7 @@ from bot.scrapers.images import ImageScraper
 from bot import assistant, kreacher, on_call, VOICE_CHATS
 from bot.decorators.only_grps_chnns import only_grps_chnns
 from bot.helpers.queues import (
-    clear_queue,
+    remove_queue,
 )
 
 _cwd = os.path.dirname(os.path.abspath(__file__))
@@ -123,5 +123,5 @@ async def _(client: Client, message: Message):
         )
         if message.chat.id in VOICE_CHATS:
             await VOICE_CHATS[message.chat.id].stop()
-            await clear_queue(message.chat)
+            await remove_queue(str(message.chat.id))
             VOICE_CHATS.pop(message.chat.id)

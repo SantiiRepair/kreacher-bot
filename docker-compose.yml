@@ -10,12 +10,15 @@ services:
       - ./.env
     ports:
       - "$POSTGRES_PORT:$POSTGRES_PORT"
+    networks: 
+     - kreacher
   cache:
     image: redis:7.2.1-alpine3.18
     restart: always
-    user: root
     volumes: 
       - cache:/data
+    networks: 
+     - kreacher
     command: redis-server --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
@@ -28,15 +31,24 @@ services:
       - ./.env
     depends_on:
       - db
+    networks: 
+     - kreacher
     ports:
       - "5050:80"
     expose:
      - 5050
   app:
     build: .
+    restart: always
     depends_on:
       - db
       - cache
+    networks: 
+     - kreacher
+
+networks:
+  kreacher:
+    driver: bridge
 
 volumes:
   db:

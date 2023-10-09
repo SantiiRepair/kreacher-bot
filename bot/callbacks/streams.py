@@ -4,9 +4,13 @@ from pyrogram.types import CallbackQuery
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot import kreacher, VOICE_CHATS
-from bot.helpers.pkl import load_pkl, dump_pkl
 from bot.decorators.only_managers import only_managers
-from bot.helpers.handler import next_item, skip_current
+from bot.helpers.queues import (
+    get_queues,
+    next_in_queue,
+    previous_in_queue,
+    remove_queue,
+)
 
 
 _cwd = os.path.dirname(os.path.abspath(__file__))
@@ -59,39 +63,19 @@ async def _(client: Client, callback: CallbackQuery):
 
 @kreacher.on_callback_query(filters.regex("next"))
 async def _(client: Client, callback: CallbackQuery):
-    chat = callback.message.chat
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    if len(callback.text.split()) < 2:
-        op = await skip_current(chat)
-        if op == 0:
-            await callback.reply("**Nothing Is Streaming**")
-        elif op == 1:
-            await callback.reply("empty queue, leaving voice chat")
-        else:
-            await callback.reply(
-                f"**⏭ Skipped**\n**🎧 Now Playing** - [{op[0]}]({op[1]})",
-                link_preview=False,
-            )
-    else:
-        skip = callback.text.split(maxsplit=1)[1]
+    await callback.reply(
+        f"**⏭ Skipped**\n**🎧 Now Playing**",
+        link_preview=False,
+    )
+    this = callback.text.split(maxsplit=1)[1]
+    if callback.message.chat.id in get_queues():
         DELQUE = "**Removing Following Songs From Queue:**"
-        if callback.id in QUEUE:
-            items = [int(x) for x in skip.split(" ") if x.isdigit()]
-            items.sort(reverse=True)
-            for x in items:
-                if x != 0:
-                    hm = await next_item(chat, x)
-                    if hm != 0:
-                        DELQUE = DELQUE + "\n" + f"**#{x}** - {hm}"
-            await callback.reply(DELQUE)
+        await callback.reply(DELQUE)
 
 
-@kreacher.on_callback_query(filters.regex("controls"))
+@kreacher.on_callback_query(filters.regex("remove_queues"))
 async def _(client: Client, callback: CallbackQuery):
-    chat = callback.message.chat
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    QUEUE.pop(chat.id)
-    dump_pkl(queues, "wb", QUEUE)
-    await VOICE_CHATS[chat.id].stop_media()
-    await VOICE_CHATS[chat.id].stop()
-    VOICE_CHATS.pop(chat.id)
+    remove_queue(str(callback.message.chat))
+    await VOICE_CHATS[callback.message.chat.id].stop_media()
+    await VOICE_CHATS[callback.message.chat.id].stop()
+    VOICE_CHATS.pop(callback.message.chat.id)

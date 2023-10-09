@@ -1,15 +1,15 @@
 import os
 from time import time
-from bot import kreacher
 from datetime import datetime
 from pyrogram import filters, Client
 from pyrogram.types import CallbackQuery
 from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+
 from bot.config import config
-from bot.__main__ import execution_time, START_TIME
 from bot.plugins.commands.start import PM_START_TEXT
+from bot import kreacher, execution_time, START_TIME
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 

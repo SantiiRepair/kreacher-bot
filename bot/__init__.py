@@ -4,6 +4,7 @@ from redis import Redis
 import sqlalchemy as db
 from pyrogram import Client
 from termcolor import colored
+from datetime import datetime
 from pytgcalls import GroupCallFactory
 
 from bot.config import config
@@ -97,3 +98,23 @@ on_call = GroupCallFactory(
 kreacher.start()
 assistant.start()
 driver = get_driver()
+
+START_TIME = datetime.utcnow()
+TIME_DURATION_UNITS = (
+    ("week", 60 * 60 * 24 * 7),
+    ("day", 60 * 60 * 24),
+    ("hour", 60 * 60),
+    ("min", 60),
+    ("sec", 1),
+)
+
+
+async def execution_time(seconds):
+    if seconds == 0:
+        return "inf"
+    parts = []
+    for unit, div in TIME_DURATION_UNITS:
+        amount, seconds = divmod(int(seconds), div)
+        if amount > 0:
+            parts.append("{}{}{}".format(amount, unit, "" if amount == 1 else "s"))
+    return ", ".join(parts)
