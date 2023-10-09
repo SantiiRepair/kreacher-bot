@@ -2,14 +2,14 @@ import os
 from time import time
 from bot import kreacher
 from datetime import datetime
-from bot.config import config
 from pyrogram import filters, Client
 from pyrogram.types import CallbackQuery
 from pyrogram.enums.chat_type import ChatType
-from bot.plugins.commands.start import PM_START_TEXT
-from bot.helpers.pong import execution_time, START_TIME
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from bot.config import config
+from bot.__main__ import execution_time, START_TIME
+from bot.plugins.commands.start import PM_START_TEXT
 
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
@@ -77,26 +77,6 @@ async def _(client: Client, callback: CallbackQuery):
     )
 
 
-@kreacher.on_callback_query(filters.regex("admin"))
-async def _(client: Client, callback: CallbackQuery):
-    await callback.edit_message_text(
-        ADMIN_TEXT,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
-        ),
-    )
-
-
-@kreacher.on_callback_query(filters.regex("play"))
-async def _(client: Client, callback: CallbackQuery):
-    await callback.edit_message_text(
-        PLAY_TEXT,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("« Bᴀᴄᴋ", callback_data="help")]]
-        ),
-    )
-
-
 @kreacher.on_callback_query(filters.regex("start"))
 async def _(client: Client, callback: CallbackQuery):
     if config.MANAGEMENT_MODE == "ENABLE":
@@ -107,7 +87,7 @@ async def _(client: Client, callback: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardMarkup(
+                        InlineKeyboardButton(
                             "\U0001F9D9 ᴀᴅᴅ ᴍᴇ",
                             url=f"https://t.me/{config:BOT_USERNAME}?startgroup=true",
                         ),
@@ -118,25 +98,6 @@ async def _(client: Client, callback: CallbackQuery):
         )
 
 
-@kreacher.on_callback_query(filters.regex("cls"))
+@kreacher.on_callback_query(filters.regex("close"))
 async def _(client: Client, callback: CallbackQuery):
     return await callback.delete()
-
-
-ADMIN_TEXT = """
-**✘ A module from which admins of the chat can use!**
-
-‣ `/end` - To End music streaming.
-‣ `/skip` - To Skip Tracks Going on.
-‣ `/pause` - To Pause streaming.
-‣ `/resume` - to Resume Streaming.
-‣ `/leavevc` - force The Userbot to leave Vc Chat (Sometimes Joined).
-‣ `/playlist` - to check playlists.
-"""
-
-PLAY_TEXT = """
-**✘ A module from which users of the chat can use!**
-
-‣ `/play` - To play audio from else reply to audio file.
-‣ `/vplay` - To stream videos in voice chat.
-"""

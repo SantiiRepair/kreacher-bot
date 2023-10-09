@@ -6,23 +6,14 @@ from glob import glob
 from pathlib import Path
 from termcolor import colored
 
-
-async def setup_db():
-    _metadata = db.MetaData()
-
-    Student = db.Table(
-        "Student",
-        _metadata,
-        db.Column("Id", db.Integer(), primary_key=True),
-        db.Column("Name", db.String(255), nullable=False),
-        db.Column("Major", db.String(255), default="Math"),
-        db.Column("Pass", db.Boolean(), default=True),
-    )
-
-    metadata.create_all(engine)
+from bot import db_metadata, engine
 
 
-async def setup_plugins():
+def setup_db():
+    db_metadata.create_all(engine)
+
+
+def setup_plugins():
     cwd = os.path.dirname(os.path.abspath(__file__))
     folders = ["callbacks", "tasks"]
     folders.extend(glob(f"{cwd}/plugins/*", recursive=True))

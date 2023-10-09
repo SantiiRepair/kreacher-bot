@@ -1,66 +1,122 @@
-import os
-from bot.helpers.pkl import load_pkl, dump_pkl
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(current_dir, "../dbs/queues.pkl")
-actives = os.path.join(current_dir, "../dbs/actives.pkl")
+from bot import r
+from typing import Tuple, Union
 
 
-async def get_active_chats() -> list:
-    ACTIVE = await load_pkl(actives, "rb", "list")
-    return ACTIVE
+def add_to_queue(
+    group_id: str,
+    from_user: str,
+    is_playing: bool,
+    date: str,
+    file: str,
+    type_of: str,
+    position=1,
+) -> bool:
+    """Add or create queue in `group_id` field"""
+    values = [
+        {
+            "from_user": from_user,
+            "is_playing": is_playing,
+            "position": position,
+            "date": date,
+            "file": file,
+            "type_of": type_of,
+        }
+    ]
+    queue = r.hgetall("queues")
+    if group_id in queue:
+        queue[group_id].append(values)
+        hset = r.hset("queues", group_id, queue[group_id])
+        if hset == 0:
+            return True
+        return False
+    hset = r.hset("queues", group_id, values)
+    if hset == 1:
+        return True
+    return False
 
 
-async def add_to_queue(chat, name, url, ref, typeof):
-    try:
-        QUEUE = await load_pkl(queues, "rb", "dict")
-        ACTIVE = await load_pkl(actives, "rb", "list")
-        if chat.id in QUEUE:
-            QUEUE[chat.id].append([name, url, ref, type])
-            await dump_pkl(queues, "wb", QUEUE)
-            return int(len(QUEUE[chat.id]) - 1)
-        if chat.id not in ACTIVE:
-            ACTIVE.append(chat.id)
-            await dump_pkl(actives, "wb", ACTIVE)
-        QUEUE[chat.id] = [[name, url, ref, typeof]]
-        await dump_pkl(queues, "wb", QUEUE)
-    except Exception as e:
-        raise e
+def next_in_queue(group_id: str) -> Union[Tuple, None]:
+    """Get next media in queue"""
+    queue = r.hgetall("queues")
+    value = queue[group_id]
+    if group_id not in queue:
+        return None
+    for i in range(len(value)):
+        if value[i].get("is_playing"):
+            next = value[i + 1]
+            values = (
+                next["from_user"],
+                next["is_playing"],
+                next["position"],
+                next["date"],
+                next["file"],
+                next["type_of"],
+            )
+            return values
+    return None
 
 
-async def get_queue(chat):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    try:
-        if chat.id in QUEUE:
-            return QUEUE[chat.id]
-        return 0
-    except Exception as e:
-        raise e
+def previous_in_queue(group_id: str) -> Union[Tuple, None]:
+    """Get previous media in queue"""
+    queue = r.hgetall("queues")
+    value = queue[group_id]
+    if group_id not in queue:
+        return None
+    for i in range(len(value)):
+        if value[i].get("is_playing"):
+            previous = value[i - 1]
+            values = (
+                previous["from_user"],
+                previous["is_playing"],
+                previous["position"],
+                previous["date"],
+                previous["file"],
+                previous["type_of"],
+            )
+            return values
+    return None
 
 
-async def pop_an_item(chat):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    try:
-        if chat.id not in QUEUE:
-            return 0
-        QUEUE[chat.id].pop(0)
-        await dump_pkl(queues, "wb", QUEUE)
-        return 1
-    except Exception as e:
-        raise e
+def remove_queue(group_id: str) -> None:
+    """Remove `group_id` from queue"""
+    r.hdel("queues", group_id)
 
 
-async def clear_queue(chat):
-    QUEUE = await load_pkl(queues, "rb", "dict")
-    ACTIVE = await load_pkl(actives, "rb", "list")
-    try:
-        if chat.id not in QUEUE:
-            return 0
-        QUEUE.pop(chat.id)
-        await dump_pkl(queues, "wb", QUEUE)
-        if chat.id in ACTIVE:
-            ACTIVE.remove(chat.id)
-            await dump_pkl(actives, "wb", ACTIVE)
-        return 1
-    except Exception as e:
-        raise e
+def get_current_position_in_queue(group_id: str) -> Union[int, None]:
+    """Get the current position of the media that is playing"""
+    queue = r.hgetall("queues")
+    if group_id not in queue:
+        return None
+    values = queue[group_id].values()[-1]
+    for i in range(len(values)):
+        if values[i].get("is_playing"):
+            return values[i]["position"]
+    return None
+
+
+def get_last_position_in_queue(group_id: str) -> Union[int, None]:
+    """Get the last position of the media that will be played in the queue"""
+    queue = r.hgetall("queues")
+    if group_id not in queue:
+        return None
+    value = queue[group_id].values()[-1]
+    return value["position"]
+
+
+def update_is_played_in_queue(action: str) -> None:
+    """Update `is_playing` status in queue"""
+    queue = r.hgetall("queues")
+    values = queue[group_id]
+    if group_id not in queue:
+        return None
+    for i in range(len(values)):
+        if values[i].get("is_playing"):
+            if action == "previous":
+                values[i]["is_playing"] = False
+                values[i - 1]["is_playing"] = True
+                return r.hset("queues", group_id, values)
+            elif action == "next":
+                values[i]["is_playing"] = False
+                values[i + 1]["is_playing"] = True
+                return r.hset("queues", group_id, values)
+    return None
