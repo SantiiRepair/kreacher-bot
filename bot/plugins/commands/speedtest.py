@@ -1,7 +1,11 @@
 import asyncio
+import logging
+
+# pylint: disable=import-self
 from speedtest import Speedtest
-from pyrogram import filters, Client
 from pyrogram.types import Message
+from pyrogram import filters, Client
+
 from bot import kreacher
 
 
@@ -13,8 +17,9 @@ def testspeed():
         test.upload()
         test.results.share()
         result = test.results.dict()
-    except Exception as e:
-        raise e
+    except Exception as err:
+        logging.error(err)
+        raise err
     return result
 
 
@@ -25,11 +30,11 @@ async def _(client: Client, message: Message):
         msg = await message.reply(
             """**__Kreacher is here to serve you.
 
-Running Speedtest...__** \U0001F4F6"""
+Running Speedtest...__** 📶"""
         )
 
-        loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(None, testspeed)
+        ay = asyncio.get_event_loop()
+        result = await ay.run_in_executor(None, testspeed)
 
         output = f"""**Speedtest Results**
 
@@ -45,7 +50,7 @@ Running Speedtest...__** \U0001F4F6"""
 **__Ping__**: {result['ping']}"""
         await kreacher.send_photo(chat.id, photo=result["share"], caption=output)
         return await msg.delete()
-    except Exception as e:
+    except Exception as err:
         return await msg.edit(
-            f"__Oops master, something wrong has happened.__ \n\n`Error: {e}`",
+            f"__Oops master, something wrong has happened.__ \n\n`Error: {err}`",
         )

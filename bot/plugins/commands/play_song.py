@@ -139,8 +139,8 @@ async def _(client: Client, message: Message):
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
-        proto = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
-        msg_mention = proto.replace("/c/-100", "/c/")
+        url_mention = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
+        msg_mention = url_mention.replace("/c/-100", "/c/")
         if message.chat.id in QUEUE:
             # pos = add_to_queue(message.chat, name, url, ref, "audio")
             await msg.delete()

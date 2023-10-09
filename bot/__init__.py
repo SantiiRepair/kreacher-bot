@@ -20,7 +20,7 @@ _API_HASH = config.API_ID
 _BOT_TOKEN = config.BOT_TOKEN
 _SESSION_STRING = config.SESSION_STRING
 _POSTGRES_DB = config.POSTGRES_DB
-_POSTGRES_USER = config._POSTGRES_USER
+_POSTGRES_USER = config.POSTGRES_USER
 _POSTGRES_PASSWORD = config.POSTGRES_PASSWORD
 _POSTGRES_HOST = config.POSTGRES_HOST
 _POSTGRES_PORT = config.POSTGRES_PORT
@@ -58,8 +58,8 @@ logging.basicConfig(
 
 kreacher = Client(
     "bot.kreacher",
-    api_id=API_ID,
-    api_hash=API_HASH,
+    api_id=_API_ID,
+    api_hash=_API_HASH,
     bot_token=_BOT_TOKEN,
 )
 
@@ -73,7 +73,7 @@ assistant = Client(
 # ------------------------------------------------------------------------------
 
 engine = db.create_engine(
-    f"postgresql://{_POSTGRES_USER}:{_POSTGRES_PASSWORD}@{_POSTGRES_HOST}:{POSTGRES_PORT}/{_POSTGRES_DB}",
+    f"postgresql://{_POSTGRES_USER}:{_POSTGRES_PASSWORD}@{_POSTGRES_HOST}:{_POSTGRES_PORT}/{_POSTGRES_DB}",
     echo=True,
 )
 conn = engine.connect()

@@ -39,7 +39,7 @@ class ImageScraper:
         self.max_missed = max_missed
 
     def find_image_urls(self) -> Union[List, None]:
-        """Search and return a list of image urls based on the search key."""
+        """Search and return a list of image urls based on the search key"""
         self.driver.get(self.url)
         image_urls = []
         count = 0
@@ -120,7 +120,7 @@ class ImageScraper:
         return image_urls
 
     def save_images(self, image_urls: list, keep_filenames: bool) -> Union[str, None]:
-        """Takes in an array of image urls and save it into the given path."""
+        """Takes in an array of image urls and save it into the given path"""
         for i, image_url in enumerate(image_urls):
             try:
                 search_string = "".join(e for e in self.search_key if e.isalnum())

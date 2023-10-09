@@ -1,16 +1,16 @@
 from bot import r
-from typing import Tuple, Union
+from typing import Dict, Tuple, Union
 
 
-def add_to_queue(
+def add_or_create_queue(
     group_id: str,
     from_user: str,
-    is_playing: bool,
     date: str,
     file: str,
     type_of: str,
-    position=1,
-) -> bool:
+    is_playing=False,
+    position=0,
+) -> Union[Tuple, bool]:
     """Add or create queue in `group_id` field"""
     values = [
         {
@@ -27,11 +27,11 @@ def add_to_queue(
         queue[group_id].append(values)
         hset = r.hset("queues", group_id, queue[group_id])
         if hset == 0:
-            return True
+            return True, position
         return False
     hset = r.hset("queues", group_id, values)
     if hset == 1:
-        return True
+        return True, position
     return False
 
 
@@ -101,6 +101,10 @@ def get_last_position_in_queue(group_id: str) -> Union[int, None]:
         return None
     value: dict = queue[group_id][-1]
     return value["position"]
+
+
+def get_queues() -> Union[Dict, None]:
+    return r.hgetall("queues")
 
 
 def update_is_played_in_queue(group_id: str, action: str) -> None:
