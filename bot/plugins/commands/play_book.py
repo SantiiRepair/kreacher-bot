@@ -1,20 +1,24 @@
 import io
 import os
 import uuid
-import shutup
 import PyPDF2
+import shutup
 import logging
 from asyncio import sleep
-from bot.helpers.tts import tts
-from bot import kreacher, on_call, VOICE_CHATS
-from pyrogram.types import Message
 from html.parser import HTMLParser
+from pyrogram.types import Message
 from pyrogram import filters, Client
-from bot.helpers.progress import progress
-from bot.decorators.only_grps_chnns import only_grps_chnns
 from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
+
+from bot.helpers.tts import tts
+from bot.helpers.progress import progress
+from bot import kreacher, on_call, VOICE_CHATS
+from bot.decorators.only_grps_chnns import only_grps_chnns
 from bot.helpers.queues import (
-    clear_queue,
+    add_or_create_queue,
+    get_queues,
+    get_last_position_in_queue,
+    remove_queue,
 )
 
 # used to hide ebooklib annoying warnings
@@ -55,11 +59,12 @@ async def _(client: Client, message: Message):
         elif " " not in message.text and "epub" in file_type:
             epub = epublib.read_epub(f)
             await msg.edit("**__Grouping pages...__**")
-            for index, item in enumerate(epub.get_items(), start=1):
+            for i, item in enumerate(epub.get_items(), start=1):
                 if item.get_type() == ITEM_DOCUMENT:
                     h.feed(item.get_body_content().decode())
                     text += h.text
-            await msg.edit(f"**__{index} pages were grouped__**")
+            # pylint: disable=undefined-loop-variable
+            await msg.edit(f"**__{i} pages were grouped__**")
         elif " " in message.text and file_type == "pdf":
             pdf = PyPDF2.PdfReader(open(f, "rb"))
             page_number = message.text.split(maxsplit=1)[1]
@@ -99,8 +104,8 @@ async def _(client: Client, message: Message):
                 caption="**__Started audiobook__**",
             )
         await msg.edit("**__Started audiobook__**")
-        if os.path.exists(book):
-            os.remove(book)
+        if os.path.exists(file_name):
+            os.remove(file_name)
     except Exception as e:
         logging.error(e)
         await msg.edit(
@@ -108,10 +113,10 @@ async def _(client: Client, message: Message):
         )
         if message.chat.id in VOICE_CHATS:
             await VOICE_CHATS[message.chat.id].stop()
-            await clear_queue(message.chat)
+            remove_queue(str(message.chat.id))
             VOICE_CHATS.pop(message.chat.id)
-        if os.path.exists(book):
-            os.remove(book)
+        if os.path.exists(file_name):
+            os.remove(file_name)
         elif os.path.exists(audiobook):
             os.remove(audiobook)
 

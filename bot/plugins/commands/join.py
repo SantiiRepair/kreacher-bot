@@ -1,5 +1,5 @@
 from pyrogram.types import Message
-from pyrogram import filters, client
+from pyrogram import filters, Client
 from bot import on_call, kreacher, VOICE_CHATS
 from bot.decorators.only_admins import only_admins
 from bot.decorators.only_grps_chnns import only_grps_chnns

@@ -36,7 +36,7 @@ async def _(client: Client, message: Message):
         serie_name = os.path.join(
             _cwd, f"../../downloads/series/{str(uuid.uuid4())}.mp4"
         )
-        tmp = os.path.join(_cwd, f"../../tmp")
+        tmp = os.path.join(_cwd, "../../tmp")
         series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
         movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
         async for serie in assistant.search_messages(

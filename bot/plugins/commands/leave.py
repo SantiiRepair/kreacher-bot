@@ -1,4 +1,4 @@
-from pyrogram.types import message
+from pyrogram.types import Message
 from pyrogram import filters, Client
 from bot import kreacher, VOICE_CHATS
 from bot.helpers.queues import clear_queue
