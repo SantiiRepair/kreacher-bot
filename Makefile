@@ -1,9 +1,9 @@
 .PHONY: install
 
-run-containers:
-	docker-compose up -d --remove-orphans
+docker:
+	docker-compose up -d --build --remove-orphans
 
-remove-containers:
+docker-down:
 	docker-compose down --volumes
 
 install:
