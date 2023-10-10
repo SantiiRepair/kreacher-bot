@@ -31,6 +31,7 @@ queues = os.path.join(_cwd, "../../dbs/queues.pkl")
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
 async def _(client: Client, message: Message):
+    QUEUES = get_queues()
     data = await user_info(message.from_user)
     try:
         msg = await message.reply("\u23F3 **__Processing...__**")
@@ -46,10 +47,10 @@ async def _(client: Client, message: Message):
         if " " in message.text:
             query = message.text.split(maxsplit=1)[1]
             if "cdn" in query:
-                if message.chat.id in get_queues():
+                if str(message.chat.id) in QUEUES:
                     position = get_last_position_in_queue(str(message.chat.id)) + 1
                     add_or_create_queue(
-                        message.chat.id,
+                        str(message.chat.id),
                         from_user=str(message.from_user.id),
                         date=str(datetime.now()),
                         file=query,
@@ -62,9 +63,9 @@ async def _(client: Client, message: Message):
                             [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                         ),
                     )
-                elif message.chat.id not in get_queues():
+                if str(message.chat.id) not in QUEUES:
                     add_or_create_queue(
-                        message.chat.id,
+                        str(message.chat.id),
                         from_user=str(message.from_user.id),
                         date=str(datetime.now()),
                         is_playing=True,
@@ -114,10 +115,10 @@ async def _(client: Client, message: Message):
                 return await msg.edit(
                     "**__Can't find YouTube video.\n\nTry searching with more specific title.__**",
                 )
-            if message.chat.id in get_queues():
+            if str(message.chat.id) in QUEUES:
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     file=url,
@@ -130,9 +131,9 @@ async def _(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            if message.chat.id not in get_queues():
+            if str(message.chat.id) not in QUEUES:
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     is_playing=True,
@@ -177,10 +178,10 @@ async def _(client: Client, message: Message):
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
-            if message.chat.id in get_queues():
+            if str(message.chat.id) in QUEUES:
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     file=media,
@@ -193,9 +194,9 @@ async def _(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            if message.chat.id not in get_queues():
+            if str(message.chat.id) not in QUEUES:
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     is_playing=True,

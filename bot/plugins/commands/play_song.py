@@ -30,6 +30,7 @@ queues = os.path.join(_cwd, "../../dbs/queues.pkl")
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
 async def _(client: Client, message: Message):
+    QUEUES = get_queues()
     data = await user_info(message.from_user)
     file_name = os.path.join(_cwd, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
     if message.chat.type == ChatType.PRIVATE:
@@ -82,12 +83,12 @@ async def _(client: Client, message: Message):
             _, url = await ytdl(fmt, ref)
             if search == 0:
                 return await msg.edit(
-                    "__Can't find song.\n\nTry searching with more specific title.__",
+                    "**__Can't find song.\n\nTry searching with more specific title.__**",
                 )
-            if message.chat.id in get_queues():
+            if str(message.chat.id) in QUEUES:
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     file=url,
@@ -95,14 +96,14 @@ async def _(client: Client, message: Message):
                     position=position,
                 )
                 return await msg.edit(
-                    f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+                    f"__Added to queue at {position}\n\nTitle: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                     ),
                 )
-            if message.chat.id not in get_queues():
+            if str(message.chat.id) not in QUEUES:
                 add_or_create_queue(
-                    message.chat.id,
+                    str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     is_playing=True,
@@ -155,10 +156,10 @@ async def _(client: Client, message: Message):
             )
         url_mention = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
         msg_mention = url_mention.replace("/c/-100", "/c/")
-        if message.chat.id in get_queues():
+        if str(message.chat.id) in QUEUES:
             position = get_last_position_in_queue(str(message.chat.id)) + 1
             add_or_create_queue(
-                message.chat.id,
+                str(message.chat.id),
                 from_user=str(message.from_user.id),
                 date=str(datetime.now()),
                 file=media,
@@ -171,9 +172,9 @@ async def _(client: Client, message: Message):
                     [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
                 ),
             )
-        if message.chat.id not in get_queues():
+        if str(message.chat.id) not in QUEUES:
             add_or_create_queue(
-                message.chat.id,
+                str(message.chat.id),
                 from_user=str(message.from_user.id),
                 date=str(datetime.now()),
                 is_playing=True,
