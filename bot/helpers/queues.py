@@ -123,7 +123,7 @@ def update_is_played_in_queue(group_id: str, action: str) -> None:
                 values[i]["is_playing"] = False
                 values[i - 1]["is_playing"] = True
                 return r.hset("queues", group_id, pickle.dumps(values))
-            elif action == "next":
+            if action == "next":
                 values[i]["is_playing"] = False
                 values[i + 1]["is_playing"] = True
                 return r.hset("queues", group_id, pickle.dumps(values))
