@@ -10,6 +10,8 @@ services:
       - ./.env
     ports:
       - "$POSTGRES_PORT:$POSTGRES_PORT"
+    expose:
+     - $POSTGRES_PORT
     networks: 
      - kreacher
   cache:
@@ -22,6 +24,8 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
+    expose:
+     - $REDIS_PORT
   pgadmin:
     image: dpage/pgadmin4
     restart: always
