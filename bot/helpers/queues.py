@@ -25,8 +25,8 @@ def add_or_create_queue(
     ]
     values: bytes = pickle.dumps(kw)
     queue: dict = r.hgetall("queues")
-    giq: list = pickle.loads(queue[group_id])
-    if group_id in queue: 
+    if group_id in queue:
+        giq: list = pickle.loads(queue[group_id])
         giq.append(values)
         hset = r.hset("queues", group_id, pickle.dumps(giq))
         if hset == 0:

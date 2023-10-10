@@ -97,7 +97,7 @@ async def _(client: Client, message: Message):
                     await on_call.start(message.chat.id)
                     VOICE_CHATS[message.chat.id] = on_call
                 await sleep(2)
-                await on_call.start_video(
+                await VOICE_CHATS[message.chat.id].start_video(
                     video,
                     enable_experimental_lip_sync=True,
                     repeat=False,

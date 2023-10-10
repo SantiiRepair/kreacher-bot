@@ -12,7 +12,7 @@ from bot.decorators.only_grps_chnns import only_grps_chnns
 async def _(client: Client, message: Message):
     try:
         if VOICE_CHATS.get(message.chat.id) is None:
-            raise Exception("No streams")
+            raise Exception("no streams")
         await VOICE_CHATS[message.chat.id].leave_current_group_call()
         VOICE_CHATS.pop(message.chat.id)
         remove_queue(str(message.chat.id))

@@ -7,7 +7,7 @@ docker-down:
 	docker-compose down --volumes
 
 install:
-	pip install --no-deps -U pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6
+	pip install --no-deps pytgcalls==3.0.0.dev24 tgcalls==3.0.0.dev6
 	pip install -r requirements-dev.txt
 	pip install -r requirements.txt
 

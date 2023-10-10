@@ -91,7 +91,7 @@ async def _(client: Client, message: Message):
             await on_call.start(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
-        await on_call.start_audio(audiobook, repeat=False)
+        await VOICE_CHATS[message.chat.id].start_audio(audiobook, repeat=False)
         if "epub" in file_type:
             epub = epublib.read_epub(f)
             for item in epub.get_items_of_type(ITEM_IMAGE):

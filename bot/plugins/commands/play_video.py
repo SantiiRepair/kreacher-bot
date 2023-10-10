@@ -74,7 +74,7 @@ async def _(client: Client, message: Message):
                     )
                 await msg.edit("🔄 **__Starting live video stream...__**")
                 await sleep(2)
-                await on_call.start_video(
+                await VOICE_CHATS[message.chat.id].start_video(
                     query,
                     enable_experimental_lip_sync=True,
                     repeat=False,
@@ -145,7 +145,7 @@ async def _(client: Client, message: Message):
                 await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
-            await on_call.start_video(
+            await VOICE_CHATS[message.chat.id].start_video(
                 url,
                 enable_experimental_lip_sync=True,
                 repeat=False,
@@ -208,7 +208,7 @@ async def _(client: Client, message: Message):
                 await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
                 await sleep(2)
-            await on_call.start_video(
+            await VOICE_CHATS[message.chat.id].start_video(
                 media, enable_experimental_lip_sync=True, repeat=False
             )
             # await msg.delete()

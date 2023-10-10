@@ -79,7 +79,7 @@ async def _(client: Client, message: Message):
             name = search[0]
             ref = search[1]
             duration = search[2]
-            fmt = "best[height<=?720][width<=?1280]"
+            fmt = "bestaudio/best"
             _, url = await ytdl(fmt, ref)
             if search == 0:
                 return await msg.edit(
@@ -115,7 +115,7 @@ async def _(client: Client, message: Message):
                 await on_call.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = on_call
             await sleep(2)
-            await on_call.start_audio(url, repeat=False)
+            await VOICE_CHATS[message.chat.id].start_audio(url, repeat=False)
             await msg.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['mention']})",
                 # file=thumb,
@@ -186,7 +186,7 @@ async def _(client: Client, message: Message):
             await on_call.start(message.chat.id)
             VOICE_CHATS[message.chat.id] = on_call
         await sleep(2)
-        await on_call.start_audio(media, repeat=False)
+        await VOICE_CHATS[message.chat.id].start_audio(media, repeat=False)
         await msg.delete()
         await kreacher.send_photo(
             message.chat.id,
