@@ -95,7 +95,7 @@ def get_current_position_in_queue(group_id: str) -> Union[int, None]:
     queue: dict = r.hgetall("queues")
     if group_id not in queue:
         return None
-    values: dict = pickle.loads(queue[group_id][-1])
+    values: dict = pickle.loads(queue[group_id])
     for i in range(len(values)):
         if values[i].get("is_playing"):
             return values[i]["position"]
@@ -107,7 +107,7 @@ def get_last_position_in_queue(group_id: str) -> Union[int, None]:
     queue: dict = r.hgetall("queues")
     if group_id not in queue:
         return None
-    value: dict = pickle.loads(queue[group_id][-1])
+    value: dict = pickle.loads(queue[group_id])[-1]
     return value["position"]
 
 

@@ -47,7 +47,7 @@ async def _(client: Client, message: Message):
         if " " in message.text:
             query = message.text.split(maxsplit=1)[1]
             if "cdn" in query:
-                if str(message.chat.id) in QUEUES:
+                if str(message.chat.id) in str(QUEUES):
                     position = get_last_position_in_queue(str(message.chat.id)) + 1
                     add_or_create_queue(
                         str(message.chat.id),
@@ -60,10 +60,10 @@ async def _(client: Client, message: Message):
                     return await msg.edit(
                         f"__Added to queue at {position} \n\n Title: [{name}]({query})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                         reply_markup=InlineKeyboardMarkup(
-                            [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                            [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                         ),
                     )
-                if str(message.chat.id) not in QUEUES:
+                if str(message.chat.id) not in str(QUEUES):
                     add_or_create_queue(
                         str(message.chat.id),
                         from_user=str(message.from_user.id),
@@ -115,7 +115,7 @@ async def _(client: Client, message: Message):
                 return await msg.edit(
                     "**__Can't find YouTube video.\n\nTry searching with more specific title.__**",
                 )
-            if str(message.chat.id) in QUEUES:
+            if str(message.chat.id) in str(QUEUES):
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
                     str(message.chat.id),
@@ -128,10 +128,10 @@ async def _(client: Client, message: Message):
                 return await msg.edit(
                     f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                     ),
                 )
-            if str(message.chat.id) not in QUEUES:
+            if str(message.chat.id) not in str(QUEUES):
                 add_or_create_queue(
                     str(message.chat.id),
                     from_user=str(message.from_user.id),
@@ -178,7 +178,7 @@ async def _(client: Client, message: Message):
                 progress=progress,
                 progress_args=(client, message.chat, msg),
             )
-            if str(message.chat.id) in QUEUES:
+            if str(message.chat.id) in str(QUEUES):
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
                     str(message.chat.id),
@@ -191,10 +191,10 @@ async def _(client: Client, message: Message):
                 return await msg.edit(
                     f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="cls")]]
+                        [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                     ),
                 )
-            if str(message.chat.id) not in QUEUES:
+            if str(message.chat.id) not in str(QUEUES):
                 add_or_create_queue(
                     str(message.chat.id),
                     from_user=str(message.from_user.id),
