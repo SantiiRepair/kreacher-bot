@@ -19,13 +19,13 @@ services:
     restart: always
     volumes: 
       - cache:/data
-    networks: 
-     - kreacher
     command: redis-server --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
     expose:
      - $REDIS_PORT
+    networks: 
+     - kreacher
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -35,12 +35,12 @@ services:
       - ./.env
     depends_on:
       - db
-    networks: 
-     - kreacher
     ports:
       - "5050:80"
     expose:
      - 5050
+    networks: 
+     - kreacher
   app:
     build: .
     restart: always
