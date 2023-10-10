@@ -124,7 +124,7 @@ async def _(client: Client, message: Message):
                         [
                             InlineKeyboardButton("\u23EA", callback_data="back"),
                             InlineKeyboardButton(
-                                "\u23F8\uFE0F",
+                                "⏸️",
                                 callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton(
