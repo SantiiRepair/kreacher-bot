@@ -9,9 +9,7 @@ if ! command -v redis-cli >/dev/null 2>&1; then
     sudo apt-get update && sudo apt-get install redis -y
 fi
 
-GIT_PATH=$(which git 2>&1)
-
-if ! [ -x $GIT_PATH ]; then
+if ! command -v git >/dev/null 2>&1; then
     sudo apt-get install git-all -y
 fi
 
