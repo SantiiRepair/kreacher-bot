@@ -31,6 +31,7 @@ queues = os.path.join(_cwd, "../../dbs/queues.pkl")
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
 async def _(client: Client, message: Message):
     QUEUES = get_queues()
+    print(QUEUES)
     data = await user_info(message.from_user)
     file_name = os.path.join(_cwd, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
     if message.chat.type == ChatType.PRIVATE:
@@ -85,7 +86,7 @@ async def _(client: Client, message: Message):
                 return await msg.edit(
                     "**__Can't find song.\n\nTry searching with more specific title.__**",
                 )
-            if str(message.chat.id) in str(QUEUES):
+            if str(message.chat.id) in QUEUES:
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
                     str(message.chat.id),
@@ -101,7 +102,7 @@ async def _(client: Client, message: Message):
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                     ),
                 )
-            if str(message.chat.id) not in str(QUEUES):
+            if str(message.chat.id) not in QUEUES:
                 add_or_create_queue(
                     str(message.chat.id),
                     from_user=str(message.from_user.id),

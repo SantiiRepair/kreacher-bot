@@ -1,4 +1,4 @@
-import pickle
+import json
 from bot import r
 from typing import Dict, Tuple, Union
 
@@ -23,17 +23,16 @@ def add_or_create_queue(
             "type_of": type_of,
         }
     ]
-    values: bytes = pickle.dumps(kw)
-    queue: dict = r.hgetall("queues")
-    if group_id in str(queue):
-        giq: list = pickle.loads(queue[group_id])
-        print(giq)
+    values: bytes = json.dumps(kw).encode("utf-8")
+    queue: dict = get_queues()
+    if group_id in queue:
+        giq: list = queue[group_id]
         giq.append(values)
-        hset = r.hset("queues", group_id, pickle.dumps(giq))
+        values: bytes = json.dumps(giq).encode("utf-8")
+        hset = r.hset("queues", group_id, values)
         if hset == 0:
             return position
         return False
-    print(kw)
     hset = r.hset("queues", group_id, values)
     if hset == 1:
         return position
@@ -42,9 +41,9 @@ def add_or_create_queue(
 
 def next_in_queue(group_id: str) -> Union[Tuple, None]:
     """Get next media in queue"""
-    queue: dict = r.hgetall("queues")
-    values: list = pickle.loads(queue[group_id])
-    if group_id not in str(queue):
+    queue: dict = get_queues()
+    values: list = queue[group_id]
+    if group_id not in queue:
         return None
     for i in range(len(values)):
         if values[i].get("is_playing"):
@@ -63,9 +62,9 @@ def next_in_queue(group_id: str) -> Union[Tuple, None]:
 
 def previous_in_queue(group_id: str) -> Union[Tuple, None]:
     """Get previous media in queue"""
-    queue: dict = r.hgetall("queues")
-    values: list = pickle.loads(queue[group_id])
-    if group_id not in str(queue):
+    queue: dict = get_queues()
+    values: list = queue[group_id]
+    if group_id not in queue:
         return None
     for i in range(len(values)):
         if values[i].get("is_playing"):
@@ -88,16 +87,17 @@ def remove_queue(group_id: str) -> None:
 
 
 def get_queues() -> Union[Dict, None]:
-    queues = r.hgetall("queues")
+    rqueues = r.hgetall("queues")
+    queues = {f.decode(): json.loads(v.decode()) for f, v in rqueues.items()}
     return queues
 
 
 def get_current_position_in_queue(group_id: str) -> Union[int, None]:
     """Get the current position of the media that is playing"""
-    queue: dict = r.hgetall("queues")
-    if group_id not in str(queue):
+    queue: dict = get_queues()
+    if group_id not in queue:
         return None
-    values: dict = pickle.loads(queue[group_id])
+    values: dict = queue[group_id]
     for i in range(len(values)):
         if values[i].get("is_playing"):
             return values[i]["position"]
@@ -106,28 +106,28 @@ def get_current_position_in_queue(group_id: str) -> Union[int, None]:
 
 def get_last_position_in_queue(group_id: str) -> Union[int, None]:
     """Get the last position of the media that will be played in the queue"""
-    queue: dict = r.hgetall("queues")
-    if group_id not in str(queue):
+    queue: dict = get_queues()
+    if group_id not in queue:
         return None
-    value: dict = pickle.loads(queue[group_id])[-1]
+    value: dict = queue[group_id][-1]
     print(value)
     return value["position"]
 
 
 def update_is_played_in_queue(group_id: str, action: str) -> Union[bool, None]:
     """Update `is_playing` status in queue"""
-    queue: dict = r.hgetall("queues")
-    if group_id not in str(queue):
+    queue: dict = get_queues()
+    if group_id not in queue:
         return None
-    values: list = pickle.loads(queue[group_id])
+    values: list = queue[group_id]
     for i in range(len(values)):
         if values[i].get("is_playing"):
             if action == "previous":
                 values[i]["is_playing"] = False
                 values[i - 1]["is_playing"] = True
-                return r.hset("queues", group_id, pickle.dumps(values))
+                return r.hset("queues", group_id, json.dumps(values).encode("utf-8"))
             if action == "next":
                 values[i]["is_playing"] = False
                 values[i + 1]["is_playing"] = True
-                return r.hset("queues", group_id, pickle.dumps(values))
+                return r.hset("queues", group_id, json.dumps(values).encode("utf-8"))
     return True

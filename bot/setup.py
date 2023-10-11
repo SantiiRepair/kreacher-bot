@@ -19,5 +19,5 @@ def setup_plugins():
             sys.modules[module_name] = module
 
             print(
-                f"{colored('[INFO]', 'blue')}: Bot has started {colored(module_name, 'yellow')}"
+                f"{colored('[INFO]:', 'blue')} Bot has started {colored(module_name, 'yellow')}"
             )

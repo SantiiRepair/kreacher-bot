@@ -5,6 +5,7 @@ downloads
 
 *.env
 *.log
+*.rdb
 *.lock
 *.pyc
 *.session

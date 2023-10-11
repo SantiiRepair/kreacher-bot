@@ -10,9 +10,8 @@ ay = asyncio.get_event_loop()
 
 
 async def start_bot():
-    print(f'{colored("[INFO]", "blue")}: LOADING BOT DETAILS')
     bot_me = await kreacher.get_me()
-    print(f'{colored("[INFO]", "blue")}: BOT ID {bot_me.id}')
+    print(f'{colored("[INFO]:", "blue")} BOT ID {bot_me.id}')
     await kreacher.set_bot_commands(
         commands=[
             BotCommand("config", "Set bot configuration"),
@@ -26,15 +25,15 @@ async def start_bot():
             BotCommand("streaming", "Any movie or series"),
         ]
     )
-    print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')
+    print(f'{colored("[INFO]:", "blue")} SETED BOT COMMANDS')
 
 
 try:
     setup_plugins()
     ay.run_until_complete(start_bot())
-    print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
+    print(f'{colored("[INFO]:", "blue")} SUCCESSFULLY STARTED BOT!')
     idle()
 except KeyboardInterrupt:
     kreacher.disconnect()
     assistant.disconnect()
-    print(f'{colored("[INFO]", "blue")}: CLIENTS DISCONNECTED')
+    print(f'{colored("[INFO]:", "blue")} CLIENTS DISCONNECTED')
