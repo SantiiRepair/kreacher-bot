@@ -1,4 +1,4 @@
-import json
+import pickle
 from bot import r
 from typing import Dict, Tuple, Union
 
@@ -23,12 +23,12 @@ def add_or_create_queue(
             "type_of": type_of,
         }
     ]
-    values: bytes = json.dumps(kw).encode("utf-8")
+    values: bytes = pickle.dumps(kw)
     queue: dict = get_queues()
     if group_id in queue:
         giq: list = queue[group_id]
-        giq.append(values)
-        values: bytes = json.dumps(giq).encode("utf-8")
+        giq.extend(kw)
+        values: bytes = pickle.dumps(giq)
         hset = r.hset("queues", group_id, values)
         if hset == 0:
             return position
@@ -88,7 +88,7 @@ def remove_queue(group_id: str) -> None:
 
 def get_queues() -> Union[Dict, None]:
     rqueues = r.hgetall("queues")
-    queues = {f.decode(): json.loads(v.decode()) for f, v in rqueues.items()}
+    queues = {f.decode(): pickle.loads(v) for f, v in rqueues.items()}
     return queues
 
 
@@ -110,7 +110,6 @@ def get_last_position_in_queue(group_id: str) -> Union[int, None]:
     if group_id not in queue:
         return None
     value: dict = queue[group_id][-1]
-    print(value)
     return value["position"]
 
 
@@ -125,9 +124,9 @@ def update_is_played_in_queue(group_id: str, action: str) -> Union[bool, None]:
             if action == "previous":
                 values[i]["is_playing"] = False
                 values[i - 1]["is_playing"] = True
-                return r.hset("queues", group_id, json.dumps(values).encode("utf-8"))
+                return r.hset("queues", group_id, pickle.dumps(values))
             if action == "next":
                 values[i]["is_playing"] = False
                 values[i + 1]["is_playing"] = True
-                return r.hset("queues", group_id, json.dumps(values).encode("utf-8"))
+                return r.hset("queues", group_id, pickle.dumps(values))
     return True
