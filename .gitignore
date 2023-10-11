@@ -1,13 +1,8 @@
-tmp
-logs
-cache
-downloads
-
 *.env
 *.log
 *.rdb
-*.lock
 *.pyc
+*.lock
 *.session
 *.session-journal
 

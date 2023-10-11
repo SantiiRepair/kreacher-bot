@@ -31,17 +31,14 @@ _REDIS_PASSWORD = config.REDIS_PASSWORD
 
 # ------------------------------------------------------------------------------
 
-_logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-_logs_file = os.path.join(_logs_dir, "kreacher.log")
-if not os.path.exists(_logs_dir):
-    os.makedirs(_logs_dir)
-if os.path.exists(_logs_file) and os.stat(_logs_file).st_size > 0:
-    with open(_logs_file, "w") as f:
+_log_file = os.path.join("/tmp", "kreacher.log")
+if os.path.exists(_log_file) and os.stat(_log_file).st_size > 0:
+    with open(_log_file, "w") as f:
         f.truncate(0)
         print(f'{colored("[INFO]:", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
-elif not os.path.exists(_logs_file):
+elif not os.path.exists(_log_file):
     try:
-        with open(_logs_file, "w") as f:
+        with open(_log_file, "w") as f:
             f.write("")
         print(f'{colored("[INFO]:", "blue")} LOG FILE CREATED')
     except Exception as e:
@@ -50,7 +47,7 @@ elif not os.path.exists(_logs_file):
 # ------------------------------------------------------------------------------
 
 logging.basicConfig(
-    filename=_logs_file,
+    filename=_log_file,
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
