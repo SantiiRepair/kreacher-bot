@@ -22,33 +22,31 @@ queues = os.path.join(_cwd, "../dbs/queues.pkl")
 async def _(client: Client, callback: CallbackQuery):
     if VOICE_CHATS[callback.message.chat.id].is_video_paused:
         await VOICE_CHATS[callback.message.chat.id].set_pause(False)
-        return await callback.edit_message_text(
-            callback.message.text,
+        return await callback.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("\u23EA", callback_data="back"),
+                        InlineKeyboardButton("⏪", callback_data="back"),
                         InlineKeyboardButton(
-                            "\u25B6\uFE0F",
+                            "⏸️",
                             callback_data="pause_or_resume",
                         ),
-                        InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
+                        InlineKeyboardButton("⏭️", callback_data="next"),
                     ],
                 ]
             ),
         )
     await VOICE_CHATS[callback.message.chat.id].set_pause(True)
-    return await callback.edit_message_text(
-        callback.message.text,
+    return await callback.edit_message_reply_markup(
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("\u23EA", callback_data="back"),
+                    InlineKeyboardButton("⏪", callback_data="back"),
                     InlineKeyboardButton(
-                        "\u23F8\uFE0F",
+                        "▶️",
                         callback_data="pause_or_resume",
                     ),
-                    InlineKeyboardButton("\u25B6\uFE0F", callback_data="next"),
+                    InlineKeyboardButton("▶️", callback_data="next"),
                 ],
             ]
         ),

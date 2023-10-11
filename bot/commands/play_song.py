@@ -117,13 +117,13 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("\u23EA", callback_data="back"),
+                            InlineKeyboardButton("⏪", callback_data="back"),
                             InlineKeyboardButton(
                                 "⏸️",
                                 callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton(
-                                "\u23ED\uFE0F",
+                                "⏭️",
                                 callback_data="next",
                             ),
                         ],
@@ -162,7 +162,7 @@ async def _(client: Client, message: Message):
                 position=position,
             )
             return await msg.edit(
-                f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+                f"__Added to queue at {position} \n\n Title: [{name}]({url_mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                 reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                 ),
@@ -190,13 +190,13 @@ async def _(client: Client, message: Message):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("\u23EA", callback_data="back"),
+                        InlineKeyboardButton("⏪", callback_data="back"),
                         InlineKeyboardButton(
                             "\u23F8\uFE0F",
                             callback_data="pause_or_resume",
                         ),
                         InlineKeyboardButton(
-                            "\u23ED\uFE0F",
+                            "⏭️",
                             callback_data="next",
                         ),
                     ],

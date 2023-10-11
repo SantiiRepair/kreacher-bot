@@ -78,14 +78,12 @@ async def _(client: Client, message: Message):
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("\u23EA", callback_data="back"),
+                                InlineKeyboardButton("⏪", callback_data="back"),
                                 InlineKeyboardButton(
                                     "\u23F8\uFE0F",
                                     callback_data="pause_or_resume",
                                 ),
-                                InlineKeyboardButton(
-                                    "\u23ED\uFE0F", callback_data="next"
-                                ),
+                                InlineKeyboardButton("⏭️", callback_data="next"),
                             ],
                         ],
                     ),
@@ -148,13 +146,13 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("\u23EA", callback_data="back"),
+                            InlineKeyboardButton("⏪", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton(
-                                "\u23ED\uFE0F",
+                                "⏭️",
                                 callback_data="next",
                             ),
                         ],
@@ -210,12 +208,12 @@ async def _(client: Client, message: Message):
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("\u23EA", callback_data="back"),
+                            InlineKeyboardButton("⏪", callback_data="back"),
                             InlineKeyboardButton(
                                 "\u23F8\uFE0F",
                                 callback_data="pause_or_resume",
                             ),
-                            InlineKeyboardButton("\u23ED\uFE0F", callback_data="next"),
+                            InlineKeyboardButton("⏭️", callback_data="next"),
                         ],
                     ],
                 ),

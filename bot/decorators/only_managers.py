@@ -12,29 +12,29 @@ def only_managers(func):
     @functools.wraps(func)
     async def _(client: Client, anything):
         try:
-            if isinstance(any, Message):
-                if not any.chat.type == ChatType.PRIVATE:
+            if isinstance(anything, Message):
+                if not anything.chat.type == ChatType.PRIVATE:
                     user = await client.get_chat_member(
                         anything.chat.id, anything.from_user.id
                     )
                     if not user.privileges:
-                        return await any.reply(
+                        return await anything.reply(
                             "**__You are not my master, you do not order me what to do, bye__** \U0001f621"
                         )
 
-            elif isinstance(any, CallbackQuery):
-                if not any.message.chat.type == ChatType.PRIVATE:
+            elif isinstance(anything, CallbackQuery):
+                if not anything.message.chat.type == ChatType.PRIVATE:
                     user = await client.get_chat_member(
-                        any.message.chat.id, any.message.from_user.id
+                        anything.message.chat.id, anything.message.from_user.id
                     )
                     if not user.privileges:
                         return await client.answer_callback_query(
-                            any.id,
+                            anything.id,
                             text="**__You are not my master or played user, you cannot execute this action.__** \U0001f621",
                             show_alert=True,
                         )
-            await func(client, any)
-        except Exception as e:
-            logging.error(e)
+            await func(client, anything)
+        except Exception as err:
+            logging.error(err)
 
     return _
