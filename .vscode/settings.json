@@ -1,0 +1,18 @@
+{
+    "settings": "",
+    "workbench.colorTheme": "1am",
+    "redhat.telemetry.enabled": false,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.ignoreRebaseWarning": true,
+    "explorer.confirmDragAndDrop": false,
+    "git.enableSmartCommit": true,
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "files.associations": {
+        "*.arb": "json"
+    },
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "python.languageServer": "Pylance",
+    "python.autoComplete.extraPaths": []
+}
