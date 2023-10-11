@@ -1,4 +1,3 @@
-import os
 import uuid
 import logging
 from asyncio import sleep
@@ -15,9 +14,6 @@ from bot.helpers.queues import (
     remove_queue,
 )
 
-_cwd = os.path.dirname(os.path.abspath(__file__))
-
-
 @kreacher.on_message(filters.regex(pattern="^[!?/]streaming"))
 @only_grps_chnns
 async def _(client: Client, message: Message):
@@ -30,13 +26,8 @@ async def _(client: Client, message: Message):
         msg = await message.reply("**__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
-        movie_name = os.path.join(
-            _cwd, f"../../downloads/movies/{str(uuid.uuid4())}.mp4"
-        )
-        serie_name = os.path.join(
-            _cwd, f"../../downloads/series/{str(uuid.uuid4())}.mp4"
-        )
-        tmp = os.path.join(_cwd, "../../tmp")
+        movie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
+        serie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
         series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
         movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
         async for serie in assistant.search_messages(
@@ -74,7 +65,7 @@ async def _(client: Client, message: Message):
                 await sleep(2)
                 await msg.edit("💾 **__Downloading...__**")
                 image_scraper = ImageScraper(
-                    tmp, search_key=f"{media['caption']} poster"
+                    "/tmp", search_key=f"{media['caption']} poster"
                 )
                 image_urls = image_scraper.find_image_urls()
                 photo = image_scraper.save_images(image_urls, keep_filenames=True)

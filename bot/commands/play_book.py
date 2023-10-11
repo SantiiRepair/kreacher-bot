@@ -23,7 +23,6 @@ from bot.helpers.queues import (
 
 # used to hide ebooklib annoying warnings
 shutup.please()
-_cwd = os.path.dirname(os.path.abspath(__file__))
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
@@ -39,10 +38,8 @@ async def _(client: Client, message: Message):
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         file_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
-        file_name = os.path.join(
-            _cwd, f"../../downloads/books/{str(uuid.uuid4())}.{file_type}"
-        )
-        audiobook = os.path.join(_cwd, f"../../tmp/{str(uuid.uuid4())}.wav")
+        file_name = f"/tmp/{str(uuid.uuid4())}.{file_type}"
+        audiobook = f"/tmp/{str(uuid.uuid4())}.wav"
         await msg.edit("💾 **__Downloading...__**")
         f = await message.reply_to_message.download(
             file_name=file_name,

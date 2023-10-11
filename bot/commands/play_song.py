@@ -1,4 +1,3 @@
-import os
 import re
 import uuid
 import logging
@@ -24,14 +23,11 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 owner = "1669178360"
 
-_cwd = os.path.dirname(os.path.abspath(__file__))
-queues = os.path.join(_cwd, "../../dbs/queues.pkl")
-
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
 async def _(client: Client, message: Message):
     data = await user_info(message.from_user)
-    file_name = os.path.join(_cwd, f"../../downloads/songs/{str(uuid.uuid4())}.mp3")
+    file_name = f"/tmp/{str(uuid.uuid4())}.mp3"
     if message.chat.type == ChatType.PRIVATE:
         return await message.reply(
             "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"

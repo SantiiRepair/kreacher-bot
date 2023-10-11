@@ -5,7 +5,7 @@ services:
     restart: always
     user: "$PGUSER"
     volumes: 
-      - db:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     env_file:
       - ./.env
     ports:
@@ -18,7 +18,7 @@ services:
     image: redis:7.2.1-alpine3.18
     restart: always
     volumes: 
-      - cache:/data
+      - redis:/data
     command: redis-server --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
@@ -55,9 +55,9 @@ networks:
     driver: bridge
 
 volumes:
-  db:
+  postgres:
     driver: local
-  cache:
+  redis:
     driver: local  
   pgadmin:
     driver: local

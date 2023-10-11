@@ -1,4 +1,3 @@
-import os
 import re
 import uuid
 import logging
@@ -24,10 +23,6 @@ fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 
-_cwd = os.path.dirname(os.path.abspath(__file__))
-
-queues = os.path.join(_cwd, "../../dbs/queues.pkl")
-
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_video"))
 async def _(client: Client, message: Message):
@@ -35,9 +30,7 @@ async def _(client: Client, message: Message):
     try:
         msg = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
-        file_name = os.path.join(
-            _cwd, f"../../downloads/videos/{str(uuid.uuid4())}.mp4"
-        )
+        file_name = f"/tmp/{str(uuid.uuid4())}.mp4"
         if not message.reply_to_message and " " not in message.text:
             return await msg.edit(
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
