@@ -44,7 +44,7 @@ fi
 if command -V python >/dev/null 2>&1; then
     installed=$(python --version | cut -d " " -f2)
     incompatible="3.12"
-    if dpkg --compare-versions $installed ">=" $incompatible; then
+    if [[ $installed == $incompatible || $installed > $incompatible ]]; then
         if [ ! -r ~/.pyenv/ ]; then
             git clone https://github.com/pyenv/pyenv.git ~/.pyenv
             git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
