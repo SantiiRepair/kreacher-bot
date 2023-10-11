@@ -12,7 +12,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytdl, ytsearch
 from bot.helpers.user_info import user_info
-from bot import assistant, kreacher, on_call, VOICE_CHATS
+from bot import assistant, kreacher, tgcalls, VOICE_CHATS
 from bot.helpers.queues import (
     add_or_create_queue,
     get_queues,
@@ -142,8 +142,8 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("🪄 **__Joining the voice chat...__**")
-                await on_call.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = on_call
+                await tgcalls.start(message.chat.id)
+                VOICE_CHATS[message.chat.id] = tgcalls
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 url,
@@ -205,8 +205,8 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("**__Joining the voice chat...__** \u23F3")
-                await on_call.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = on_call
+                await tgcalls.start(message.chat.id)
+                VOICE_CHATS[message.chat.id] = tgcalls
                 await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 media, enable_experimental_lip_sync=True, repeat=False

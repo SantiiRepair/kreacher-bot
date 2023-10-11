@@ -12,7 +12,7 @@ from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
 
 from bot.helpers.tts import tts
 from bot.helpers.progress import progress
-from bot import kreacher, on_call, VOICE_CHATS
+from bot import kreacher, tgcalls, VOICE_CHATS
 from bot.decorators.only_grps_chnns import only_grps_chnns
 from bot.helpers.queues import (
     add_or_create_queue,
@@ -88,8 +88,8 @@ async def _(client: Client, message: Message):
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("🪄 **__Joining the voice chat...__**")
-            await on_call.start(message.chat.id)
-            VOICE_CHATS[message.chat.id] = on_call
+            await tgcalls.start(message.chat.id)
+            VOICE_CHATS[message.chat.id] = tgcalls
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(audiobook, repeat=False)
         if "epub" in file_type:

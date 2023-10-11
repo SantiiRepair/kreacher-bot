@@ -9,7 +9,7 @@ from pyrogram import filters, Client
 from pyrogram.enums import MessagesFilter
 from bot.helpers.progress import progress
 from bot.scrapers.images import ImageScraper
-from bot import assistant, kreacher, on_call, VOICE_CHATS
+from bot import assistant, kreacher, tgcalls, VOICE_CHATS
 from bot.decorators.only_grps_chnns import only_grps_chnns
 from bot.helpers.queues import (
     remove_queue,
@@ -94,8 +94,8 @@ async def _(client: Client, message: Message):
                     )
                 if VOICE_CHATS.get(message.chat.id) is None:
                     await msg.edit("🪄 **__Joining the voice chat...__**")
-                    await on_call.start(message.chat.id)
-                    VOICE_CHATS[message.chat.id] = on_call
+                    await tgcalls.start(message.chat.id)
+                    VOICE_CHATS[message.chat.id] = tgcalls
                 await sleep(2)
                 await VOICE_CHATS[message.chat.id].start_video(
                     video,

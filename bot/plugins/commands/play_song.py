@@ -10,7 +10,7 @@ from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.helpers.user_info import user_info
-from bot import kreacher, on_call, VOICE_CHATS
+from bot import kreacher, tgcalls, VOICE_CHATS
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
 from bot.helpers.queues import (
@@ -114,8 +114,8 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await msg.edit("🪄 **__Joining the voice chat...__**")
-                await on_call.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = on_call
+                await tgcalls.start(message.chat.id)
+                VOICE_CHATS[message.chat.id] = tgcalls
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_audio(url, repeat=False)
             await msg.edit(
@@ -185,8 +185,8 @@ async def _(client: Client, message: Message):
             )
         if VOICE_CHATS.get(message.chat.id) is None:
             await msg.edit("🪄 **__Joining the voice chat...__**")
-            await on_call.start(message.chat.id)
-            VOICE_CHATS[message.chat.id] = on_call
+            await tgcalls.start(message.chat.id)
+            VOICE_CHATS[message.chat.id] = tgcalls
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(media, repeat=False)
         await msg.delete()
