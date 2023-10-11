@@ -4,6 +4,6 @@
     "git.enableSmartCommit": true,
     "editor.unicodeHighlight.invisibleCharacters": false,
     "terminal.integrated.enableMultiLinePasteWarning": false,
-    "python.languageServer": "Pylance",
+    "python.languageServer": "Jedi",
     "python.autoComplete.extraPaths": []
 }

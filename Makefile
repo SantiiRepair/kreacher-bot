@@ -1,10 +1,13 @@
-.PHONY: install
+.PHONY: build clear install
 
-docker:
-	docker-compose up -d --build --remove-orphans
+build:
+	docker-compose build
 
-docker-down:
+clear:
 	docker-compose down --volumes
+
+docker: clear build
+	docker-compose up -d --remove-orphans
 
 install:
 	pip install -r requirements.txt
