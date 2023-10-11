@@ -9,14 +9,14 @@ from pyrogram.enums import MessagesFilter
 from bot.helpers.progress import progress
 from bot.scrapers.images import ImageScraper
 from bot import assistant, kreacher, tgcalls, VOICE_CHATS
-from bot.decorators.only_grps_chnns import only_grps_chnns
+from bot.decorators.only_groups_or_channels import only_groups_or_channels
 from bot.helpers.queues import (
     remove_queue,
 )
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]streaming"))
-@only_grps_chnns
+@only_groups_or_channels
 async def _(client: Client, message: Message):
     results = []
     try:

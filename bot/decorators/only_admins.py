@@ -6,7 +6,7 @@ from pyrogram.enums.chat_type import ChatType
 
 
 def only_admins(func):
-    """Allow only admins to use any command."""
+    """Allow only admins to use any command"""
 
     @functools.wraps(func)
     async def _(client: Client, message: Message):

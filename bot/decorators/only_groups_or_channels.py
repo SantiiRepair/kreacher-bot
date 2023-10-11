@@ -4,8 +4,8 @@ from pyrogram.types import Message
 from pyrogram.enums.chat_type import ChatType
 
 
-def only_grps_chnns(func):
-    """Command can be used in groups and channels only."""
+def only_groups_or_channels(func):
+    """Command can be used in groups and channels only"""
 
     @functools.wraps(func)
     async def _(client: Client, message: Message):

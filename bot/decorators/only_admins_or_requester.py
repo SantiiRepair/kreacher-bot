@@ -6,8 +6,8 @@ from pyrogram.types import CallbackQuery
 from pyrogram.enums.chat_type import ChatType
 
 
-def only_managers(func):
-    """Allow only admins and user requester to use any command."""
+def only_admin_and_requester(func):
+    """Allow only admins and user requester to use any command"""
 
     @functools.wraps(func)
     async def _(client: Client, anything):

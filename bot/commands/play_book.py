@@ -13,7 +13,7 @@ from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
 from bot.helpers.tts import tts
 from bot.helpers.progress import progress
 from bot import kreacher, tgcalls, VOICE_CHATS
-from bot.decorators.only_grps_chnns import only_grps_chnns
+from bot.decorators.only_groups_or_channels import only_groups_or_channels
 from bot.helpers.queues import (
     add_or_create_queue,
     get_queues,
@@ -26,7 +26,7 @@ shutup.please()
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_book"))
-@only_grps_chnns
+@only_groups_or_channels
 async def _(client: Client, message: Message):
     text = ""
     h = _HTMLFilter()

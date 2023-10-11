@@ -2,11 +2,11 @@ from pyrogram.types import Message
 from pyrogram import filters, Client
 from bot import tgcalls, kreacher, VOICE_CHATS
 from bot.decorators.only_admins import only_admins
-from bot.decorators.only_grps_chnns import only_grps_chnns
+from bot.decorators.only_groups_or_channels import only_groups_or_channels
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]join"))
-@only_grps_chnns
+@only_groups_or_channels
 @only_admins
 async def _(client: Client, message: Message):
     try:

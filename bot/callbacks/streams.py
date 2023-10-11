@@ -4,7 +4,7 @@ from pyrogram.types import CallbackQuery
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot import kreacher, VOICE_CHATS
-from bot.decorators.only_managers import only_managers
+from bot.decorators.only_managers import only_admins_or_requester
 from bot.helpers.queues import (
     get_queues,
     next_in_queue,
@@ -18,7 +18,7 @@ queues = os.path.join(_cwd, "../dbs/queues.pkl")
 
 
 @kreacher.on_callback_query(filters.regex("pause_or_resume"))
-@only_managers
+@only_admins_or_requester
 async def _(client: Client, callback: CallbackQuery):
     if VOICE_CHATS[callback.message.chat.id].is_video_paused:
         await VOICE_CHATS[callback.message.chat.id].set_pause(False)
@@ -33,6 +33,7 @@ async def _(client: Client, callback: CallbackQuery):
                         ),
                         InlineKeyboardButton("⏭️", callback_data="next"),
                     ],
+                    InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
                 ]
             ),
         )
@@ -46,8 +47,9 @@ async def _(client: Client, callback: CallbackQuery):
                         "▶️",
                         callback_data="pause_or_resume",
                     ),
-                    InlineKeyboardButton("▶️", callback_data="next"),
+                    InlineKeyboardButton("⏭️", callback_data="next"),
                 ],
+                InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
             ]
         ),
     )
