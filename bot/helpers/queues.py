@@ -27,11 +27,13 @@ def add_or_create_queue(
     queue: dict = r.hgetall("queues")
     if group_id in str(queue):
         giq: list = pickle.loads(queue[group_id])
+        print(giq)
         giq.append(values)
         hset = r.hset("queues", group_id, pickle.dumps(giq))
         if hset == 0:
             return position
         return False
+    print(kw)
     hset = r.hset("queues", group_id, values)
     if hset == 1:
         return position
@@ -47,7 +49,7 @@ def next_in_queue(group_id: str) -> Union[Tuple, None]:
     for i in range(len(values)):
         if values[i].get("is_playing"):
             _next = values[i + 1]
-            tdo = (
+            ot = (
                 _next["from_user"],
                 _next["is_playing"],
                 _next["position"],
@@ -55,7 +57,7 @@ def next_in_queue(group_id: str) -> Union[Tuple, None]:
                 _next["file"],
                 _next["type_of"],
             )
-            return tdo
+            return ot
     return None
 
 
@@ -68,7 +70,7 @@ def previous_in_queue(group_id: str) -> Union[Tuple, None]:
     for i in range(len(values)):
         if values[i].get("is_playing"):
             _previous = values[i - 1]
-            tdo = (
+            ot = (
                 _previous["from_user"],
                 _previous["is_playing"],
                 _previous["position"],
@@ -76,7 +78,7 @@ def previous_in_queue(group_id: str) -> Union[Tuple, None]:
                 _previous["file"],
                 _previous["type_of"],
             )
-            return tdo
+            return ot
     return None
 
 
@@ -108,6 +110,7 @@ def get_last_position_in_queue(group_id: str) -> Union[int, None]:
     if group_id not in str(queue):
         return None
     value: dict = pickle.loads(queue[group_id])[-1]
+    print(value)
     return value["position"]
 
 

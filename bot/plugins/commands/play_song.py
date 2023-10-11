@@ -86,19 +86,17 @@ async def _(client: Client, message: Message):
                     "**__Can't find song.\n\nTry searching with more specific title.__**",
                 )
             if str(message.chat.id) in str(QUEUES):
-                position = get_last_position_in_queue(str(message.chat.id))
-                if position is None:
-                    return
+                position = get_last_position_in_queue(str(message.chat.id)) + 1
                 add_or_create_queue(
                     str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     file=url,
                     type_of="song_yt",
-                    position=position + 1,
+                    position=position,
                 )
                 return await msg.edit(
-                    f"**__Added to queue at {position + 1}\n\nTitle: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__** [{data['first_name']}]({data['mention']})",
+                    f"**__Added to queue at {position}\n\nTitle: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__** [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                     ),

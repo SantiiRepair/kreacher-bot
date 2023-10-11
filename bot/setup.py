@@ -6,12 +6,13 @@ from glob import glob
 from pathlib import Path
 from termcolor import colored
 
+"""
 from bot import db_metadata, engine
 
 
 def setup_db():
     db_metadata.create_all(engine)
-
+"""
 
 def setup_plugins():
     cwd = os.path.dirname(os.path.abspath(__file__))

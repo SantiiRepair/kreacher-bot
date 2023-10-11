@@ -72,13 +72,13 @@ assistant = Client(
 )
 
 # ------------------------------------------------------------------------------
-
+"""
 engine = db.create_engine(
     f"postgresql://{_POSTGRES_USER}:{_POSTGRES_PASSWORD}@{_POSTGRES_HOST}:{_POSTGRES_PORT}/{_POSTGRES_DB}"
 )
 conn = engine.connect()
 db_metadata = db.MetaData()
-
+"""
 # ------------------------------------------------------------------------------
 
 r = Redis(
