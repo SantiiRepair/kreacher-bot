@@ -3,7 +3,7 @@ from pyrogram import idle
 from termcolor import colored
 from pyrogram.types import BotCommand
 
-from bot.setup import  setup_plugins
+from bot.setup import setup_plugins
 from bot import kreacher, assistant
 
 ay = asyncio.get_event_loop()
@@ -29,18 +29,12 @@ async def start_bot():
     print(f'{colored("[INFO]", "blue")}: SETED BOT COMMANDS')
 
 
-# setup_db()
-setup_plugins()
-ay.run_until_complete(start_bot())
-
-print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
-
-if __name__ == "__main__":
-    try:
-        idle()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        kreacher.disconnect()
-        assistant.disconnect()
-        print(f'{colored("[INFO]", "blue")}: CLIENTS DISCONNECTED')
+try:
+    setup_plugins()
+    ay.run_until_complete(start_bot())
+    print(f'{colored("[INFO]", "blue")}: SUCCESSFULLY STARTED BOT!')
+    idle()
+except KeyboardInterrupt:
+    kreacher.disconnect()
+    assistant.disconnect()
+    print(f'{colored("[INFO]", "blue")}: CLIENTS DISCONNECTED')

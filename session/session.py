@@ -11,6 +11,4 @@ if __name__ == "__main__":
         with app:
             print(app.export_session_string())
     except KeyboardInterrupt:
-        pass
-    finally:
         sys.exit(print("\n\nAborted!"))

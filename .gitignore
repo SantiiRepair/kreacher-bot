@@ -2,16 +2,12 @@ tmp
 logs
 cache
 downloads
-__pycache__
-kreacher_env
-unknown_errors.txt
 
+*.env
+*.log
+*.lock
+*.pyc
 *.session
 *.session-journal
 
-.env
 .codesandbox
-
-*.lock
-
-tg-codes

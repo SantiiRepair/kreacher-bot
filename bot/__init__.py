@@ -38,12 +38,12 @@ if not os.path.exists(_logs_dir):
 if os.path.exists(_logs_file) and os.stat(_logs_file).st_size > 0:
     with open(_logs_file, "w") as f:
         f.truncate(0)
-        print(f'{colored("[INFO]", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
+        print(f'{colored("[INFO]:", "blue")}: LOG FILE WAS FLUSHED SUCCESSFULLY')
 elif not os.path.exists(_logs_file):
     try:
         with open(_logs_file, "w") as f:
             f.write("")
-        print(f'{colored("[INFO]", "blue")}: LOG FILE CREATED')
+        print(f'{colored("[INFO]:", "blue")} LOG FILE CREATED')
     except Exception as e:
         logging.error(e)
 
