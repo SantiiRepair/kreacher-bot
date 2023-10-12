@@ -13,13 +13,13 @@ def bytes_to_string(byte_count):
     )
 
 
-async def progress(current_bytes, total_bytes, client, chat, msg):
+async def progress(current_bytes, total_bytes, client, chat_id, _message):
     try:
         await client.edit_message_text(
-            chat_id=chat.id,
-            message_id=msg.id,
+            chat_id=chat_id,
+            message_id=_message.id,
             text=f"💾 **__Downloading...__** **{(current_bytes / total_bytes):.2%}**",
         )
 
-    except Exception as e:
-        logging.error(e)
+    except Exception as err:
+        logging.error(err)

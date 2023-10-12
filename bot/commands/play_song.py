@@ -58,7 +58,7 @@ async def _(client: Client, message: Message):
                 ],
             ),
         )
-    msg = await message.reply("\u23F3 **__Processing...__**")
+    _message = await message.reply("\u23F3 **__Processing...__**")
     await sleep(2)
     try:
         if " " in message.text:
@@ -67,7 +67,7 @@ async def _(client: Client, message: Message):
                 regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
                 match = re.match(regex, query)
                 if not match:
-                    return await msg.edit(
+                    return await _message.edit(
                         "**__Sorry, but this doesn't seem to be a YouTube link__** \U0001f914"
                     )
             search = await ytsearch(query)
@@ -77,7 +77,7 @@ async def _(client: Client, message: Message):
             fmt = "bestaudio/best"
             _, url = await ytdl(fmt, ref)
             if search == 0:
-                return await msg.edit(
+                return await _message.edit(
                     "**__Can't find song.\n\nTry searching with more specific title.__**",
                 )
             if str(message.chat.id) in get_queues():
@@ -90,7 +90,7 @@ async def _(client: Client, message: Message):
                     type_of="song_yt",
                     position=position,
                 )
-                return await msg.edit(
+                return await _message.edit(
                     f"**__Added to queue at {position}\n\nTitle: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__** [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
@@ -106,12 +106,12 @@ async def _(client: Client, message: Message):
                     type_of="song_yt",
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("🪄 **__Joining the voice chat...__**")
+                await _message.edit("🪄 **__Joining the voice chat...__**")
                 await tgcalls.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = tgcalls
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_audio(url, repeat=False)
-            await msg.edit(
+            await _message.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['mention']})",
                 # file=thumb,
                 reply_markup=InlineKeyboardMarkup(
@@ -130,25 +130,7 @@ async def _(client: Client, message: Message):
                     ]
                 ),
             )
-            return await msg.pin()
-        if message.reply_to_message and message.reply_to_message.audio:
-            name = "Audio File"
-            await msg.edit("💾 **__Downloading...__**")
-            media = await client.download_media(
-                message.reply_to_message.audio,
-                file_name=file_name,
-                progress=progress,
-                progress_args=(client, message.chat, msg),
-            )
-        elif message.reply_to_message and message.reply_to_message.voice:
-            name = "Voice Note"
-            await msg.edit("💾 **__Downloading...__**")
-            media = await client.download_media(
-                message.reply_to_message.voice,
-                file_name=file_name,
-                progress=progress,
-                progress_args=(client, message.chat, msg),
-            )
+            return await _message.pin()
         url_mention = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
         msg_mention = url_mention.replace("/c/-100", "/c/")
         if str(message.chat.id) in get_queues():
@@ -157,12 +139,12 @@ async def _(client: Client, message: Message):
                 str(message.chat.id),
                 from_user=str(message.from_user.id),
                 date=str(datetime.now()),
-                file=media,
+                file=file_name,
                 type_of="song_file",
                 position=position,
             )
-            return await msg.edit(
-                f"__Added to queue at {position} \n\n Title: [{name}]({url_mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+            return await _message.edit(
+                f"__Added to queue at {position} \n\n Title: [{name}]({msg_mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                 reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                 ),
@@ -173,16 +155,34 @@ async def _(client: Client, message: Message):
                 from_user=str(message.from_user.id),
                 date=str(datetime.now()),
                 is_playing=True,
-                file=media,
+                file=file_name,
                 type_of="song_file",
             )
+        if message.reply_to_message and message.reply_to_message.audio:
+            name = "Audio File"
+            await _message.edit("💾 **__Downloading...__**")
+            media = await client.download_media(
+                message.reply_to_message.audio,
+                file_name=file_name,
+                progress=progress,
+                progress_args=(client, message.chat.id, _message),
+            )
+        elif message.reply_to_message and message.reply_to_message.voice:
+            name = "Voice Note"
+            await _message.edit("💾 **__Downloading...__**")
+            media = await client.download_media(
+                message.reply_to_message.voice,
+                file_name=file_name,
+                progress=progress,
+                progress_args=(client, message.chat.id, _message),
+            )
         if VOICE_CHATS.get(message.chat.id) is None:
-            await msg.edit("🪄 **__Joining the voice chat...__**")
+            await _message.edit("🪄 **__Joining the voice chat...__**")
             await tgcalls.start(message.chat.id)
             VOICE_CHATS[message.chat.id] = tgcalls
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(media, repeat=False)
-        await msg.delete()
+        await _message.delete()
         await kreacher.send_photo(
             message.chat.id,
             caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
@@ -192,7 +192,7 @@ async def _(client: Client, message: Message):
                     [
                         InlineKeyboardButton("⏪", callback_data="back"),
                         InlineKeyboardButton(
-                            "\u23F8\uFE0F",
+                            "⏸️",
                             callback_data="pause_or_resume",
                         ),
                         InlineKeyboardButton(
@@ -203,10 +203,10 @@ async def _(client: Client, message: Message):
                 ]
             ),
         )
-        return await msg.pin()
+        return await _message.pin()
     except Exception as e:
         logging.error(e)
-        await msg.edit(
+        await _message.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
         if message.chat.id in VOICE_CHATS:

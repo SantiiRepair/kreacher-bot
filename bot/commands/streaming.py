@@ -24,7 +24,7 @@ async def _(client: Client, message: Message):
             return await message.reply(
                 "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**"
             )
-        msg = await message.reply("**__Searching...__**")
+        _message = await message.reply("**__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
         movie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
@@ -60,11 +60,11 @@ async def _(client: Client, message: Message):
         for media in results:
             similary = SequenceMatcher(None, search, media["caption"]).ratio()
             if similary >= 0.3:
-                await msg.edit(
+                await _message.edit(
                     f"**__Yeehaw, I found the {media['type']} you asked for...__**"
                 )
                 await sleep(2)
-                await msg.edit("💾 **__Downloading...__**")
+                await _message.edit("💾 **__Downloading...__**")
                 image_scraper = ImageScraper(
                     "/tmp", search_key=f"{media['caption']} poster"
                 )
@@ -75,17 +75,17 @@ async def _(client: Client, message: Message):
                         media["file_id"],
                         file_name=serie_name,
                         progress=progress,
-                        progress_args=(client, message.chat, msg),
+                        progress_args=(client, message.chat.id, _message),
                     )
                 if media["type"] == "movie":
                     video = await assistant.download_media(
                         media["file_id"],
                         file_name=movie_name,
                         progress=progress,
-                        progress_args=(client, message.chat, msg),
+                        progress_args=(client, message.chat.id, _message),
                     )
                 if VOICE_CHATS.get(message.chat.id) is None:
-                    await msg.edit("🪄 **__Joining the voice chat...__**")
+                    await _message.edit("🪄 **__Joining the voice chat...__**")
                     await tgcalls.start(message.chat.id)
                     VOICE_CHATS[message.chat.id] = tgcalls
                 await sleep(2)
@@ -95,22 +95,22 @@ async def _(client: Client, message: Message):
                     repeat=False,
                     with_audio=True,
                 )
-                await msg.delete()
+                await _message.delete()
                 await client.send_photo(
                     message.chat.id,
                     photo=photo,
                     caption=f"**__Streaming {media['type'].upper()}__**",
                 )
-                await msg.pin()
+                await _message.pin()
                 break
 
-            await msg.edit(
+            await _message.edit(
                 "**__The request has not been found in our database, please try another name__**"
             )
             break
     except Exception as e:
         logging.error(e)
-        await msg.edit(
+        await _message.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
         )
         if message.chat.id in VOICE_CHATS:

@@ -28,11 +28,11 @@ thumb = "https://telegra.ph/file/3e14128ad5c9ec47801bd.jpg"
 async def _(client: Client, message: Message):
     data = await user_info(message.from_user)
     try:
-        msg = await message.reply("\u23F3 **__Processing...__**")
+        _message = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
         file_name = f"/tmp/{str(uuid.uuid4())}.mp4"
         if not message.reply_to_message and " " not in message.text:
-            return await msg.edit(
+            return await _message.edit(
                 "❗ __Master, try with an: \n\nLive stream link.\n\nYouTube video/ link.\n\nReply to an video to start video streaming!__",
             )
 
@@ -49,7 +49,7 @@ async def _(client: Client, message: Message):
                         type_of="video_stream",
                         position=position,
                     )
-                    return await msg.edit(
+                    return await _message.edit(
                         f"__Added to queue at {position} \n\n Title: [{name}]({query})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                         reply_markup=InlineKeyboardMarkup(
                             [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
@@ -64,15 +64,15 @@ async def _(client: Client, message: Message):
                         file=query,
                         type_of="video_stream",
                     )
-                await msg.edit("🔄 **__Starting live video stream...__**")
+                await _message.edit("🔄 **__Starting live video stream...__**")
                 await sleep(2)
                 await VOICE_CHATS[message.chat.id].start_video(
                     query,
                     enable_experimental_lip_sync=True,
                     repeat=False,
                 )
-                # await msg.delete()
-                await msg.edit(
+                # await _message.delete()
+                await _message.edit(
                     "\U00002378 **Started video streaming!**",
                     # photo=thumb,
                     reply_markup=InlineKeyboardMarkup(
@@ -88,11 +88,11 @@ async def _(client: Client, message: Message):
                         ],
                     ),
                 )
-                return await msg.pin()
+                return await _message.pin()
             regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
             match = re.match(regex, query)
             if "http" in query and not match:
-                return await msg.edit(
+                return await _message.edit(
                     "**__Sorry, but this doesn't seem to be a YouTube link__** \U0001f914"
                 )
             search = await ytsearch(query)
@@ -102,7 +102,7 @@ async def _(client: Client, message: Message):
             fmt = "best[height<=?720][width<=?1280]"
             _, url = await ytdl(fmt, ref)
             if search == 0:
-                return await msg.edit(
+                return await _message.edit(
                     "**__Can't find YouTube video.\n\nTry searching with more specific title.__**",
                 )
             if str(message.chat.id) in get_queues():
@@ -115,7 +115,7 @@ async def _(client: Client, message: Message):
                     type_of="video_yt",
                     position=position,
                 )
-                return await msg.edit(
+                return await _message.edit(
                     f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
@@ -131,7 +131,7 @@ async def _(client: Client, message: Message):
                     type_of="video_yt",
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("🪄 **__Joining the voice chat...__**")
+                await _message.edit("🪄 **__Joining the voice chat...__**")
                 await tgcalls.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = tgcalls
             await sleep(2)
@@ -140,7 +140,7 @@ async def _(client: Client, message: Message):
                 enable_experimental_lip_sync=True,
                 repeat=False,
             )
-            await msg.edit(
+            await _message.edit(
                 f"**__Started Streaming__**\n\n **Title**: [{name}]({url})\n **Duration:** {duration} **Minutes\n Requested by:** [{data['first_name']}]({data['mention']})",
                 # file=thumb,
                 reply_markup=InlineKeyboardMarkup(
@@ -159,14 +159,14 @@ async def _(client: Client, message: Message):
                     ]
                 ),
             )
-            return await msg.pin()
+            return await _message.pin()
         if message.reply_to_message.video or message.reply_to_message.file:
-            await msg.edit("🔄 **__Downloading...__**")
+            await _message.edit("🔄 **__Downloading...__**")
             media = await assistant.download_media(
                 message.reply_to_message.video,
                 file_name=file_name,
                 progress=progress,
-                progress_args=(client, message.chat, msg),
+                progress_args=(client, message.chat.id, _message),
             )
             if str(message.chat.id) in get_queues():
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
@@ -178,7 +178,7 @@ async def _(client: Client, message: Message):
                     type_of="video_media",
                     position=position,
                 )
-                return await msg.edit(
+                return await _message.edit(
                     f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
@@ -194,15 +194,15 @@ async def _(client: Client, message: Message):
                     type_of="video_media",
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await msg.edit("**__Joining the voice chat...__** \u23F3")
+                await _message.edit("**__Joining the voice chat...__** \u23F3")
                 await tgcalls.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = tgcalls
                 await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 media, enable_experimental_lip_sync=True, repeat=False
             )
-            # await msg.delete()
-            await msg.edit(
+            # await _message.delete()
+            await _message.edit(
                 "**Started video streaming!**",
                 # photo=thumb,
                 reply_markup=InlineKeyboardMarkup(
@@ -220,7 +220,7 @@ async def _(client: Client, message: Message):
             )
     except Exception as err:
         logging.error(err)
-        await msg.edit(
+        await _message.edit(
             f"**__Oops master, something wrong has happened.__** \n\n`Error: {err}`",
         )
         if message.chat.id in VOICE_CHATS:

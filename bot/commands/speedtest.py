@@ -27,7 +27,7 @@ def testspeed():
 async def _(client: Client, message: Message):
     chat = message.chat
     try:
-        msg = await message.reply(
+        _message = await message.reply(
             """**__Kreacher is here to serve you.
 
 Running Speedtest...__** 📶"""
@@ -49,8 +49,8 @@ Running Speedtest...__** 📶"""
 **__Latency__**: {result['server']['latency']} 
 **__Ping__**: {result['ping']}"""
         await kreacher.send_photo(chat.id, photo=result["share"], caption=output)
-        return await msg.delete()
+        return await _message.delete()
     except Exception as err:
-        return await msg.edit(
+        return await _message.edit(
             f"__Oops master, something wrong has happened.__ \n\n`Error: {err}`",
         )

@@ -33,7 +33,9 @@ async def _(client: Client, callback: CallbackQuery):
                         ),
                         InlineKeyboardButton("⏭️", callback_data="next"),
                     ],
-                    InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
+                    [
+                        InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
+                    ],
                 ]
             ),
         )
@@ -49,7 +51,9 @@ async def _(client: Client, callback: CallbackQuery):
                     ),
                     InlineKeyboardButton("⏭️", callback_data="next"),
                 ],
-                InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
+                [
+                    InlineKeyboardButton("sᴛᴏᴘ ᴀʟʟ", callback_data="quit"),
+                ],
             ]
         ),
     )
