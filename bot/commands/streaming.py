@@ -61,7 +61,7 @@ async def _(client: Client, message: Message):
             similary = SequenceMatcher(None, search, media["caption"]).ratio()
             if similary >= 0.3:
                 await _message.edit(
-                    f"**__Yeehaw, I found the {media['type']} you asked for...__**"
+                    f"**__I found the {media['type']} you asked for...__**"
                 )
                 await sleep(2)
                 await _message.edit("💾 **__Downloading...__**")
@@ -73,6 +73,7 @@ async def _(client: Client, message: Message):
                 if media["type"] == "serie":
                     video = await assistant.download_media(
                         media["file_id"],
+                        block=False,
                         file_name=serie_name,
                         progress=progress,
                         progress_args=(client, message.chat.id, _message.id),
@@ -80,6 +81,7 @@ async def _(client: Client, message: Message):
                 if media["type"] == "movie":
                     video = await assistant.download_media(
                         media["file_id"],
+                        block=False,
                         file_name=movie_name,
                         progress=progress,
                         progress_args=(client, message.chat.id, _message.id),
@@ -108,12 +110,12 @@ async def _(client: Client, message: Message):
                 "**__The request has not been found in our database, please try another name__**"
             )
             break
-    except Exception as e:
-        logging.error(e)
+    except Exception as err:
+        logging.error(err)
         await _message.edit(
-            f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
+            f"**__Oops master, something wrong has happened.__** \n\n`Error: {err}`",
         )
         if message.chat.id in VOICE_CHATS:
             await VOICE_CHATS[message.chat.id].stop()
-            await remove_queue(str(message.chat.id))
+            remove_queue(str(message.chat.id))
             VOICE_CHATS.pop(message.chat.id)

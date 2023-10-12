@@ -203,10 +203,10 @@ async def _(client: Client, message: Message):
             await _message.edit("💾 **__Downloading...__**")
             media = await assistant.download_media(
                 message.reply_to_message,
+                block=False,
                 file_name=file_name,
                 progress=progress,
                 progress_args=(client, message.chat.id, _message.id),
-                block=False,
             )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await _message.edit("🪄 **__Joining the voice chat...__**")
@@ -214,7 +214,10 @@ async def _(client: Client, message: Message):
                 VOICE_CHATS[message.chat.id] = tgcalls
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
-                media, enable_experimental_lip_sync=True, repeat=False
+                media,
+                enable_experimental_lip_sync=True,
+                repeat=False,
+                with_audio=True,
             )
             # await _message.delete()
             await _message.edit(
