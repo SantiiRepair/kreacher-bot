@@ -1,5 +1,4 @@
 import logging
-from random import randint
 
 
 def bytes_to_string(byte_count):

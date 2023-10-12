@@ -161,12 +161,19 @@ async def _(client: Client, message: Message):
             )
             return await _message.pin()
         if message.reply_to_message.video or message.reply_to_message.file:
-            await _message.edit("🔄 **__Downloading...__**")
-            media = await assistant.download_media(
-                message.reply_to_message.video,
-                file_name=file_name,
-                progress=progress,
-                progress_args=(client, message.chat.id, _message.id),
+            file_name = (
+                f"/tmp/{str(uuid.uuid4())}.{message.reply_to_message.video.mime_type.split('/', 1)[1]}"
+                if message.reply_to_message.video
+                else f"/tmp/{str(uuid.uuid4())}.mp4"
+            )
+            type_of = "Video File"
+            duration = (
+                round((message.reply_to_message.video.duration / 60), 2)
+                if message.reply_to_message.video
+                else round((message.reply_to_message.file.duration / 60), 2)
+            )
+            file = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}".replace(
+                "/c/-100", "/c/"
             )
             if str(message.chat.id) in get_queues():
                 position = get_last_position_in_queue(str(message.chat.id)) + 1
@@ -174,12 +181,12 @@ async def _(client: Client, message: Message):
                     str(message.chat.id),
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
-                    file=media,
+                    file=file_name,
                     type_of="video_media",
                     position=position,
                 )
                 return await _message.edit(
-                    f"__Added to queue at {position} \n\n Title: [{name}]({url})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+                    f"__Added to queue at {position}\n\nTitle: [{type_of}]({file})\nDuration: {duration} Minutes\nRequested by:__ [{data['first_name']}]({data['mention']})",
                     reply_markup=InlineKeyboardMarkup(
                         [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                     ),
@@ -190,9 +197,16 @@ async def _(client: Client, message: Message):
                     from_user=str(message.from_user.id),
                     date=str(datetime.now()),
                     is_playing=True,
-                    file=media,
+                    file=file_name,
                     type_of="video_media",
                 )
+            await _message.edit("💾 **__Downloading...__**")
+            media = await assistant.download_media(
+                message.reply_to_message,
+                file_name=file_name,
+                progress=progress,
+                progress_args=(client, message.chat.id, _message.id),
+            )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await _message.edit("**__Joining the voice chat...__** \u23F3")
                 await tgcalls.start(message.chat.id)
@@ -210,7 +224,7 @@ async def _(client: Client, message: Message):
                         [
                             InlineKeyboardButton("⏪", callback_data="back"),
                             InlineKeyboardButton(
-                                "\u23F8\uFE0F",
+                                "⏸️",
                                 callback_data="pause_or_resume",
                             ),
                             InlineKeyboardButton("⏭️", callback_data="next"),

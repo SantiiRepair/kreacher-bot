@@ -120,7 +120,7 @@ async def _(client: Client, message: Message):
             if message.reply_to_message.audio
             else round((message.reply_to_message.voice.duration / 60), 2)
         )
-        mention = (
+        file = (
             f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}".replace(
                 "/c/-100", "/c/"
             )
@@ -136,7 +136,7 @@ async def _(client: Client, message: Message):
                 position=position,
             )
             return await _message.edit(
-                f"__Added to queue at {position} \n\n Title: [{type_of}]({mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+                f"__Added to queue at {position} \n\n Title: [{type_of}]({file})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                 reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                 ),
@@ -167,7 +167,7 @@ async def _(client: Client, message: Message):
         await _message.delete()
         await kreacher.send_photo(
             message.chat.id,
-            caption=f"**__Started Streaming__**\n\n **Title:** [{type_of}]({mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
+            caption=f"**__Started Streaming__**\n\n **Title:** [{type_of}]({file})\n **Requested by:** [{data['first_name']}]({data['mention']})",
             photo=fotoplay,
             reply_markup=InlineKeyboardMarkup(
                 [
