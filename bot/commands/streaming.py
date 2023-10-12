@@ -70,7 +70,8 @@ async def _(client: Client, message: Message):
                 photo = image_scraper.save_images(image_urls, keep_filenames=True)
                 mime_type = (
                     message.reply_to_message.video.mime_type.split("/", 1)[1]
-                    or message.reply_to_message.file.mime_type.split("/", 1)[1]
+                    if message.reply_to_message.video
+                    else message.reply_to_message.file.mime_type.split("/", 1)[1]
                 )
                 file_name = f"/tmp/{str(uuid.uuid4())}.{mime_type}"
                 video = await assistant.download_media(
