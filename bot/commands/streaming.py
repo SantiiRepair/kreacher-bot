@@ -27,8 +27,6 @@ async def _(client: Client, message: Message):
         _message = await message.reply("🔎 **__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
-        movie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
-        serie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
         series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
         movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
         async for serie in assistant.search_messages(
@@ -70,11 +68,16 @@ async def _(client: Client, message: Message):
                 )
                 image_urls = image_scraper.find_image_urls()
                 photo = image_scraper.save_images(image_urls, keep_filenames=True)
+                mime_type = (
+                    message.reply_to_message.video.mime_type.split("/", 1)[1]
+                    or message.reply_to_message.file.mime_type.split("/", 1)[1]
+                )
+                file_name = f"/tmp/{str(uuid.uuid4())}.{mime_type}"
                 video = await assistant.download_media(
-                        media["file_id"],
-                        file_name=movie_name,
-                        progress=progress,
-                        progress_args=(client, message.chat.id, _message.id),
+                    media["file_id"],
+                    file_name=file_name,
+                    progress=progress,
+                    progress_args=(client, message.chat.id, _message.id),
                 )
                 if VOICE_CHATS.get(message.chat.id) is None:
                     await _message.edit("🪄 **__Joining the voice chat...__**")

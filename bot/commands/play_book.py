@@ -37,8 +37,8 @@ async def _(client: Client, message: Message):
             )
         _message = await message.reply("\u23F3 **__Processing...__**")
         await sleep(2)
-        file_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
-        file_name = f"/tmp/{str(uuid.uuid4())}.{file_type}"
+        mime_type = message.reply_to_message.document.mime_type.split("/", 1)[1]
+        file_name = f"/tmp/{str(uuid.uuid4())}.{mime_type}"
         audiobook = f"/tmp/{str(uuid.uuid4())}.wav"
         await _message.edit("💾 **__Downloading...__**")
         f = await message.reply_to_message.download(
@@ -47,13 +47,13 @@ async def _(client: Client, message: Message):
             progress_args=(client, message.chat.id, _message.id),
         )
 
-        if " " not in message.text and file_type == "pdf":
+        if " " not in message.text and mime_type == "pdf":
             pdf = PyPDF2.PdfReader(open(f, "rb"))
             await _message.edit("**__Grouping pages...__**")
             for pgs in range(len(pdf.pages)):
                 text += pdf.pages[pgs].extract_text()
             await _message.edit(f"**__{len(pdf.pages)} pages were grouped__**")
-        elif " " not in message.text and "epub" in file_type:
+        elif " " not in message.text and "epub" in mime_type:
             epub = epublib.read_epub(f)
             await _message.edit("**__Grouping pages...__**")
             for i, item in enumerate(epub.get_items(), start=1):
@@ -62,13 +62,13 @@ async def _(client: Client, message: Message):
                     text += h.text
             # pylint: disable=undefined-loop-variable
             await _message.edit(f"**__{i} pages were grouped__**")
-        elif " " in message.text and file_type == "pdf":
+        elif " " in message.text and mime_type == "pdf":
             pdf = PyPDF2.PdfReader(open(f, "rb"))
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
                 return await _message.edit("**__This is not a number__**")
             text += pdf.pages[int(page_number)].extract_text()
-        elif " " in message.text and "epub" in file_type:
+        elif " " in message.text and "epub" in mime_type:
             epub = epublib.read_epub(f)
             page_number = message.text.split(maxsplit=1)[1]
             if not page_number.isdigit():
@@ -89,7 +89,7 @@ async def _(client: Client, message: Message):
             VOICE_CHATS[message.chat.id] = tgcalls
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(audiobook, repeat=False)
-        if "epub" in file_type:
+        if "epub" in mime_type:
             epub = epublib.read_epub(f)
             for item in epub.get_items_of_type(ITEM_IMAGE):
                 photo = io.BytesIO(item.get_content())
