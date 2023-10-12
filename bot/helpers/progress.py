@@ -1,6 +1,7 @@
 import logging
 from random import randint
 
+
 def bytes_to_string(byte_count):
     """Converts a byte count to a string (in KB, MB...)"""
     suffix_index = 0

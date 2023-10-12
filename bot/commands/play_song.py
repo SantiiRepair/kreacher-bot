@@ -5,13 +5,13 @@ from asyncio import sleep
 from datetime import datetime
 from pyrogram.types import Message
 from pyrogram import filters, Client
-from pyrogram.enums.chat_type import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from bot.helpers.user_info import user_info
-from bot import kreacher, tgcalls, VOICE_CHATS
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytsearch, ytdl
+from bot.helpers.user_info import user_info
+from bot import kreacher, tgcalls, VOICE_CHATS
+from bot.decorators.sides import only_groups_or_channels
 from bot.helpers.queues import (
     add_or_create_queue,
     get_queues,
@@ -21,43 +21,18 @@ from bot.helpers.queues import (
 
 fotoplay = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
-owner = "1669178360"
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]play_song"))
+@only_groups_or_channels
 async def _(client: Client, message: Message):
     data = await user_info(message.from_user)
     file_name = f"/tmp/{str(uuid.uuid4())}.mp3"
-    if message.chat.type == ChatType.PRIVATE:
-        return await message.reply(
-            "**__Mr. Wizard, this command can only be used in groups or channels__** \U0001f937\U0001f3fb\u200D\u2642\uFE0F"
-        )
     if not message.reply_to_message and " " not in message.text:
         return await message.reply(
             "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            "sᴇᴀʀᴄʜ",
-                            callback_data="search_song_mode",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "ʏᴏᴜᴛᴜʙᴇ",
-                            callback_data="youtube_song_mode",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "ᴀᴜᴅɪᴏ",
-                            callback_data="audio_song_mode",
-                        )
-                    ],
-                ],
-            ),
         )
+
     _message = await message.reply("\u23F3 **__Processing...__**")
     await sleep(2)
     try:
@@ -131,8 +106,20 @@ async def _(client: Client, message: Message):
                 ),
             )
             return await _message.pin()
-        url_mention = f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}"
-        msg_mention = url_mention.replace("/c/-100", "/c/")
+        if not message.reply_to_message.audio and not message.reply_to_message.voice:
+            return await message.reply(
+                "**__You need to reply to an audio file or a voice note, other files are not supported__**",
+            )
+        type_of = (
+            "Audio File"
+            if message.reply_to_message and message.reply_to_message.audio
+            else "Voice Note"
+        )
+        mention = (
+            f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}".replace(
+                "/c/-100", "/c/"
+            )
+        )
         if str(message.chat.id) in get_queues():
             position = get_last_position_in_queue(str(message.chat.id)) + 1
             add_or_create_queue(
@@ -144,7 +131,7 @@ async def _(client: Client, message: Message):
                 position=position,
             )
             return await _message.edit(
-                f"__Added to queue at {position} \n\n Title: [{name}]({msg_mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
+                f"__Added to queue at {position} \n\n Title: [{type_of}]({mention})\nDuration: {duration} Minutes\n Requested by:__ [{data['first_name']}]({data['mention']})",
                 reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton("cʟᴏꜱᴇ", callback_data="close")]]
                 ),
@@ -158,24 +145,14 @@ async def _(client: Client, message: Message):
                 file=file_name,
                 type_of="song_file",
             )
-        if message.reply_to_message and message.reply_to_message.audio:
-            name = "Audio File"
-            await _message.edit("💾 **__Downloading...__**")
-            media = await client.download_media(
-                message.reply_to_message.audio,
-                file_name=file_name,
-                progress=progress,
-                progress_args=(client, message.chat.id, _message.id),
-            )
-        elif message.reply_to_message and message.reply_to_message.voice:
-            name = "Voice Note"
-            await _message.edit("💾 **__Downloading...__**")
-            media = await client.download_media(
-                message.reply_to_message.voice,
-                file_name=file_name,
-                progress=progress,
-                progress_args=(client, message.chat.id, _message.id),
-            )
+
+        await _message.edit("💾 **__Downloading...__**")
+        media = await client.download_media(
+            message.reply_to_message.audio,
+            file_name=file_name,
+            progress=progress,
+            progress_args=(client, message.chat.id, _message.id),
+        )
         if VOICE_CHATS.get(message.chat.id) is None:
             await _message.edit("🪄 **__Joining the voice chat...__**")
             await tgcalls.start(message.chat.id)
@@ -185,7 +162,7 @@ async def _(client: Client, message: Message):
         await _message.delete()
         await kreacher.send_photo(
             message.chat.id,
-            caption=f"**__Started Streaming__**\n\n **Title:** [{name}]({msg_mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
+            caption=f"**__Started Streaming__**\n\n **Title:** [{type_of}]({mention})\n **Requested by:** [{data['first_name']}]({data['mention']})",
             photo=fotoplay,
             reply_markup=InlineKeyboardMarkup(
                 [
