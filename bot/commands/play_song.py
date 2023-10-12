@@ -27,7 +27,6 @@ ngantri = "https://telegra.ph/file/b6402152be44d90836339.jpg"
 @only_groups_or_channels
 async def _(client: Client, message: Message):
     data = await user_info(message.from_user)
-    file_name = f"/tmp/{str(uuid.uuid4())}.mp3"
     if not message.reply_to_message and " " not in message.text:
         return await message.reply(
             "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**",
@@ -107,13 +106,19 @@ async def _(client: Client, message: Message):
             )
             return await _message.pin()
         if not message.reply_to_message.audio and not message.reply_to_message.voice:
-            return await message.reply(
-                "**__You need to reply to an audio file or a voice note, other files are not supported__**",
+            return await _message.edit(
+                "**__Reply to an audio file or a voice note.__**",
             )
-        type_of = (
-            "Audio File"
-            if message.reply_to_message and message.reply_to_message.audio
-            else "Voice Note"
+        file_name = (
+            f"/tmp/{str(uuid.uuid4())}.{message.reply_to_message.audio.mime_type.split('/', 1)[1]}"
+            if message.reply_to_message.audio
+            else f"/tmp/{str(uuid.uuid4())}.mp3"
+        )
+        type_of = "Audio File" if message.reply_to_message.audio else "Voice Note"
+        duration = (
+            round((message.reply_to_message.audio.duration / 60), 2)
+            if message.reply_to_message.audio
+            else round((message.reply_to_message.voice.duration / 60), 2)
         )
         mention = (
             f"https://t.me/c/{message.chat.id}/{message.reply_to_message.id}".replace(
@@ -148,7 +153,7 @@ async def _(client: Client, message: Message):
 
         await _message.edit("💾 **__Downloading...__**")
         media = await client.download_media(
-            message.reply_to_message.audio,
+            message.reply_to_message,
             file_name=file_name,
             progress=progress,
             progress_args=(client, message.chat.id, _message.id),

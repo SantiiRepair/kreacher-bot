@@ -16,28 +16,21 @@ def bytes_to_string(byte_count):
 
 async def progress(current_bytes, total_bytes, client, chat_id, message_id):
     try:
-        percentage = current_bytes / total_bytes
-        print(percentage)
-        text = f"💾 **__Downloading...__** **{percentage:.2%}**"
-        if percentage >= randint(20, 30):
+        percentage = round(((current_bytes / total_bytes) * 100), 2)
+        text = f"💾 **__Downloading...__** **{percentage}%**"
+        if percentage >= 25 and percentage <= 35:
             await client.edit_message_text(
                 chat_id=chat_id,
                 message_id=message_id,
                 text=text,
             )
-        if percentage >= randint(50, 60):
+        if percentage >= 50 and percentage <= 60:
             await client.edit_message_text(
                 chat_id=chat_id,
                 message_id=message_id,
                 text=text,
             )
-        if percentage >= randint(70, 80):
-            await client.edit_message_text(
-                chat_id=chat_id,
-                message_id=message_id,
-                text=text,
-            )
-        if percentage >= randint(90, 100):
+        if percentage >= 90:
             await client.edit_message_text(
                 chat_id=chat_id,
                 message_id=message_id,
