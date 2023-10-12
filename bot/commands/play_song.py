@@ -157,6 +157,7 @@ async def _(client: Client, message: Message):
             file_name=file_name,
             progress=progress,
             progress_args=(client, message.chat.id, _message.id),
+            block=False,
         )
         if VOICE_CHATS.get(message.chat.id) is None:
             await _message.edit("🪄 **__Joining the voice chat...__**")

@@ -206,12 +206,13 @@ async def _(client: Client, message: Message):
                 file_name=file_name,
                 progress=progress,
                 progress_args=(client, message.chat.id, _message.id),
+                block=False,
             )
             if VOICE_CHATS.get(message.chat.id) is None:
-                await _message.edit("**__Joining the voice chat...__** \u23F3")
+                await _message.edit("🪄 **__Joining the voice chat...__**")
                 await tgcalls.start(message.chat.id)
                 VOICE_CHATS[message.chat.id] = tgcalls
-                await sleep(2)
+            await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 media, enable_experimental_lip_sync=True, repeat=False
             )
