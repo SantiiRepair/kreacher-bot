@@ -3,7 +3,7 @@ import logging
 from bot import kreacher
 from pyrogram.types import Message
 from pyrogram import filters, Client
-from bot.decorators.only_dev import only_dev
+from bot.decorators.permissions import only_dev
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]logs"))

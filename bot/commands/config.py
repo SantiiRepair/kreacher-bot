@@ -4,7 +4,7 @@ import os
 from pyrogram.types import Message
 from bot import assistant, kreacher
 from pyrogram import filters, Client
-from bot.decorators.only_admins import only_admins
+from bot.decorators.permissions import only_admins
 
 # from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 

@@ -4,7 +4,7 @@ from pyrogram.types import CallbackQuery
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot import kreacher, VOICE_CHATS
-from bot.decorators.only_managers import only_admins_or_requester
+from bot.decorators.permissions import only_admins_or_requester
 from bot.helpers.queues import (
     get_queues,
     next_in_queue,

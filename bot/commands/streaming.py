@@ -9,7 +9,7 @@ from pyrogram.enums import MessagesFilter
 from bot.helpers.progress import progress
 from bot.scrapers.images import ImageScraper
 from bot import assistant, kreacher, tgcalls, VOICE_CHATS
-from bot.decorators.only_groups_or_channels import only_groups_or_channels
+from bot.decorators.sides import only_groups_or_channels
 from bot.helpers.queues import (
     remove_queue,
 )

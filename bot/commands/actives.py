@@ -2,7 +2,7 @@ from asyncio import sleep
 from pyrogram.types import Message
 from pyrogram import filters, Client
 from bot import kreacher, VOICE_CHATS
-from bot.decorators.only_dev import only_dev
+from bot.decorators.permissions import only_dev
 
 
 @kreacher.on_message(filters.regex(pattern="^[!?/]actives"))

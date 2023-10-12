@@ -13,7 +13,7 @@ from ebooklib import epub as epublib, ITEM_IMAGE, ITEM_DOCUMENT
 from bot.helpers.tts import tts
 from bot.helpers.progress import progress
 from bot import kreacher, tgcalls, VOICE_CHATS
-from bot.decorators.only_groups_or_channels import only_groups_or_channels
+from bot.decorators.sides import only_groups_or_channels
 from bot.helpers.queues import (
     add_or_create_queue,
     get_queues,
