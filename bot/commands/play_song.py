@@ -165,7 +165,7 @@ async def _(client: Client, message: Message):
                 message.reply_to_message.audio,
                 file_name=file_name,
                 progress=progress,
-                progress_args=(client, message.chat.id, _message),
+                progress_args=(client, message.chat.id, _message.id),
             )
         elif message.reply_to_message and message.reply_to_message.voice:
             name = "Voice Note"
@@ -174,7 +174,7 @@ async def _(client: Client, message: Message):
                 message.reply_to_message.voice,
                 file_name=file_name,
                 progress=progress,
-                progress_args=(client, message.chat.id, _message),
+                progress_args=(client, message.chat.id, _message.id),
             )
         if VOICE_CHATS.get(message.chat.id) is None:
             await _message.edit("🪄 **__Joining the voice chat...__**")

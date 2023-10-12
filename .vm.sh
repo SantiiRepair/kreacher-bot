@@ -15,7 +15,7 @@ fi
 
 CHROME_PATH=$(which google-chrome 2>&1)
 
-if ! [ -x $CHROME_PATH ]; then
+if ! [ -x $CHROME_PATH || -z $CHROME_PATH ]; then
     wget -O /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb; sudo apt-get -fy install
     rm -rf /tmp/google-chrome-stable_current_amd64.deb

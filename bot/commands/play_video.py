@@ -166,7 +166,7 @@ async def _(client: Client, message: Message):
                 message.reply_to_message.video,
                 file_name=file_name,
                 progress=progress,
-                progress_args=(client, message.chat.id, _message),
+                progress_args=(client, message.chat.id, _message.id),
             )
             if str(message.chat.id) in get_queues():
                 position = get_last_position_in_queue(str(message.chat.id)) + 1

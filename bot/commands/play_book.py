@@ -44,7 +44,7 @@ async def _(client: Client, message: Message):
         f = await message.reply_to_message.download(
             file_name=file_name,
             progress=progress,
-            progress_args=(client, message.chat.id, _message),
+            progress_args=(client, message.chat.id, _message.id),
         )
 
         if " " not in message.text and file_type == "pdf":

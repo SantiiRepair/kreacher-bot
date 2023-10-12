@@ -75,14 +75,14 @@ async def _(client: Client, message: Message):
                         media["file_id"],
                         file_name=serie_name,
                         progress=progress,
-                        progress_args=(client, message.chat.id, _message),
+                        progress_args=(client, message.chat.id, _message.id),
                     )
                 if media["type"] == "movie":
                     video = await assistant.download_media(
                         media["file_id"],
                         file_name=movie_name,
                         progress=progress,
-                        progress_args=(client, message.chat.id, _message),
+                        progress_args=(client, message.chat.id, _message.id),
                     )
                 if VOICE_CHATS.get(message.chat.id) is None:
                     await _message.edit("🪄 **__Joining the voice chat...__**")
