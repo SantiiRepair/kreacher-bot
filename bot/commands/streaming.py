@@ -8,7 +8,7 @@ from pyrogram import filters, Client
 from pyrogram.enums import MessagesFilter
 from bot.helpers.progress import progress
 from bot.scrapers.images import ImageScraper
-from bot import assistant, kreacher, tgcalls, VOICE_CHATS
+from bot import userbot, kreacher, tgcalls, VOICE_CHATS
 from bot.decorators.sides import only_groups_or_channels
 from bot.helpers.queues import (
     remove_queue,
@@ -27,9 +27,9 @@ async def _(client: Client, message: Message):
         _message = await message.reply("🔎 **__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
-        series_channel = await assistant.get_chat(config.ES_SERIES_CHANNEL)
-        movies_channel = await assistant.get_chat(config.ES_MOVIES_CHANNEL)
-        async for serie in assistant.search_messages(
+        series_channel = await userbot.get_chat(config.ES_SERIES_CHANNEL)
+        movies_channel = await userbot.get_chat(config.ES_MOVIES_CHANNEL)
+        async for serie in userbot.search_messages(
             chat_id=series_channel.id,
             query=search,
             limit=1000,
@@ -42,7 +42,7 @@ async def _(client: Client, message: Message):
                     "file_id": serie.video.file_id,
                 }
             )
-        async for movie in assistant.search_messages(
+        async for movie in userbot.search_messages(
             chat_id=movies_channel.id,
             query=search,
             limit=1000,
@@ -74,7 +74,7 @@ async def _(client: Client, message: Message):
                     else message.reply_to_message.file.mime_type.split("/", 1)[1]
                 )
                 file_name = f"/tmp/{str(uuid.uuid4())}.{mime_type}"
-                video = await assistant.download_media(
+                video = await userbot.download_media(
                     media["file_id"],
                     file_name=file_name,
                     progress=progress,
@@ -89,7 +89,6 @@ async def _(client: Client, message: Message):
                     video,
                     enable_experimental_lip_sync=True,
                     repeat=False,
-                    with_audio=True,
                 )
                 await _message.delete()
                 await client.send_photo(

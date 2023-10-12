@@ -4,7 +4,7 @@ from termcolor import colored
 from pyrogram.types import BotCommand
 
 from bot.setup import setup_plugins
-from bot import kreacher, assistant
+from bot import kreacher, userbot
 
 ay = asyncio.get_event_loop()
 
@@ -18,7 +18,7 @@ async def start_bot():
             BotCommand("help", "How to use this one"),
             BotCommand("leave", "Leave the voice chat"),
             BotCommand("ping", "Check server latency"),
-            BotCommand("play_book", "Play pdf file as audiobook"),
+            BotCommand("play_book", "Play pdf or epub file as audiobook"),
             BotCommand("play_song", "Play audio in voice chat"),
             BotCommand("play_video", "Play video in voice chat"),
             BotCommand("speedtest", "Run server speed test"),
@@ -35,5 +35,5 @@ try:
     idle()
 except KeyboardInterrupt:
     kreacher.disconnect()
-    assistant.disconnect()
+    userbot.disconnect()
     print(f'{colored("[INFO]:", "blue")} CLIENTS DISCONNECTED')

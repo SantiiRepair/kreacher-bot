@@ -61,7 +61,7 @@ kreacher = Client(
     bot_token=_BOT_TOKEN,
 )
 
-assistant = Client(
+userbot = Client(
     "userbot.assistant",
     api_id=_API_ID,
     api_hash=_API_HASH,
@@ -87,13 +87,13 @@ r = Redis(
 # ------------------------------------------------------------------------------
 
 tgcalls = GroupCallFactory(
-    assistant, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
+    userbot, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
 ).get_group_call()
 
 # ------------------------------------------------------------------------------
 
 kreacher.start()
-assistant.start()
+userbot.start()
 driver = get_driver()
 
 START_TIME = datetime.utcnow()

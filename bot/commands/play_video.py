@@ -11,7 +11,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot.helpers.progress import progress
 from bot.helpers.yt import ytdl, ytsearch
 from bot.helpers.user_info import user_info
-from bot import assistant, kreacher, tgcalls, VOICE_CHATS
+from bot import kreacher, tgcalls, userbot, VOICE_CHATS
 from bot.helpers.queues import (
     add_or_create_queue,
     get_queues,
@@ -201,7 +201,7 @@ async def _(client: Client, message: Message):
                     type_of="video_media",
                 )
             await _message.edit("💾 **__Downloading...__**")
-            media = await assistant.download_media(
+            media = await userbot.download_media(
                 message.reply_to_message,
                 file_name=file_name,
                 progress=progress,
@@ -216,7 +216,6 @@ async def _(client: Client, message: Message):
                 media,
                 enable_experimental_lip_sync=True,
                 repeat=False,
-                with_audio=True,
             )
             # await _message.delete()
             await _message.edit(
