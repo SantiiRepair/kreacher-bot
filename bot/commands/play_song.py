@@ -154,7 +154,6 @@ async def _(client: Client, message: Message):
         await _message.edit("💾 **__Downloading...__**")
         media = await client.download_media(
             message.reply_to_message,
-            block=False,
             file_name=file_name,
             progress=progress,
             progress_args=(client, message.chat.id, _message.id),

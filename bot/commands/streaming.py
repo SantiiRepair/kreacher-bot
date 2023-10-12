@@ -24,7 +24,7 @@ async def _(client: Client, message: Message):
             return await message.reply(
                 "**__How to use this command.\n\nNext we show two ways to use this command, click on the button with the mode you are looking for to know details.__**"
             )
-        _message = await message.reply("**__Searching...__**")
+        _message = await message.reply("🔎 **__Searching...__**")
         await sleep(2)
         search = message.text.split(maxsplit=1)[1]
         movie_name = f"/tmp/{str(uuid.uuid4())}.mp4"
@@ -70,22 +70,12 @@ async def _(client: Client, message: Message):
                 )
                 image_urls = image_scraper.find_image_urls()
                 photo = image_scraper.save_images(image_urls, keep_filenames=True)
-                if media["type"] == "serie":
-                    video = await assistant.download_media(
+                video = await assistant.download_media(
                         media["file_id"],
-                        block=False,
-                        file_name=serie_name,
-                        progress=progress,
-                        progress_args=(client, message.chat.id, _message.id),
-                    )
-                if media["type"] == "movie":
-                    video = await assistant.download_media(
-                        media["file_id"],
-                        block=False,
                         file_name=movie_name,
                         progress=progress,
                         progress_args=(client, message.chat.id, _message.id),
-                    )
+                )
                 if VOICE_CHATS.get(message.chat.id) is None:
                     await _message.edit("🪄 **__Joining the voice chat...__**")
                     await tgcalls.start(message.chat.id)
