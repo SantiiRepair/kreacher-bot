@@ -2,7 +2,7 @@ import os
 import logging
 from bot import tgcalls
 
-
+"""
 @tgcalls.on_audio_playout_ended
 async def audio_ended(client, source):
     logging.info(f"audio ended: {source}")
@@ -13,3 +13,4 @@ async def audio_ended(client, source):
 async def video_ended(client, source):
     logging.info(f"video ended: {source}")
     os.remove(source)
+"""
