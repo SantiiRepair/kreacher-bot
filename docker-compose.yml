@@ -19,6 +19,8 @@ services:
     restart: always
     volumes: 
       - redis:/data
+    env_file:
+      - ./.env
     command: redis-server --loglevel warning --requirepass $REDIS_PASSWORD
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
