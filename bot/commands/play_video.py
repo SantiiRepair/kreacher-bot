@@ -64,7 +64,10 @@ async def _(client: Client, message: Message):
                         file=query,
                         type_of="video_stream",
                     )
-                await _message.edit("🔄 **__Starting live video stream...__**")
+                if VOICE_CHATS.get(message.chat.id) is None:
+                    await _message.edit("🪄 **__Joining the voice chat...__**")
+                    VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+                    await VOICE_CHATS[message.chat.id].start(message.chat.id)
                 await sleep(2)
                 await VOICE_CHATS[message.chat.id].start_video(
                     query,
@@ -132,8 +135,8 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await _message.edit("🪄 **__Joining the voice chat...__**")
-                await tgcalls.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = tgcalls
+                VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+                await VOICE_CHATS[message.chat.id].start(message.chat.id)
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 url,
@@ -209,8 +212,8 @@ async def _(client: Client, message: Message):
             )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await _message.edit("🪄 **__Joining the voice chat...__**")
-                await tgcalls.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = tgcalls
+                VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+                await VOICE_CHATS[message.chat.id].start(message.chat.id)
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_video(
                 media,

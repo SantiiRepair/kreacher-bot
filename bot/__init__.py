@@ -86,9 +86,7 @@ r = Redis(
 
 # ------------------------------------------------------------------------------
 
-tgcalls = GroupCallFactory(
-    userbot, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM
-).get_group_call()
+tgcalls = GroupCallFactory(userbot, GroupCallFactory.MTPROTO_CLIENT_TYPE.PYROGRAM)
 
 # ------------------------------------------------------------------------------
 

@@ -81,8 +81,8 @@ async def _(client: Client, message: Message):
                 )
             if VOICE_CHATS.get(message.chat.id) is None:
                 await _message.edit("🪄 **__Joining the voice chat...__**")
-                await tgcalls.start(message.chat.id)
-                VOICE_CHATS[message.chat.id] = tgcalls
+                VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+                await VOICE_CHATS[message.chat.id].start(message.chat.id)
             await sleep(2)
             await VOICE_CHATS[message.chat.id].start_audio(url, repeat=False)
             await _message.edit(
@@ -160,8 +160,8 @@ async def _(client: Client, message: Message):
         )
         if VOICE_CHATS.get(message.chat.id) is None:
             await _message.edit("🪄 **__Joining the voice chat...__**")
-            await tgcalls.start(message.chat.id)
-            VOICE_CHATS[message.chat.id] = tgcalls
+            VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+            await VOICE_CHATS[message.chat.id].start(message.chat.id)
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(media, repeat=False)
         await _message.delete()
@@ -186,10 +186,10 @@ async def _(client: Client, message: Message):
             ),
         )
         return await _message.pin()
-    except Exception as e:
-        logging.error(e)
+    except Exception as err:
+        logging.error(err)
         await _message.edit(
-            f"**__Oops master, something wrong has happened.__** \n\n`Error: {e}`",
+            f"**__Oops master, something wrong has happened.__** \n\n`Error: {err}`",
         )
         if message.chat.id in VOICE_CHATS:
             await VOICE_CHATS[message.chat.id].stop()

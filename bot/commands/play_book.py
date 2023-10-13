@@ -85,8 +85,8 @@ async def _(client: Client, message: Message):
         await sleep(2)
         if VOICE_CHATS.get(message.chat.id) is None:
             await _message.edit("🪄 **__Joining the voice chat...__**")
-            await tgcalls.start(message.chat.id)
-            VOICE_CHATS[message.chat.id] = tgcalls
+            VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+            await VOICE_CHATS[message.chat.id].start(message.chat.id)
         await sleep(2)
         await VOICE_CHATS[message.chat.id].start_audio(audiobook, repeat=False)
         if "epub" in mime_type:

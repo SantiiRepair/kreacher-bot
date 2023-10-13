@@ -12,8 +12,8 @@ async def _(client: Client, message: Message):
     try:
         if VOICE_CHATS.get(message.chat.id) is not None:
             raise Exception("Streaming is active")
-        await tgcalls.start(message.chat.id)
-        VOICE_CHATS[message.chat.id] = tgcalls
+        VOICE_CHATS[message.chat.id] = tgcalls.get_group_call()
+        await VOICE_CHATS[message.chat.id].start(message.chat.id)
         await message.reply(
             "**__Master, what do you need? \U0001f917 \n\nVoice Chat started successfully__** \u2728",
         )
