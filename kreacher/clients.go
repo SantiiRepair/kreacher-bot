@@ -3,6 +3,7 @@ package kreacher
 import (
 	"time"
 
+	td "github.com/gotd/td/telegram"
 	"github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
 )
@@ -18,3 +19,5 @@ var kbot, _ = tele.NewBot(tele.Settings{
 	Token:  NewConfig().BotToken,
 	Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 })
+
+var ubot = td.NewClient(NewConfig().APIID, NewConfig().APIHash, td.Options{})

@@ -3,12 +3,13 @@ package kreacher
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	APIID            string
+	APIID            int
 	APIHash          string
 	BotToken         string
 	BotUsername      string
@@ -22,10 +23,10 @@ type Config struct {
 	PostgresUser     string
 	PostgresPassword string
 	PostgresHost     string
-	PostgresPort     string
+	PostgresPort     int
 	RedisHost        string
 	RedisPassword    string
-	RedisPort        string
+	RedisPort        int
 }
 
 func NewConfig() *Config {
@@ -34,24 +35,43 @@ func NewConfig() *Config {
 		fmt.Println("No .env file found")
 	}
 
+	apiID, _ := strconv.Atoi(os.Getenv("API_ID"))
+	apiHash := os.Getenv("API_HASH")
+	botToken := os.Getenv("BOT_TOKEN")
+	botUsername := os.Getenv("BOT_USERNAME")
+	channel := os.Getenv("CHANNEL")
+	esMoviesChannel := os.Getenv("ES_MOVIES_CHANNEL")
+	esSeriesChannel := os.Getenv("ES_SERIES_CHANNEL")
+	managementMode := os.Getenv("MANAGEMENT_MODE")
+	maintainer := os.Getenv("MAINTAINER")
+	sessionString := os.Getenv("SESSION_STRING")
+	postgresDB := os.Getenv("POSTGRES_DB")
+	postgresUser := os.Getenv("POSTGRES_USER")
+	postgressPassword := os.Getenv("POSTGRES_PASSWORD")
+	postgresHost := os.Getenv("POSTGRES_HOST")
+	postgresPort, _ := strconv.Atoi(os.Getenv("POSTGRES_PORT"))
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
+
 	return &Config{
-		APIID:            os.Getenv("API_ID"),
-		APIHash:          os.Getenv("API_HASH"),
-		BotToken:         os.Getenv("BOT_TOKEN"),
-		BotUsername:      os.Getenv("BOT_USERNAME"),
-		Channel:          os.Getenv("CHANNEL"),
-		ESMoviesChannel:  os.Getenv("ES_MOVIES_CHANNEL"),
-		ESSeriesChannel:  os.Getenv("ES_SERIES_CHANNEL"),
-		ManagementMode:   os.Getenv("MANAGEMENT_MODE"),
-		Maintainer:       os.Getenv("MANTAINER"),
-		SessionString:    os.Getenv("SESSION_STRING"),
-		PostgresDB:       os.Getenv("POSTGRES_DB"),
-		PostgresUser:     os.Getenv("POSTGRES_USER"),
-		PostgresPassword: os.Getenv("POSTGRES_PASSWORD"),
-		PostgresHost:     os.Getenv("POSTGRES_HOST"),
-		PostgresPort:     os.Getenv("POSTGRES_PORT"),
-		RedisHost:        os.Getenv("REDIS_HOST"),
-		RedisPassword:    os.Getenv("REDIS_PASSWORD"),
-		RedisPort:        os.Getenv("REDIS_PORT"),
+		APIID:            apiID,
+		APIHash:          apiHash,
+		BotToken:         botToken,
+		BotUsername:      botUsername,
+		Channel:          channel,
+		ESMoviesChannel:  esMoviesChannel,
+		ESSeriesChannel:  esSeriesChannel,
+		ManagementMode:   managementMode,
+		Maintainer:       maintainer,
+		SessionString:    sessionString,
+		PostgresDB:       postgresDB,
+		PostgresUser:     postgresUser,
+		PostgresPassword: postgressPassword,
+		PostgresHost:     postgresHost,
+		PostgresPort:     postgresPort,
+		RedisHost:        redisHost,
+		RedisPassword:    redisPassword,
+		RedisPort:        redisPort,
 	}
 }
