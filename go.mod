@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/gotd/td v0.91.0
 	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.9
 	github.com/redis/go-redis/v9 v9.3.1
 	gopkg.in/telebot.v3 v3.2.1
 )

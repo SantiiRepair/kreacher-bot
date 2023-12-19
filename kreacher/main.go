@@ -1,10 +1,12 @@
-package kreacher
+package main
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
 	td "github.com/gotd/td/telegram"
+	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
 )
@@ -15,6 +17,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	postgresDB, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer postgresDB.Close()
 
 	redisDB := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", NewConfig().RedisHost, NewConfig().RedisPort),

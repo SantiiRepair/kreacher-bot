@@ -1,4 +1,4 @@
-package kreacher
+package main
 
 import (
 	"log"
