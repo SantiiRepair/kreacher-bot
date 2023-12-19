@@ -1,39 +1,23 @@
-import asyncio
-from pyrogram import idle
-from termcolor import colored
-from pyrogram.types import BotCommand
+package kreacher
 
-from bot.setup import setup_plugins
-from bot import kreacher, userbot
+import (
+	tele "gopkg.in/telebot.v3"
+)
 
-ay = asyncio.get_event_loop()
+func main() {
+	err := kbot.SetCommands([]tele.Command{
+		{Text: "config", Description: "Set the bot's configuration"},
+		{Text: "help", Description: "How to use this"},
+		{Text: "leave", Description: "Leave the voice chat"},
+		{Text: "ping", Description: "Check the server's latency"},
+		{Text: "play_book", Description: "Play a pdf or epub file as an audio book"},
+		{Text: "play_song", Description: "Play audio in the voice chat"},
+		{Text: "play_video", Description: "Play video in the voice chat"},
+		{Text: "speedtest", Description: "Run server speed test"},
+		{Text: "streaming", Description: "Any movie or series"},
+	})
 
-
-async def start_bot():
-    bot_me = await kreacher.get_me()
-    print(f'{colored("[INFO]:", "blue")} BOT ID {bot_me.id}')
-    await kreacher.set_bot_commands(
-        commands=[
-            BotCommand("config", "Set bot configuration"),
-            BotCommand("help", "How to use this one"),
-            BotCommand("leave", "Leave the voice chat"),
-            BotCommand("ping", "Check server latency"),
-            BotCommand("play_book", "Play pdf or epub file as audiobook"),
-            BotCommand("play_song", "Play audio in voice chat"),
-            BotCommand("play_video", "Play video in voice chat"),
-            BotCommand("speedtest", "Run server speed test"),
-            BotCommand("streaming", "Any movie or series"),
-        ]
-    )
-    print(f'{colored("[INFO]:", "blue")} SETED BOT COMMANDS')
-
-
-try:
-    setup_plugins()
-    ay.run_until_complete(start_bot())
-    print(f'{colored("[INFO]:", "blue")} SUCCESSFULLY STARTED BOT!')
-    idle()
-except KeyboardInterrupt:
-    kreacher.disconnect()
-    userbot.disconnect()
-    print(f'{colored("[INFO]:", "blue")} CLIENTS DISCONNECTED')
+	if err != nil {
+		panic(err)
+	}
+}
