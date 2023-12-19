@@ -15,7 +15,7 @@ type Kreacher struct {
 	RedisDB *redis.Client
 }
 
-func NewKreacher(
+func NewClient(
 	logger *log.Logger,
 	kreacherBot *tele.Bot,
 	userBot *td.Client,

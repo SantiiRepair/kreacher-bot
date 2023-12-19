@@ -48,7 +48,7 @@ func main() {
 
 	userBot := td.NewClient(NewConfig().APIID, NewConfig().APIHash, td.Options{})
 
-	kreacher := NewKreacher(
+	kreacher := NewClient(
 		logger,
 		bot,
 		userBot,
