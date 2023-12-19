@@ -10,6 +10,12 @@ import (
 )
 
 func main() {
+	logger, err := NewLogger("kreacher", "kreacher.log")
+
+	if err != nil {
+		panic(err)
+	}
+
 	redisDB := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", NewConfig().RedisHost, NewConfig().RedisPort),
 		Password: NewConfig().RedisPassword,
@@ -17,16 +23,29 @@ func main() {
 		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 	})
 
-	kreacherBot, _ := tele.NewBot(tele.Settings{
+	defer redisDB.Close()
+
+	bot, err := tele.NewBot(tele.Settings{
 		Token:  NewConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 	})
 
+	if err != nil {
+		panic(err)
+	}
+
+	defer bot.Close()
+
 	userBot := td.NewClient(NewConfig().APIID, NewConfig().APIHash, td.Options{})
 
-	kreacher := NewKreacher(redisDB, kreacherBot, userBot)
+	kreacher := NewKreacher(
+		logger,
+		bot,
+		userBot,
+		redisDB,
+	)
 
-	err := kreacher.KreacherBot.SetCommands([]tele.Command{
+	err = kreacher.Bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "leave", Description: "Leave the voice chat"},

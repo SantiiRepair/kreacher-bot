@@ -2,18 +2,20 @@ package kreacher
 
 import (
 	"log"
-	"log/syslog"
+	"os"
 )
 
-func NewLogger() *log.Logger {
+func NewLogger(name string, path string) (*log.Logger, error) {
 	var logger *log.Logger
-
-	syslogWriter, err := syslog.New(syslog.LOG_INFO, "my-app")
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	logger.SetOutput(syslogWriter)
+
+	defer file.Close()
+
+	logger.SetOutput(file)
 	logger.SetFlags(0)
 
-	return logger
+	return logger, nil
 }
