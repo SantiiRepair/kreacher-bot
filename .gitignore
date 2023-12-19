@@ -1,14 +1,10 @@
 *.env
 *.log
 *.rdb
-*.pyc
+*.sum
 *.lock
 *.session
 *.session-journal
 
 .codesandbox
-.devcontainer
-
-
-
 .devcontainer

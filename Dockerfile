@@ -1,7 +1,7 @@
-FROM python:3.11.6
+FROM golang:1.21.5
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install ffmpeg tree -y
-RUN pip install --upgrade pip
+RUN go mod tidy
 COPY . /kreacher/
 WORKDIR /kreacher/
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
