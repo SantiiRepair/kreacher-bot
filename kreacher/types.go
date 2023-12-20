@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 
 	td "github.com/gotd/td/telegram"
@@ -19,11 +20,18 @@ type MTProto struct {
 	Options *td.Options
 }
 
+// Database SQL
+type DB struct {
+	DriverName string
+	DriverConn string
+}
+
 type KParams struct {
 	Logger  *Logger
 	Bot     *tele.Settings
 	UserBot *MTProto
 	RedisDB *redis.Options
+	DB      *DB
 }
 
 type Kreacher struct {
@@ -31,6 +39,7 @@ type Kreacher struct {
 	Bot     *tele.Bot
 	UserBot *td.Client
 	RedisDB *redis.Client
+	DB      *sql.DB
 }
 
 type KConfig struct {

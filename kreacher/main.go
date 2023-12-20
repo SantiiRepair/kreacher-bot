@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -33,11 +32,15 @@ func main() {
 			DB:       0,
 			Protocol: 3,
 		},
+		DB: &DB{
+			DriverName: "postgres",
+			DriverConn: "user=username password=password dbname=database sslmode=disable",
+		},
 	}
 
 	kreacher := NewClient(&kparams)
 
-	err = kreacher.Bot.SetCommands([]tele.Command{
+	err := kreacher.Bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "leave", Description: "Leave the voice chat"},

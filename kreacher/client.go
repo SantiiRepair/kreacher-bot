@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 
 	td "github.com/gotd/td/telegram"
 	_ "github.com/lib/pq"
@@ -38,18 +37,19 @@ func NewClient(params *KParams) *Kreacher {
 
 	defer redisDB.Close()
 
-	postgresDB, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
+	db, err := sql.Open(params.DB.DriverName, params.DB.DriverConn) // db sql
 
 	if err != nil {
 		panic(err)
 	}
 
-	defer postgresDB.Close()
+	defer db.Close()
 
 	return &Kreacher{
 		Logger:  logger,
 		Bot:     bot,
 		UserBot: userBot,
 		RedisDB: redisDB,
+		DB:      db,
 	}
 }
