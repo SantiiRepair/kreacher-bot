@@ -7,13 +7,11 @@ import (
 	td "github.com/gotd/td/telegram"
 	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
-	"gopkg.in/kreacher-bot.v1/kreacher/commands"
+	cm "gopkg.in/kreacher-bot.v1/commands"
 	tele "gopkg.in/telebot.v3"
 )
 
 func main() {
-	var cm commands.Commands
-
 	kparams := KParams{
 		Logger: &Logger{
 			Name: "kreacher",
