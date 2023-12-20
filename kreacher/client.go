@@ -9,11 +9,11 @@ import (
 	tele "gopkg.in/telebot.v3"
 )
 
-func NewClient(params *KParams) *Kreacher {
+func Kreacher(params *KParams) (*CKreacher, error) {
 	logger, err := NewLogger(params.Logger.Name, params.Logger.Path)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	bot, err := tele.NewBot(tele.Settings{
@@ -22,17 +22,18 @@ func NewClient(params *KParams) *Kreacher {
 	})
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	defer bot.Close()
 
 	userBot := td.NewClient(params.UserBot.APIID, params.UserBot.APIHash, *params.UserBot.Options)
+
 	redisDB := redis.NewClient(&redis.Options{
 		Addr:     params.RedisDB.Addr,
 		Password: params.RedisDB.Password,
-		DB:       params.RedisDB.DB,       // use default DB
-		Protocol: params.RedisDB.Protocol, // specify 2 for RESP 2 or 3 for RESP 3
+		DB:       params.RedisDB.DB,
+		Protocol: params.RedisDB.Protocol,
 	})
 
 	defer redisDB.Close()
@@ -40,16 +41,16 @@ func NewClient(params *KParams) *Kreacher {
 	db, err := sql.Open(params.DB.DriverName, params.DB.DriverConn) // db sql
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	defer db.Close()
 
-	return &Kreacher{
+	return &CKreacher{
 		Logger:  logger,
 		Bot:     bot,
 		UserBot: userBot,
 		RedisDB: redisDB,
 		DB:      db,
-	}
+	}, nil
 }

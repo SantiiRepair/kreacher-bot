@@ -34,7 +34,7 @@ type KParams struct {
 	DB      *DB
 }
 
-type Kreacher struct {
+type CKreacher struct {
 	Logger  *log.Logger
 	Bot     *tele.Bot
 	UserBot *td.Client

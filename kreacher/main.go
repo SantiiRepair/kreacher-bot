@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -29,8 +28,8 @@ func main() {
 		RedisDB: &redis.Options{
 			Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
 			Password: BotConfig().RedisPassword,
-			DB:       0,
-			Protocol: 3,
+			DB:       0, // use default DB
+			Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 		},
 		DB: &DB{
 			DriverName: "postgres",
@@ -38,9 +37,13 @@ func main() {
 		},
 	}
 
-	kreacher := NewClient(&kparams)
+	k, err := Kreacher(&kparams)
 
-	err := kreacher.Bot.SetCommands([]tele.Command{
+	if err != nil {
+		panic(err)
+	}
+
+	if err := k.Bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "leave", Description: "Leave the voice chat"},
@@ -50,25 +53,6 @@ func main() {
 		{Text: "play_video", Description: "Play video in the voice chat"},
 		{Text: "speedtest", Description: "Run server speed test"},
 		{Text: "streaming", Description: "Any movie or series"},
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	if err := kreacher.UserBot.Run(context.Background(), func(ctx context.Context) error {
-		// It is only valid to use client while this function is not returned
-		// and ctx is not cancelled.
-		user, err := kreacher.UserBot.Self(context.Background())
-		if err != nil {
-			panic(err)
-		}
-		// Now you can invoke MTProto RPC requests by calling the API.
-		// ...
-
-		// Return to close client connection and free up resources.
-		fmt.Println(user.FirstName)
-		return nil
 	}); err != nil {
 		panic(err)
 	}
