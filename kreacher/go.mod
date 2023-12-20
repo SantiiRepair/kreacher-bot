@@ -1,4 +1,4 @@
-module gopkg.in/kreacher-bot.v1
+module santiirepair.dev/kreacher
 
 go 1.21.5
 

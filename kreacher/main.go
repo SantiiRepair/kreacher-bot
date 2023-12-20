@@ -7,8 +7,8 @@ import (
 	td "github.com/gotd/td/telegram"
 	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
-	cm "gopkg.in/kreacher-bot.v1/commands"
 	tele "gopkg.in/telebot.v3"
+	cm "santiirepair.dev/kreacher/commands"
 )
 
 func main() {
@@ -125,8 +125,7 @@ func main() {
 	})
 
 	k.Bot.Handle(Speedtest, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
+		sent := cm.Speedtest(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
