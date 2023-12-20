@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
@@ -12,48 +13,29 @@ import (
 )
 
 func main() {
-	logger, err := NewLogger("kreacher", "kreacher.log")
-
-	if err != nil {
-		panic(err)
+	kparams := KParams{
+		Logger: &Logger{
+			Name: "kreacher",
+			Path: "kreacher.log",
+		},
+		Bot: &tele.Settings{
+			Token:  BotConfig().BotToken,
+			Poller: &tele.LongPoller{Timeout: 10 * time.Second},
+		},
+		UserBot: &MTProto{
+			APIID:   BotConfig().APIID,
+			APIHash: BotConfig().APIHash,
+			Options: &td.Options{},
+		},
+		RedisDB: &redis.Options{
+			Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
+			Password: BotConfig().RedisPassword,
+			DB:       0,
+			Protocol: 3,
+		},
 	}
 
-	postgresDB, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer postgresDB.Close()
-
-	redisDB := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", NewConfig().RedisHost, NewConfig().RedisPort),
-		Password: NewConfig().RedisPassword,
-		DB:       0, // use default DB
-		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
-	})
-
-	defer redisDB.Close()
-
-	bot, err := tele.NewBot(tele.Settings{
-		Token:  NewConfig().BotToken,
-		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer bot.Close()
-
-	userBot := td.NewClient(NewConfig().APIID, NewConfig().APIHash, td.Options{})
-
-	kreacher := NewClient(
-		logger,
-		bot,
-		userBot,
-		redisDB,
-	)
+	kreacher := NewClient(&kparams)
 
 	err = kreacher.Bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
@@ -68,6 +50,23 @@ func main() {
 	})
 
 	if err != nil {
+		panic(err)
+	}
+
+	if err := kreacher.UserBot.Run(context.Background(), func(ctx context.Context) error {
+		// It is only valid to use client while this function is not returned
+		// and ctx is not cancelled.
+		user, err := kreacher.UserBot.Self(context.Background())
+		if err != nil {
+			panic(err)
+		}
+		// Now you can invoke MTProto RPC requests by calling the API.
+		// ...
+
+		// Return to close client connection and free up resources.
+		fmt.Println(user.FirstName)
+		return nil
+	}); err != nil {
 		panic(err)
 	}
 

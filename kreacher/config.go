@@ -8,28 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type BotConfig struct {
-	APIID            int
-	APIHash          string
-	BotToken         string
-	BotUsername      string
-	Channel          string
-	ESMoviesChannel  string
-	ESSeriesChannel  string
-	ManagementMode   string
-	Maintainer       string
-	SessionString    string
-	PostgresDB       string
-	PostgresUser     string
-	PostgresPassword string
-	PostgresHost     string
-	PostgresPort     int
-	RedisHost        string
-	RedisPassword    string
-	RedisPort        int
-}
-
-func NewConfig() *BotConfig {
+func BotConfig() *KConfig {
 	err := godotenv.Load("../.env")
 	if err != nil {
 		fmt.Println("No .env file found")
@@ -54,7 +33,7 @@ func NewConfig() *BotConfig {
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 
-	return &BotConfig{
+	return &KConfig{
 		APIID:            apiID,
 		APIHash:          apiHash,
 		BotToken:         botToken,
