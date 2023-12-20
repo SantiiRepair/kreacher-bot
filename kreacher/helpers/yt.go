@@ -1,3 +1,5 @@
+package helpers
+
 import os
 import logging
 from yt_dlp import YoutubeDL
@@ -42,12 +44,9 @@ async def ytsearch(query: str):
         return 0
 
 
-async def ytdl(fmt: str, link: str):
-    try:
-        stdout, stderr = await bash(f'yt-dlp -g -f "{fmt}" {link}')
-        if stdout:
-            return 1, stdout.split("\n")[0]
-        return 0, stderr
-    except Exception as e:
-        logging.error(e)
-        return 0
+func ytdl(fmt string, link string) (string, error) {
+        stdout, err := Bash(f'yt-dlp -g -f "{fmt}" {link}')
+        if err != nil {
+            return nil, err
+        return stdout, nil
+}
