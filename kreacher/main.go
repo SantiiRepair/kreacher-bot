@@ -7,10 +7,13 @@ import (
 	td "github.com/gotd/td/telegram"
 	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
+	"gopkg.in/kreacher-bot.v1/kreacher/commands"
 	tele "gopkg.in/telebot.v3"
 )
 
 func main() {
+	var cm commands.Commands
+
 	kparams := KParams{
 		Logger: &Logger{
 			Name: "kreacher",
@@ -57,4 +60,89 @@ func main() {
 		panic(err)
 	}
 
+	// Commands ############################################################### //
+
+	k.Bot.Handle(Config, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(Help, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(Leave, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(Ping, func(c tele.Context) error {
+		sent := cm.Ping(c)
+
+		if sent != nil {
+			panic(sent.Error())
+		}
+
+		return sent
+	})
+
+	k.Bot.Handle(PlayBook, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(PlaySong, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(PlayVideo, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(Speedtest, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Handle(Streaming, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
+	k.Bot.Start()
 }

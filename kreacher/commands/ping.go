@@ -1,17 +1,15 @@
 package commands
 
-from pyrogram.types import Message
-from pyrogram import filters, Client
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import tele "gopkg.in/telebot.v3"
 
-from bot import kreacher
+func Ping(c tele.Context, message string) (error) {
+	err := c.Send(
+		"**__PONG__**",
+	)
 
+    if err != nil {
+        return err
+    }
 
-@kreacher.on_message(filters.regex(pattern="^[!?/]ping"))
-async def _(client: Client, message: Message):
-    return await message.reply(
-        "**__PONG!!__**",
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("\U0001f3d3", callback_data="pong")]]
-        ),
-    )
+    return err
+}
