@@ -30,6 +30,8 @@ fi
 
 if [ -z $YT_DLP ]; then
     sudo cp -r bin/yt-dlp /usr/bin
+    sudo /usr/bin/yt-dlp --update-to master
 fi
 
 make install
+exec $SHELL

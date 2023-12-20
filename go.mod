@@ -26,7 +26,13 @@ require (
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/kkdai/youtube/v2 v2.9.0 // indirect
 	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/lithdew/bytesutil v0.0.0-20200409052507-d98389230a59 // indirect
+	github.com/lithdew/nicehttp v0.0.0-20200422123956-0d3d3dd9b482 // indirect
+	github.com/lithdew/youtube v0.0.0-20200524132213-a1fd5d688f8a // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasthttp v1.12.0 // indirect
+	github.com/valyala/fastjson v1.5.0 // indirect
 	go.opentelemetry.io/otel v1.21.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
