@@ -46,13 +46,11 @@ type KConfig struct {
 	APIID            int
 	APIHash          string
 	BotToken         string
-	BotUsername      string
 	Channel          string
 	ESMoviesChannel  string
 	ESSeriesChannel  string
 	ManagementMode   string
 	Maintainer       string
-	SessionString    string
 	PostgresDB       string
 	PostgresUser     string
 	PostgresPassword string
