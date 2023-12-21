@@ -1,0 +1,1 @@
+# PostgreSQL root directory

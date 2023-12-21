@@ -4,20 +4,20 @@ services:
     image: postgres:16.0-alpine3.18
     restart: always
     user: "$PGUSER"
-    volumes: 
-      - postgres:/var/lib/postgresql/data
+    volumes:
+      - ./container/postgres:/var/lib/postgresql/data
     env_file:
       - ./.env
     ports:
       - "$POSTGRES_PORT:$POSTGRES_PORT"
     expose:
-     - $POSTGRES_PORT
-    networks: 
-     - kreacher
+      - $POSTGRES_PORT
+    networks:
+      - kreacher
   cache:
     image: redis:7.2.1-alpine3.18
     restart: always
-    volumes: 
+    volumes:
       - redis:/data
     env_file:
       - ./.env
@@ -25,9 +25,9 @@ services:
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
     expose:
-     - $REDIS_PORT
-    networks: 
-     - kreacher
+      - $REDIS_PORT
+    networks:
+      - kreacher
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -40,18 +40,18 @@ services:
     ports:
       - "5050:80"
     expose:
-     - 5050
-    networks: 
-     - kreacher
+      - 5050
+    networks:
+      - kreacher
   app:
     build: .
     restart: always
     depends_on:
       - db
       - cache
-    networks: 
-     - kreacher
-     
+    networks:
+      - kreacher
+
 networks:
   kreacher:
     driver: bridge
@@ -60,6 +60,6 @@ volumes:
   postgres:
     driver: local
   redis:
-    driver: local  
+    driver: local
   pgadmin:
     driver: local
