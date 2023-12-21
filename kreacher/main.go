@@ -25,7 +25,6 @@ func main() {
 		{Text: "play_book", Description: "Play a pdf or epub file as an audio book"},
 		{Text: "play_song", Description: "Play audio in the voice chat"},
 		{Text: "play_video", Description: "Play video in the voice chat"},
-		{Text: "speedtest", Description: "Run server speed test"},
 		{Text: "streaming", Description: "Any movie or series"},
 	}); err != nil {
 		panic(err)

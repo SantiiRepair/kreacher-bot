@@ -20,6 +20,15 @@ func cmds(ck CKreacher, cf KConfig) {
 		return sent
 	})
 
+	ck.Bot.Handle(config, func(c tele.Context) error {
+		fmt.Println("Got a hello message")
+		sent := c.Send("Hello to you too!")
+		if sent != nil {
+			panic(sent.Error())
+		}
+		return sent
+	})
+
 	ck.Bot.Handle(help, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
@@ -75,15 +84,6 @@ func cmds(ck CKreacher, cf KConfig) {
 		return sent
 	})
 
-	ck.Bot.Handle(speedtest, func(c tele.Context) error {
-		sent := cm.Speedtest(c)
-
-		if sent != nil {
-			panic(sent.Error())
-		}
-		return sent
-	})
-
 	ck.Bot.Handle(streaming, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
@@ -100,6 +100,15 @@ func cmds(ck CKreacher, cf KConfig) {
 			panic(sent.Error())
 		}
 
+		return sent
+	}, adminMdw)
+
+	ck.Bot.Handle(speedtest, func(c tele.Context) error {
+		sent := cm.Speedtest(c)
+
+		if sent != nil {
+			panic(sent.Error())
+		}
 		return sent
 	}, adminMdw)
 }
