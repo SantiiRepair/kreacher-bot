@@ -1,43 +1,58 @@
 package helpers
 
 import (
-	st "github.com/showwin/speedtest-go/speedtest"
+	"encoding/json"
 )
 
-func Speedtest() *st.Server {
-	var stc = st.New()
+type Client struct {
+	IP        string  `json:"ip"`
+	Lat       float64 `json:"lat"`
+	Lon       float64 `json:"lon"`
+	ISP       string  `json:"isp"`
+	ISPRating float64 `json:"isprating"`
+	Rating    float64 `json:"rating"`
+	ISPDLAVG  float64 `json:"ispdlavg"`
+	ISPULAVG  float64 `json:"ispulavg"`
+	LoggedIn  float64 `json:"loggedin"`
+	Country   string  `json:"country"`
+}
 
-	// Use a proxy for the speedtest. eg: socks://127.0.0.1:7890
-	// st.WithUserConfig(&speedtest.UserConfig{Proxy: "socks://127.0.0.1:7890"})(speedtestClient)
+type Server struct {
+	URL     string  `json:"url"`
+	Lat     string  `json:"lat"`
+	Lon     string  `json:"lon"`
+	Name    string  `json:"name"`
+	Country string  `json:"country"`
+	CC      string  `json:"cc"`
+	Sponsor string  `json:"sponsor"`
+	ID      string  `json:"id"`
+	Host    string  `json:"host"`
+	D       float64 `json:"d"`
+	Latency float64 `json:"latency"`
+}
 
-	// Select a network card as the data interface.
-	// st.WithUserConfig(&speedtest.UserConfig{Source: "192.168.1.101"})(speedtestClient)
+type STResult struct {
+	Download      float64 `json:"download"`
+	Upload        float64 `json:"upload"`
+	Ping          float64 `json:"ping"`
+	Server        Server  `json:"server"`
+	Timestamp     string  `json:"timestamp"`
+	BytesSent     float64 `json:"bytes_sent"`
+	BytesReceived float64 `json:"bytes_received"`
+	Share         string  `json:"share"`
+	Client        Client  `json:"client"`
+}
 
-	// Get user's network information
-	// user, _ := stc.FetchUserInfo()
+func Speedtest() (*STResult, error) {
+	var stresult STResult
 
-	// Get a list of servers near a specified location
-	// user.SetLocationByCity("Tokyo")
-	// user.SetLocation("Osaka", 34.6952, 135.5006)
+	stout, err := Bash("speedtest --json --share")
 
-	// Search server using serverID.
-	// eg: fetch server with ID 28910.
-	// st.ErrServerNotFound will be returned if the server cannot be found.
-	// server, err := st.FetchServerByID("28910")
-
-	serverList, _ := stc.FetchServers()
-	targets, _ := serverList.FindServer([]int{})
-
-	for _, s := range targets {
-		// Please make sure your host can access this test server,
-		// otherwise you will get an error.
-		// It is recommended to replace a server at this time
-		s.PingTest(nil)
-		s.DownloadTest()
-		s.UploadTest()
-		s.Context.Reset() // reset counter
-		return s
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	json.Unmarshal([]byte(stout), &stresult)
+
+	return &stresult, nil
 }

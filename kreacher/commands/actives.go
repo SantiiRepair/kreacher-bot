@@ -2,15 +2,14 @@ package commands
 
 import tele "gopkg.in/telebot.v3"
 
-func Actives(c tele.Context, message string) (error) {
-	err := c.Send(
-		"**__Getting active Voice Chats... \n\nPlease hold, master__**",
-	)
-    
-    if err != nil {
-        return err
-    }
+func Actives(c tele.Context, message string) error {
+	err := c.Send("<b><i>Getting active Voice Chats... \n\nPlease hold, master</i></b>", tele.ParseMode(tele.ModeHTML))
 
-	err = c.Send("**__No active Voice Chats__**")
-    return err
+	if err != nil {
+		return err
+	}
+
+	err = c.Send("<b><i>No active Voice Chats</i></b>", tele.ParseMode(tele.ModeHTML))
+
+	return err
 }
