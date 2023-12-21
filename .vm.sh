@@ -4,7 +4,7 @@ YT_DLP=$(which yt-dlp)
 SPEEDTEST=$(which speedtest)
 CHROME_PATH=$(which google-chrome-stable)
 
-sudo apt-get update && apt-get upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 
 if ! command -v redis-cli >/dev/null 2>&1; then
     sudo apt-get install -y lsb-release curl gpg
@@ -14,7 +14,7 @@ if ! command -v redis-cli >/dev/null 2>&1; then
 fi
 
 if ! command -v git >/dev/null 2>&1; then
-    apt-get install git-all -y
+    sudo apt-get install git-all -y
 fi
 
 if ! [ -z $CHROME_PATH ]; then
@@ -23,15 +23,16 @@ if ! [ -z $CHROME_PATH ]; then
     rm -rf /tmp/google-chrome.deb
 fi
 
-if ! command version go >/dev/null 2>&1; then
+if [ -z $GOPATH ]; then
     wget https://go.dev/dl/go1.21.5.linux-arm64.tar.gz
     sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.5.linux-arm64.tar.gz
     echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+    rm -rf go1.21.5.linux-arm64.tar.gz
 fi
 
 if [[ -z $YT_DLP && -z $SPEEDTEST ]]; then
     sudo cp -r bin/* /usr/bin
-    /usr/bin/yt-dlp --update-to master
+    yt-dlp --update-to master
 fi
 
 make install

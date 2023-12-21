@@ -10,7 +10,7 @@ docker: clear build
 	docker compose up -d --remove-orphans
 
 install:
-	go mod tidy
+	cd kreacher && go mod tidy && cd ..
 
 format:
 	go fmt
