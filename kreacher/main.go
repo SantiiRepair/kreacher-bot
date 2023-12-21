@@ -57,7 +57,7 @@ func main() {
 		panic(err)
 	}
 
-	cmds(*ck)
+	cmds(*ck, *BotConfig())
 
 	ck.Bot.Start()
 }
