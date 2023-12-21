@@ -10,7 +10,7 @@ import (
 
 func cmds(ck CKreacher, cf KConfig) {
 	adminMdw := tmdw.Whitelist([]int64{1027242622}...)
-
+	
 	ck.Bot.Handle(config, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")

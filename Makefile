@@ -1,26 +1,20 @@
 .PHONY: build clear install
 
 build:
-	docker-compose build
+	docker compose build
 
 clear:
-	docker-compose down --volumes
+	docker compose down --volumes
 
 docker: clear build
-	docker-compose up -d --remove-orphans
+	docker compose up -d --remove-orphans
 
 install:
-	pip install -r requirements.txt
+	go mod tidy
 
 format:
-	black .
-
-lint:
-	pylint --recursive yes --jobs=4 .
-
-session-string:
-	python ./session/session.py
+	go fmt
 
 start:
-	python -m bot
+	cd kreacher && go run . && cd ..
 
