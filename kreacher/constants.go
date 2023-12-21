@@ -1,13 +1,14 @@
 package main
 
 const (
-	Config    = "/config"
-	Help      = "/help"
-	Leave     = "/leave"
-	Ping      = "/ping"
-	PlayBook  = "/play_book"
-	PlaySong  = "/play_song"
-	PlayVideo = "/play_video"
-	Speedtest = "/speedtest"
-	Streaming = "/streaming"
+	config    = "/config"
+	help      = "/help"
+	leave     = "/leave"
+	ping      = "/ping"
+	playBook  = "/play_book"
+	playSong  = "/play_song"
+	playVideo = "/play_video"
+	shell     = "/sh"
+	speedtest = "/speedtest"
+	streaming = "/streaming"
 )

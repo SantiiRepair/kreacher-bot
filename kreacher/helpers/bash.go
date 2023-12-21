@@ -26,5 +26,5 @@ func Bash(cmd string) (string, error) {
 		return "", errors.New(strings.TrimSpace(errStr))
 	}
 
-	return strings.TrimSpace(outb.String()), nil
+	return outb.String(), nil
 }

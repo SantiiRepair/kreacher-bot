@@ -8,29 +8,29 @@ import (
 func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 	var ytsr YtSearchResult
 	if len(opts) > 0 {
-		stout, err := Bash(fmt.Sprintf("yt-dlp ytsearch%s:'%s' --dump-json --skip-download --quiet --ignore-errors", opts[0], query))
+		stdout, err := Bash(fmt.Sprintf("yt-dlp ytsearch%s:'%s' --dump-json --skip-download --quiet --ignore-errors", opts[0], query))
 		if err != nil {
 			return nil, err
 		}
 
-		if len(stout) == 0 {
+		if len(stdout) == 0 {
 			return nil, nil
 		}
 
-		json.Unmarshal([]byte(stout), &ytsr)
+		json.Unmarshal([]byte(stdout), &ytsr)
 		return &ytsr, nil
 	}
 
-	stout, err := Bash(fmt.Sprintf("yt-dlp ytsearch:'%s' --dump-json --skip-download --quiet --ignore-errors", query))
+	stdout, err := Bash(fmt.Sprintf("yt-dlp ytsearch:'%s' --dump-json --skip-download --quiet --ignore-errors", query))
 	if err != nil {
 		return nil, err
 	}
 
-	if len(stout) == 0 {
+	if len(stdout) == 0 {
 		return nil, nil
 	}
 
-	json.Unmarshal([]byte(stout), &ytsr)
+	json.Unmarshal([]byte(stdout), &ytsr)
 	return &ytsr, nil
 }
 
