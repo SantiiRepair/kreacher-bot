@@ -3,7 +3,6 @@ module santiirepair.dev/kreacher
 go 1.21.5
 
 require (
-	github.com/SantiiRepair/speedtest-go v1.0.1
 	github.com/gotd/td v0.91.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9

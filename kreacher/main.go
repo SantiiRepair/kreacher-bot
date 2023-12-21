@@ -126,6 +126,7 @@ func main() {
 
 	k.Bot.Handle(Speedtest, func(c tele.Context) error {
 		sent := cm.Speedtest(c)
+
 		if sent != nil {
 			panic(sent.Error())
 		}
