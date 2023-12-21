@@ -33,7 +33,10 @@ func main() {
 
 	cmds(*ck, *BotConfig())
 
+	cy.Printf("\nBot @%s started, receiving updates...", ck.Bot.Me.Username)
+
 	ck.Bot.Start()
+
 }
 
 var kparams = KParams{
