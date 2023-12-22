@@ -18,7 +18,7 @@ services:
     image: redis:7.2.3-alpine3.19
     restart: always
     volumes:
-      - redis:/data
+      - ./container/redis:/data
     env_file:
       - ./.env
     command: redis-server --loglevel warning --requirepass $REDIS_PASSWORD
