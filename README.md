@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://static.scarf.sh/a.png?x-pxid=cf317fe7-2188-4721-bc01-124bb5d5dbb2" />
 
-## <img src="https://github.com/SantiiRepair/kreacher-bot/blob/main/.github/images/kreacher-srd.png?raw=true" height="136"/>
+## <img src="https://github.com/SantiiRepair/kreacher-bot/blob/main/.github/images/kreacher-srd.png?raw=true" height="156" style="border-radius: 20px;"/>
 
 
 **Streamer of videos and songs in any Telegram Voice Chat.**
