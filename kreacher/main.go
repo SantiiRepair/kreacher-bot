@@ -38,17 +38,20 @@ func init() {
 
 	defer irdc.Close()
 
-	db, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
+	idb, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
 
 	if err != nil {
 		panic(err)
 	}
 
-	defer db.Close()
+	defer idb.Close()
+
+	// Set client instances to late vars in vars.go file.
 
 	bot = ibot
 	ubot = iubot
 	rdc = irdc
+	db = idb
 }
 
 func main() {
