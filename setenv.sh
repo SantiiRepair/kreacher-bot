@@ -1,23 +1,26 @@
 #!/bin/bash
 
 Cyan="\033[0;36m"
+
+GOPATH=$(which go)
 YT_DLP=$(which yt-dlp)
+REDIS=$(which redis-cli)
 SPEEDTEST=$(which speedtest)
 CHROME_PATH=$(which google-chrome-stable)
 
 if [ "$1" == "--local" ]; then
 
     sudo apt-get update && sudo apt-get upgrade -y
-    sudo apt-get install -y git-all poppler-utils ffmpeg tree 
+    sudo apt-get install -y curl git-all poppler-utils postgresql ffmpeg tree 
 
-    if ! command -v redis-cli >/dev/null 2>&1; then
-        sudo apt-get install -y lsb-release curl gpg
+    if [ -z $REDIS ]; then
+        sudo apt-get install -y lsb-release gpg
         curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
         sudo apt-get install redis -y
     fi
 
-    if ! [ -z $CHROME_PATH ]; then
+    if [ -z $CHROME_PATH ]; then
         wget -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i /tmp/google-chrome.deb; sudo apt-get -fy install
         rm -rf /tmp/google-chrome.deb
@@ -41,9 +44,9 @@ if [ "$1" == "--local" ]; then
 else
 
     apt-get update && apt-get upgrade -y
-    apt-get install -y git-all poppler-utils ffmpeg tree 
+    apt-get install -y curl git-all poppler-utils ffmpeg tree 
 
-    if ! [ -z $CHROME_PATH ]; then
+    if [ -z $CHROME_PATH ]; then
         wget -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         dpkg -i /tmp/google-chrome.deb; apt-get -fy install
         rm -rf /tmp/google-chrome.deb
