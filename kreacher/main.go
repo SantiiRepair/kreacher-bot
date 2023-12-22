@@ -1,18 +1,21 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"time"
+
+	pgx "github.com/jackc/pgx/v5"
 
 	tele "gopkg.in/telebot.v3"
 
 	td "github.com/gotd/td/telegram"
-	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
 )
 
 func init() {
+	ctx := context.Background()
+
 	ibot, err := tele.NewBot(tele.Settings{
 		Token:  botConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
@@ -38,20 +41,28 @@ func init() {
 
 	defer irdc.Close()
 
-	idb, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
+	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+		botConfig().PostgresUser,
+		botConfig().PostgresPassword,
+		botConfig().PostgresHost,
+		botConfig().PostgresPort,
+		botConfig().PostgresDB,
+	)
+
+	idbc, err := pgx.Connect(ctx, dbUrl)
 
 	if err != nil {
 		panic(err)
 	}
 
-	defer idb.Close()
+	defer idbc.Close(ctx)
 
 	// Set client instances to late vars in vars.go file.
 
 	bot = ibot
 	ubot = iubot
 	rdc = irdc
-	db = idb
+	dbc = idbc
 }
 
 func main() {

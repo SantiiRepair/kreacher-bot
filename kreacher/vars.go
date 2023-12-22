@@ -1,9 +1,8 @@
 package main
 
 import (
-	"database/sql"
-
 	"github.com/fatih/color"
+	pgx "github.com/jackc/pgx/v5"
 	tele "gopkg.in/telebot.v3"
 
 	td "github.com/gotd/td/telegram"
@@ -14,7 +13,7 @@ var (
 	bot  *tele.Bot
 	ubot *td.Client
 	rdc  *redis.Client
-	db   *sql.DB
+	dbc  *pgx.Conn
 	// Cyan colored initial instance for real.
 	cy = color.New(color.FgCyan).Add(color.Underline)
 )
