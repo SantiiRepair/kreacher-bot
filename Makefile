@@ -1,20 +1,22 @@
-.PHONY: build clear install
+.PHONY: setvars build clean install
 
 build:
 	docker compose build
 
-clear:
+clean:
 	docker compose down --volumes
 
-docker: clear build
+docker: clean build
 	docker compose up -d --remove-orphans
 
 install:
 	cd kreacher && go mod tidy && cd ..
 
 format:
-	go fmt
+	cd kreacher && go fmt && cd ..
 
-start:
+start:	setvars
 	cd kreacher && go run . && cd ..
 
+setvars:
+	export $(cat .env | xargs)

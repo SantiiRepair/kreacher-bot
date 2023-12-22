@@ -1,5 +1,6 @@
 FROM golang:1.21.5
 COPY . /kreacher/
 WORKDIR /kreacher/
-CMD ["bash", "setenv.sh"]
+RUN bash setenv.sh
+RUN make install
 ENTRYPOINT ["make", "start"]

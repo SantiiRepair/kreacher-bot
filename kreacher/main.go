@@ -1,23 +1,59 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
+
+	tele "gopkg.in/telebot.v3"
 
 	td "github.com/gotd/td/telegram"
 	_ "github.com/lib/pq"
 	redis "github.com/redis/go-redis/v9"
-	tele "gopkg.in/telebot.v3"
 )
 
-func main() {
-	ck, err := Kreacher(&kparams)
+func init() {
+	ibot, err := tele.NewBot(tele.Settings{
+		Token:  botConfig().BotToken,
+		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
+		OnError: func(err error, ctx tele.Context) {
+			Error(err.Error())
+		},
+	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	if err := ck.Bot.SetCommands([]tele.Command{
+	defer ibot.Close()
+
+	iubot := td.NewClient(botConfig().APIID, botConfig().APIHash, td.Options{})
+
+	irdc := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", botConfig().RedisHost, botConfig().RedisPort),
+		Password: botConfig().RedisPassword,
+		DB:       0, // use default DB
+		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
+	})
+
+	defer irdc.Close()
+
+	db, err := sql.Open("postgres", "user=username password=password dbname=database sslmode=disable")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer db.Close()
+
+	bot = ibot
+	ubot = iubot
+	rdc = irdc
+}
+
+func main() {
+
+	if err := bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "leave", Description: "Leave the voice chat"},
@@ -30,36 +66,10 @@ func main() {
 		panic(err)
 	}
 
-	cmds(*ck, *BotConfig())
+	cmds()
 
-	cy.Printf("\nBot @%s started, receiving updates...", ck.Bot.Me.Username)
+	cy.Printf("\nBot @%s started, receiving updates...", bot.Me.Username)
 
-	ck.Bot.Start()
+	bot.Start()
 
-}
-
-var kparams = KParams{
-	Logger: &Logger{
-		Name: "kreacher",
-		Path: "kreacher.log",
-	},
-	Bot: &tele.Settings{
-		Token:  BotConfig().BotToken,
-		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
-	},
-	UserBot: &MTProto{
-		APIID:   BotConfig().APIID,
-		APIHash: BotConfig().APIHash,
-		Options: &td.Options{},
-	},
-	RedisDB: &redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
-		Password: BotConfig().RedisPassword,
-		DB:       0, // use default DB
-		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
-	},
-	DB: &DB{
-		DriverName: "postgres",
-		DriverConn: "user=username password=password dbname=database sslmode=disable",
-	},
 }

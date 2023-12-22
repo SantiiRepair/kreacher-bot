@@ -3,7 +3,6 @@ package helpers
 import (
 	"bytes"
 	"errors"
-	"log"
 	"os/exec"
 	"strings"
 )
@@ -17,7 +16,6 @@ func Bash(cmd string) (string, error) {
 
 	err := c.Run()
 	if err != nil {
-		log.Println("Error: ", err)
 		return "", err
 	}
 

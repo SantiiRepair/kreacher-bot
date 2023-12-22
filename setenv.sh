@@ -1,5 +1,6 @@
 #!/bin/bash
 
+Cyan="\033[0;36m"
 YT_DLP=$(which yt-dlp)
 SPEEDTEST=$(which speedtest)
 CHROME_PATH=$(which google-chrome-stable)
@@ -7,16 +8,13 @@ CHROME_PATH=$(which google-chrome-stable)
 if [ "$1" == "--local" ]; then
 
     sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt-get install -y git-all poppler-utils ffmpeg tree 
 
     if ! command -v redis-cli >/dev/null 2>&1; then
         sudo apt-get install -y lsb-release curl gpg
         curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
         sudo apt-get install redis -y
-    fi
-
-    if ! command -v git >/dev/null 2>&1; then
-        sudo apt-get install git-all -y
     fi
 
     if ! [ -z $CHROME_PATH ]; then
@@ -37,14 +35,13 @@ if [ "$1" == "--local" ]; then
         yt-dlp --update-to master
     fi
 
-    make install
-    exec $SHELL
+    echo -e "\n${Cyan}Successfully installed resources!"
     exit 0
 
 else
 
     apt-get update && apt-get upgrade -y
-    apt-get install -y git-all ffmpeg tree 
+    apt-get install -y git-all poppler-utils ffmpeg tree 
 
     if ! [ -z $CHROME_PATH ]; then
         wget -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -57,7 +54,6 @@ else
         yt-dlp --update-to master
     fi
     
-    make install
-    exec $SHELL
+    echo -e "\n${Cyan}Successfully installed resources!"
     exit 0
 fi
