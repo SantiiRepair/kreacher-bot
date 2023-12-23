@@ -44,23 +44,29 @@ if [ "$1" == "--local" ]; then
         rm -rf go1.21.5.linux-amd64.tar.gz
     fi
 
-    if [[ -z $YT_DLP && -z $SPEEDTEST && -z $PIPER_TTS ]]; then
+    if [[ -z $YT_DLP || -z $SPEEDTEST || -z $PIPER_TTS ]]; then
         cd temp
-
-        wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
-        sudo mv yt-dlp /usr/bin/yt-dlp
-        sudo chmod +rwx /usr/bin/yt-dlp
-
-        wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
-        pip3 install nuitka
-        python3 -m nuitka speedtest.py
-        sudo mv speedtest.bin /usr/bin/speedtest
-        rm -rf speedtest.py *.build
         
-        wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz
-        sudo tar -C /usr/local -xzf piper_amd64.tar.gz
-        echo "export PATH=$PATH:/usr/local/piper" >> ~/.bashrc
-        rm -rf piper_amd64.tar.gz
+        if [ -z $YT_DLP ]; then
+            wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+            sudo mv yt-dlp /usr/bin/yt-dlp
+            sudo chmod +rwx /usr/bin/yt-dlp
+        fi
+
+        if [ -z $SPEEDTEST ]; then
+            wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
+            pip3 install nuitka
+            python3 -m nuitka speedtest.py
+            sudo mv speedtest.bin /usr/bin/speedtest
+            rm -rf speedtest.py *.build
+        fi
+
+        if [ -z $PIPER_TTS ]; then
+            wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz
+            sudo tar -C /usr/local -xzf piper_amd64.tar.gz
+            echo "export PATH=$PATH:/usr/local/piper" >> ~/.bashrc
+            rm -rf piper_amd64.tar.gz
+        fi
 
         cd $KWD
     fi
