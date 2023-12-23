@@ -1,1 +1,1 @@
-# Kreacher binary files to run as a service
+# Kreacher binaries to run as a service

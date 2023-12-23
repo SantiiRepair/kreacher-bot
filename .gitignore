@@ -1,11 +1,10 @@
+*.cfg
 *.env
 *.log
 *.rdb
 *.sum
 *.lock
 *.build
-*.session
-*.session-journal
 
 .codesandbox
 .devcontainer
