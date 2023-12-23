@@ -1,4 +1,4 @@
-.PHONY: setvars build clean install
+.PHONY: build clean
 
 build:
 	docker compose build
@@ -15,7 +15,7 @@ install:
 format:
 	cd kreacher && go fmt && cd ..
 
-start:	setvars
+start:
 	cd kreacher && go run . && cd ..
 
 setvars:

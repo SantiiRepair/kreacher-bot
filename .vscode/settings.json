@@ -1,9 +1,9 @@
 {
-    "redhat.telemetry.enabled": false,
     "git.autofetch": true,
     "git.enableSmartCommit": true,
     "editor.unicodeHighlight.invisibleCharacters": false,
     "terminal.integrated.enableMultiLinePasteWarning": false,
-    "python.languageServer": "Jedi",
-    "python.autoComplete.extraPaths": []
+    "files.associations": {
+        "*.ini": "properties"
+    },
 }
