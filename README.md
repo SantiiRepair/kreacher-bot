@@ -4,12 +4,15 @@
 
 ## <img alt="Kreacher Logo" src="https://github.com/SantiiRepair/kreacher-bot/blob/main/.github/images/kreacher-srd-circle.png?raw=true" width="25%"/>
 
+### Kreacher | Streamer 🎬
 
-**Streamer of videos and songs in any Telegram Voice Chat.**
+##### [@KreacherStreamerBot](https://t.me/KreacherStreamerBot)
 
+##### Kreacher can stream books, songs, videos, movies and series in any group or channel via voice chat 🔮
 ______________________________________________________________________
 
-[![Kreacher Streamer Bot](https://img.shields.io/badge/bot-grey?logo=telegram&logoColor=%20%230088cc&label=telegram&labelColor=blue&color=grey)](https://t.me/KreacherStreamerBot)
+[![Kreacher Streamer Channel](https://img.shields.io/endpoint?label=Channel&style=flat-square&url=https://mogyo.ro/quart-apis/tgmembercount?chat_id=KreacherStreamerChannel)](https://t.me/KreacherStreamerChannel)
+[![Kreacher Streamer CI](https://img.shields.io/endpoint?label=CI&style=flat-square&url=https%3A%2F%2Fmogyo.ro%2Fquart-apis%2Ftgmembercount%3Fchat_id%3DKreacherStreamerCI)](https://t.me/KreacherStreamerCI)
 
 ______________________________________________________________________
 
