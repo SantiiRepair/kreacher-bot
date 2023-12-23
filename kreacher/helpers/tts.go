@@ -43,6 +43,12 @@ func TTS(text string, opts ...string) (string, error) {
 		return "", err
 	}
 
+        tempPathKey, err := ast.GetKey("TEMP_PATH")
+
+        if err != nil {
+                return "", err
+        }
+
 	piperModelsPath := path.Join(piperPathKey.String(), "models")
 
 	_, err = os.Stat(piperModelsPath)
@@ -50,6 +56,8 @@ func TTS(text string, opts ...string) (string, error) {
 	if os.IsNotExist(err) {
 		os.MkdirAll(piperModelsPath, 0755)
 	}
+
+	outputFile := path.Join(tempPathKey.String(), "tts", fmt.Sprintf("%s.wav", uuid.New()))
 
 	_, err = os.Stat(path.Base(outputFile))
 
