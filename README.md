@@ -10,7 +10,7 @@
 
 ##### Kreacher can stream books, songs, videos, movies and series in any group or channel via voice chat 🔮
 ______________________________________________________________________
-
+[![License](https://img.shields.io/badge/License-GPL--3.0-magenta.svg)](https://www.gnu.org/licenses/gpl-3.0.txt)
 [![Kreacher Streamer Channel](https://img.shields.io/endpoint?label=Channel&style=flat-square&url=https://mogyo.ro/quart-apis/tgmembercount?chat_id=KreacherStreamerChannel)](https://t.me/KreacherStreamerChannel)
 [![Kreacher Streamer CI](https://img.shields.io/endpoint?label=CI&style=flat-square&url=https%3A%2F%2Fmogyo.ro%2Fquart-apis%2Ftgmembercount%3Fchat_id%3DKreacherStreamerCI)](https://t.me/KreacherStreamerCI)
 
