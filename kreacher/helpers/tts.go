@@ -2,47 +2,79 @@ package helpers
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
 
+	uuid "github.com/google/uuid"
 	ini "gopkg.in/ini.v1"
 )
 
-func TTS(text string, outputFile string, opts ...string) (string, error) {
-    cfg, err := ini.Load("")
+func TTS(text string, opts ...string) (string, error) {
+	tempFile, err := os.Create(fmt.Sprintf("%s.txt", uuid.New()))
 
 	if err != nil {
 		return "", err
 	}
 
-    aKey, err := cfg.Section("").GetKey("")
+	_, err = io.WriteString(tempFile, text)
 
-    if err != nil {
+	if err != nil {
 		return "", err
 	}
 
-	_, err = os.Stat(aKey.String())
+	err = tempFile.Sync()
 
-	if !os.IsNotExist(err) {
-		os.MkdirAll(opts[0], 0755)
+	if err != nil {
+		return "", err
 	}
 
-	outputFileBase := path.Base(outputFile)
-	_, err = os.Stat(outputFileBase)
+	cfg, err := ini.Load("")
 
-	if !os.IsNotExist(err) {
-		os.MkdirAll(outputFileBase, 0755)
+	if err != nil {
+		return "", err
+	}
+
+	ast := cfg.Section("ADVANCED")
+
+	piperPathKey, err := ast.GetKey("PIPER_PATH")
+
+	if err != nil {
+		return "", err
+	}
+
+	piperModelsPath := path.Join(piperPathKey.String(), "models")
+
+	_, err = os.Stat(piperModelsPath)
+
+	if os.IsNotExist(err) {
+		os.MkdirAll(piperModelsPath, 0755)
+	}
+
+	_, err = os.Stat(path.Base(outputFile))
+
+	if os.IsNotExist(err) {
+		os.MkdirAll(outputFile, 0755)
 	}
 
 	stdout, err := Bash(fmt.Sprintf(
-		"piper -m %s --download-dir %s --data-dir %s -f %s < %s"),
-	)
+		"piper -m %s --download-dir %s --data-dir %s -f %s < %s",
+		"",
+		piperModelsPath,
+		piperModelsPath,
+		outputFile,
+		tempFile.Name(),
+	))
 
 	if err != nil {
 		return "", err
 	}
 
-	os.Remove()
+	err = os.Remove(tempFile.Name())
+
+	if err != nil {
+		return "", err
+	}
 
 	return stdout, nil
 

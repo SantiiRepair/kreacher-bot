@@ -3,6 +3,7 @@
 *.rdb
 *.sum
 *.lock
+*.build
 *.session
 *.session-journal
 

@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/chromedp/chromedp v0.9.3
 	github.com/fatih/color v1.16.0
+	github.com/google/uuid v1.1.2
 	github.com/gotd/td v0.91.0
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/joho/godotenv v1.5.1
