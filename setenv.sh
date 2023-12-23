@@ -13,7 +13,16 @@ CHROME_PATH=$(which google-chrome-stable)
 if [ "$1" == "--local" ]; then
 
     sudo apt-get update && sudo apt-get upgrade -y
-    sudo apt-get install -y curl gcc git-all piper poppler-utils postgresql python3 python3-pip ffmpeg tree 
+    sudo apt-get install -y curl \
+                         gcc \
+                         build-essential \
+                         git-all \
+                         poppler-utils \
+                         postgresql \
+                         python3 \
+                         python3-pip \
+                         ffmpeg \
+                         tree
 
     if [ -z $REDIS ]; then
         sudo apt-get install -y lsb-release gpg
@@ -40,6 +49,7 @@ if [ "$1" == "--local" ]; then
 
         wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
         sudo mv yt-dlp /usr/bin/yt-dlp
+        sudo chmod +rwx /usr/bin/yt-dlp
 
         wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
         pip3 install nuitka
@@ -61,7 +71,15 @@ if [ "$1" == "--local" ]; then
 else
 
     apt-get update && apt-get upgrade -y
-    apt-get install -y curl git-all piper poppler-utils ffmpeg tree 
+    apt-get install -y curl \
+                         gcc \
+                         build-essential \
+                         git-all \
+                         poppler-utils \
+                         python3 \
+                         python3-pip \
+                         ffmpeg \
+                         tree
 
     if [ -z $CHROME_PATH ]; then
         wget -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -75,6 +93,7 @@ else
         if [ -z $YT_DLP ]; then
             wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
             mv yt-dlp /usr/bin/yt-dlp
+            chmod +rwx /usr/bin/yt-dlp
         fi
 
         if [ -z $SPEEDTEST ]; then
