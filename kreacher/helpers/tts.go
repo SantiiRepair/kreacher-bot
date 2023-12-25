@@ -37,7 +37,7 @@ func TTS(text string, opts ...string) (string, error) {
 
 	ast := cfg.Section("ADVANCED")
 
-	piperPathKey, err := ast.GetKey("PIPER_PATH")
+	piperPathKey, err := ast.GetKey("PIPER_DATA_PATH")
 
 	if err != nil {
 		return "", err

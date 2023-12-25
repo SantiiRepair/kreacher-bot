@@ -1,17 +1,52 @@
 package main
 
 import (
-	"fmt"
+	ini "gopkg.in/ini.v1"
+	"log"
 	"os"
 	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
-func botConfig() *BotConfig {
+func init() {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		fmt.Println("No .env file found")
+		log.Fatalf("No .env file found")
+	}
+}
+
+func BotConfig() *botConfig {
+	cfg, err := ini.Load("../kreacher.cfg")
+
+	if err != nil {
+		log.Fatalf("error loading cfg file: %v", err)
+	}
+
+	ast := cfg.Section("ADVANCED")
+
+	logsPathKey, err := ast.GetKey("LOGS_PATH")
+
+	if err != nil {
+		log.Fatalf("error getting LOGS_PATH value: %v", err)
+	}
+
+	piperDataPathKey, err := ast.GetKey("PIPER_DATA_PATH")
+
+	if err != nil {
+		log.Fatalf("error getting PIPER_DATA_PATH value: %v", err)
+	}
+
+	tempPathKey, err := ast.GetKey("TEMP_PATH")
+
+	if err != nil {
+		log.Fatalf("error getting TEMP_PATH value: %v", err)
+	}
+
+	advanced := &botConfigAdvanced{
+		LogsPath:      logsPathKey.String(),
+		PiperDataPath: piperDataPathKey.String(),
+		TempPath:      tempPathKey.String(),
 	}
 
 	projectName := os.Getenv("PROJECT_NAME")
@@ -21,7 +56,6 @@ func botConfig() *BotConfig {
 	channel := os.Getenv("CHANNEL")
 	esMoviesChannel := os.Getenv("ES_MOVIES_CHANNEL")
 	esSeriesChannel := os.Getenv("ES_SERIES_CHANNEL")
-	logFilePath := os.Getenv("LOG_FILE_PATH")
 	managementMode := os.Getenv("MANAGEMENT_MODE")
 	maintainer := os.Getenv("MAINTAINER")
 	postgresDB := os.Getenv("POSTGRES_DB")
@@ -33,7 +67,8 @@ func botConfig() *BotConfig {
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 
-	return &BotConfig{
+	return &botConfig{
+		Advanced:         advanced,
 		ProjectName:      projectName,
 		APIID:            apiID,
 		APIHash:          apiHash,
@@ -41,7 +76,6 @@ func botConfig() *BotConfig {
 		Channel:          channel,
 		ESMoviesChannel:  esMoviesChannel,
 		ESSeriesChannel:  esSeriesChannel,
-		LogFilePath:      logFilePath,
 		ManagementMode:   managementMode,
 		Maintainer:       maintainer,
 		PostgresDB:       postgresDB,

@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
 	"io"
 	"log"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -12,7 +13,7 @@ var (
 )
 
 func init() {
-	file, err := os.OpenFile(botConfig().LogFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile(BotConfig().Advanced.LogsPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -42,18 +43,3 @@ func Warn(format string, v ...interface{}) {
 func Error(format string, v ...interface{}) {
 	lg.Errorf(format, v...)
 }
-
-var (
-
-	// ConfigError ...
-	ConfigError = "%v type=config.error"
-
-	// HTTPError ...
-	HTTPError = "%v type=http.error"
-
-	// HTTPWarn ...
-	HTTPWarn = "%v type=http.warn"
-
-	// HTTPInfo ...
-	HTTPInfo = "%v type=http.info"
-)

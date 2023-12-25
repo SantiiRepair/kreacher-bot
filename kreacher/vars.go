@@ -14,6 +14,6 @@ var (
 	ubot *td.Client
 	rdc  *redis.Client
 	dbc  *pgx.Conn
-	// Cyan colored initial instance for real.
-	cy = color.New(color.FgCyan).Add(color.Underline)
+	// Cyan colored initial instance.
+	cy = color.New(color.FgCyan)
 )

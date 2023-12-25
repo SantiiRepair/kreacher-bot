@@ -107,6 +107,7 @@ func cmds() {
 		sent := cm.Speedtest(c)
 
 		if sent != nil {
+			fmt.Println(sent.Error())
 			Error(sent.Error())
 		}
 

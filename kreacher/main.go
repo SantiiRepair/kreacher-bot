@@ -17,7 +17,7 @@ func init() {
 	// ctx := context.Background()
 
 	ibot, err := tele.NewBot(tele.Settings{
-		Token:  botConfig().BotToken,
+		Token:  BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {
 			Error(err.Error())
@@ -29,24 +29,27 @@ func init() {
 	}
 
 	defer ibot.Close()
+	cy.Printf("\n✔️ Bot client connected to %s", ibot.URL)
 
-	iubot := td.NewClient(botConfig().APIID, botConfig().APIHash, td.Options{})
+	iubot := td.NewClient(BotConfig().APIID, BotConfig().APIHash, td.Options{})
+	cy.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
 	irdc := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", botConfig().RedisHost, botConfig().RedisPort),
-		Password: botConfig().RedisPassword,
+		Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
+		Password: BotConfig().RedisPassword,
 		DB:       0, // use default DB
 		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 	})
 
 	defer irdc.Close()
+	cy.Print("✔️ Redis client connected, waiting for requests...")
 
 	/* dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
-		botConfig().PostgresUser,
-		botConfig().PostgresPassword,
-		botConfig().PostgresHost,
-		botConfig().PostgresPort,
-		botConfig().PostgresDB,
+		BotConfig().PostgresUser,
+		BotConfig().PostgresPassword,
+		BotConfig().PostgresHost,
+		BotConfig().PostgresPort,
+		BotConfig().PostgresDB,
 	)
 
 	idbc, err := pgx.Connect(ctx, dbUrl)
@@ -56,13 +59,14 @@ func init() {
 	}
 
 	defer idbc.Close(ctx) */
+	cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
 
 	// Set client instances to late vars in vars.go file.
 
 	bot = ibot
 	ubot = iubot
 	rdc = irdc
-	//dbc = idbc
+	// dbc = idbc
 }
 
 func main() {
@@ -81,7 +85,7 @@ func main() {
 
 	cmds()
 
-	cy.Printf("\nBot @%s started, receiving updates...", bot.Me.Username)
+	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
 
 	bot.Start()
 

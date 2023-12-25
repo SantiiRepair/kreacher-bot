@@ -41,7 +41,14 @@ type BotContext struct {
 	DB      *sql.DB
 }
 
-type BotConfig struct {
+type botConfigAdvanced struct {
+	LogsPath      string
+	PiperDataPath string
+	TempPath      string
+}
+
+type botConfig struct {
+	Advanced         *botConfigAdvanced
 	ProjectName      string
 	APIID            int
 	APIHash          string
@@ -49,7 +56,6 @@ type BotConfig struct {
 	Channel          string
 	ESMoviesChannel  string
 	ESSeriesChannel  string
-	LogFilePath      string
 	ManagementMode   string
 	Maintainer       string
 	PostgresDB       string
