@@ -5,6 +5,3 @@
 *.sum
 *.lock
 *.build
-
-.codesandbox
-.devcontainer
