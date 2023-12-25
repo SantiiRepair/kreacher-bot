@@ -13,6 +13,7 @@ TEMP_PATH =
 
 END_CONFIG
 
+my $cyan = "\033[0;36m";
 my $config_file_path = 'kreacher.cfg';
 
 # change the value of LOGS_PATH
@@ -28,4 +29,5 @@ open(my $fh, '>', $config_file_path) or die "Could not open file $config_file_pa
 print $fh $config_file_content;
 close $fh;
 
-print "Configuration file created at $config_file_path\n";
+my $output = sprintf("%s Configuration file created at %s\n", $cyan, $config_file_path);
+print $output;
