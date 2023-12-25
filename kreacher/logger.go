@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -13,7 +16,12 @@ var (
 )
 
 func init() {
-	file, err := os.OpenFile(BotConfig().Advanced.LogsPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	botLogsPath := path.Join(
+		BotConfig().Advanced.LogsPath,
+		strings.ToLower(fmt.Sprintf("%s.log", BotConfig().ProjectName,
+	)))
+
+	file, err := os.OpenFile(botLogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
