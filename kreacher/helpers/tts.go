@@ -43,11 +43,11 @@ func TTS(text string, opts ...string) (string, error) {
 		return "", err
 	}
 
-        tempPathKey, err := ast.GetKey("TEMP_PATH")
+	tempPathKey, err := ast.GetKey("TEMP_PATH")
 
-        if err != nil {
-                return "", err
-        }
+	if err != nil {
+		return "", err
+	}
 
 	piperModelsPath := path.Join(piperPathKey.String(), "models")
 

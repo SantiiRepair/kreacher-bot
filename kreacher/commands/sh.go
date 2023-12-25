@@ -12,8 +12,8 @@ func Shell(c tele.Context) error {
 	cmd := strings.Join(c.Args(), " ")
 
 	if cmd == "" {
-		err := c.Send("<b><i>You must provide at least one sh command.</i></b>", tele.ParseMode(tele.ModeHTML))
-		
+		err := c.Send(shArgsEmpty, tele.ParseMode(tele.ModeHTML))
+
 		return err
 	}
 
@@ -33,7 +33,11 @@ func Shell(c tele.Context) error {
 		return err
 	}
 
-	err = c.Send("<b><i>Master, stdout is empty.</i></b>", tele.ParseMode(tele.ModeHTML))
+	err = c.Send(shStdoutEmpty, tele.ParseMode(tele.ModeHTML))
 
 	return err
 }
+
+var shArgsEmpty = "<b><i>You must provide at least one sh command.</i></b>"
+
+var shStdoutEmpty = "<b><i>Master, stdout is empty.</i></b>"

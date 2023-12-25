@@ -9,14 +9,14 @@ import (
 )
 
 func Speedtest(c tele.Context) error {
-	msg, err := c.Bot().Send(c.Recipient(), "<b><i>Kreacher is here to serve you.\n\nRunning Speedtest...</i></b> 📶", tele.ParseMode(tele.ModeHTML))
-	
+	msg, err := c.Bot().Send(c.Recipient(), stStarted, tele.ParseMode(tele.ModeHTML))
+
 	if err != nil {
 		return err
 	}
 
 	mdb := tele.StoredMessage{ChatID: msg.Chat.ID, MessageID: strconv.Itoa(msg.ID)}
-	
+
 	st, err := helpers.Speedtest()
 
 	if err != nil {
@@ -27,7 +27,8 @@ func Speedtest(c tele.Context) error {
 
 		c.Bot().Delete(&mdb)
 
-		caption := fmt.Sprintf("<b>Speedtest Results\n\nClient:</b>\n<b><i>ISP:</i></b> %s\n<b><i>Country:</i></b> %s\n\n<b><i>Server:</i></b>\n<b><i>Name:</i></b> %s\n<b><i>Country:</i></b> %s\n<b><i>Sponsor:</i></b> %s\n<b><i>Latency:</i></b> %.2f\n<b><i>Ping:</i></b> %.2f",
+		caption := fmt.Sprintf(
+			stResult,
 			st.Client.ISP,
 			st.Client.Country,
 			st.Server.Name,
@@ -38,7 +39,7 @@ func Speedtest(c tele.Context) error {
 		)
 
 		photo := &tele.Photo{
-			File: tele.FromURL(st.Share),
+			File:    tele.FromURL(st.Share),
 			Caption: caption,
 		}
 
@@ -47,7 +48,30 @@ func Speedtest(c tele.Context) error {
 		return err
 	}
 
-	err = c.Send("<b><i>The speedtest could not be performed</i></b>", tele.ParseMode(tele.ModeHTML))
+	err = c.Send(stErr, tele.ParseMode(tele.ModeHTML))
 
 	return err
 }
+
+var stStarted = `
+<b><i>Kreacher is here to serve you.</i></b>
+
+<b><i>Running Speedtest...</i></b> 📶
+`
+
+var stResult = `
+<b>Speedtest Result</b>
+
+<b>Client:</b>
+<b><i>ISP:</i></b> %s
+<b><i>Country:</i></b> %s
+
+<b>Server:</b>
+<b><i>Name:</i></b> %s
+<b><i>Country:</i></b> %s
+<b><i>Sponsor:</i></b> %s
+<b><i>Latency:</i></b> %.2f
+<b><i>Ping:</i></b> %.2f
+`
+
+var stErr = "<b><i>The speedtest could not be performed</i></b>"

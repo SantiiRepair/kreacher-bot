@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"fmt"
 	"time"
 
-	pgx "github.com/jackc/pgx/v5"
+	// pgx "github.com/jackc/pgx/v5"
 
 	tele "gopkg.in/telebot.v3"
 
@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	ctx := context.Background()
+	// ctx := context.Background()
 
 	ibot, err := tele.NewBot(tele.Settings{
 		Token:  botConfig().BotToken,
@@ -41,7 +41,7 @@ func init() {
 
 	defer irdc.Close()
 
-	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+	/* dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
 		botConfig().PostgresUser,
 		botConfig().PostgresPassword,
 		botConfig().PostgresHost,
@@ -55,14 +55,14 @@ func init() {
 		panic(err)
 	}
 
-	defer idbc.Close(ctx)
+	defer idbc.Close(ctx) */
 
 	// Set client instances to late vars in vars.go file.
 
 	bot = ibot
 	ubot = iubot
 	rdc = irdc
-	dbc = idbc
+	//dbc = idbc
 }
 
 func main() {

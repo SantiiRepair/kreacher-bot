@@ -4,7 +4,7 @@ import tele "gopkg.in/telebot.v3"
 
 func Ping(c tele.Context) error {
 
-	err := c.Send("<b><i>PONG!!</i></b>", &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
+	err := c.Send(pong, &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
 		{
 			tele.InlineButton{
 				Text: "🏓",
@@ -17,3 +17,5 @@ func Ping(c tele.Context) error {
 
 	return err
 }
+
+var pong = "<b><i>PONG!!</i></b>"
