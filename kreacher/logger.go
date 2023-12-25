@@ -18,8 +18,7 @@ var (
 func init() {
 	botLogsPath := path.Join(
 		BotConfig().Advanced.LogsPath,
-		strings.ToLower(fmt.Sprintf("%s.log", BotConfig().ProjectName,
-	)))
+		strings.ToLower(fmt.Sprintf("%s.log", BotConfig().ProjectName)))
 
 	file, err := os.OpenFile(botLogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 

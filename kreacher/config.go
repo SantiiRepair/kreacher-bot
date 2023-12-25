@@ -17,7 +17,9 @@ func init() {
 }
 
 func BotConfig() *botConfig {
-	cfg, err := ini.Load("../kreacher.cfg")
+	cfg, err := ini.Load(fmt.Sprintf(
+		"../%s.cfg", strings.ToLower(os.Getenv("PROJECT_NAME")),
+	))
 
 	if err != nil {
 		log.Fatalf("error loading cfg file: %v", err)
