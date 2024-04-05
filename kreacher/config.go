@@ -1,10 +1,13 @@
 package main
 
 import (
-	ini "gopkg.in/ini.v1"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"strings"
+
+	ini "gopkg.in/ini.v1"
 
 	"github.com/joho/godotenv"
 )

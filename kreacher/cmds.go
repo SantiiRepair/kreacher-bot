@@ -68,10 +68,11 @@ func cmds() {
 
 	bot.Handle(playSong, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
+		sent := cm.PlaySong(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
+
 		return sent
 	})
 

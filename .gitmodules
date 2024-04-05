@@ -1,3 +1,4 @@
-[submodule "deps/deps/ntgcalls"]
+[submodule "deps/ntgcalls"]
 	path = deps/ntgcalls
 	url = https://github.com/pytgcalls/ntgcalls
+	branch = dev

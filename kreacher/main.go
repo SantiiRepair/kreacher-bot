@@ -1,22 +1,24 @@
 package main
 
+//#cgo LDFLAGS: -L . -lntgcalls -Wl,-rpath=./
+import "C"
 import (
-	// "context"
 	"fmt"
 	"time"
 
-	// pgx "github.com/jackc/pgx/v5"
-
 	tele "gopkg.in/telebot.v3"
+	ntgc "santiirepair.dev/kreacher/ntgcalls"
 
-	td "github.com/gotd/td/telegram"
+	tg "github.com/amarnathcjd/gogram/telegram"
 	redis "github.com/redis/go-redis/v9"
 )
 
 func init() {
-	// ctx := context.Background()
 
-	ibot, err := tele.NewBot(tele.Settings{
+	_ntgcalls := ntgc.NTgCalls()
+	defer _ntgcalls.Free()
+
+	_bot, err := tele.NewBot(tele.Settings{
 		Token:  BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {
@@ -28,20 +30,30 @@ func init() {
 		panic(err)
 	}
 
-	defer ibot.Close()
-	cy.Printf("\n✔️ Bot client connected to %s", ibot.URL)
+	defer _bot.Close()
+	cy.Printf("\n✔️ Bot client connected to %s", _bot.URL)
 
-	iubot := td.NewClient(BotConfig().APIID, BotConfig().APIHash, td.Options{})
+	_ubot, err := tg.NewClient(tg.ClientConfig{
+		AppID:    int32(BotConfig().APIID),
+		AppHash:  BotConfig().APIHash,
+		Session:  ".mtproto",
+		LogLevel: tg.LogInfo,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
 	cy.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
-	irdc := redis.NewClient(&redis.Options{
+	_rdc := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
 		Password: BotConfig().RedisPassword,
 		DB:       0, // use default DB
 		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 	})
 
-	defer irdc.Close()
+	defer _rdc.Close()
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 
 	/* dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
@@ -63,9 +75,10 @@ func init() {
 
 	// Set client instances to late vars in vars.go file.
 
-	bot = ibot
-	ubot = iubot
-	rdc = irdc
+	bot = _bot
+	ubot = _ubot
+	rdc = _rdc
+	ntgcalls = _ntgcalls
 	// dbc = idbc
 }
 
@@ -87,6 +100,10 @@ func main() {
 
 	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
 
-	bot.Start()
+	go func() {
+		bot.Start()
+		ubot.Start()
+		ubot.Idle()
+	}()
 
 }

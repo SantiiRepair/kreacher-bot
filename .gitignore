@@ -1,3 +1,5 @@
+*.h
+*.so
 *.cfg
 *.env
 *.log
@@ -5,3 +7,4 @@
 *.sum
 *.lock
 *.build
+*.mtproto
