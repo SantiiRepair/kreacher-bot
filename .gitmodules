@@ -1,0 +1,3 @@
+[submodule "deps/deps/ntgcalls"]
+	path = deps/ntgcalls
+	url = https://github.com/pytgcalls/ntgcalls

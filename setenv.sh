@@ -16,6 +16,7 @@ if [ "$1" == "--local" ]; then
     sudo apt-get install -y curl \
                          gcc \
                          build-essential \
+                         libx11-dev \
                          git-all \
                          poppler-utils \
                          postgresql \
@@ -80,6 +81,7 @@ else
     apt-get install -y curl \
                          gcc \
                          build-essential \
+                         libx11-dev \
                          git-all \
                          poppler-utils \
                          python3 \
