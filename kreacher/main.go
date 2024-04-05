@@ -4,6 +4,7 @@ package main
 import "C"
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	tele "gopkg.in/telebot.v3"
@@ -37,12 +38,14 @@ func init() {
 		AppID:    int32(BotConfig().APIID),
 		AppHash:  BotConfig().APIHash,
 		Session:  ".mtproto",
-		LogLevel: tg.LogInfo,
+		LogLevel: tg.LogDisable,
 	})
 
 	if err != nil {
 		panic(err)
 	}
+
+	_ubot.Start()
 
 	cy.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
@@ -79,10 +82,10 @@ func init() {
 	ubot = _ubot
 	rdc = _rdc
 	ntgcalls = _ntgcalls
-	// dbc = idbc
 }
 
 func main() {
+	var wg sync.WaitGroup
 
 	if err := bot.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
@@ -100,10 +103,18 @@ func main() {
 
 	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		bot.Start()
-		ubot.Start()
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		ubot.Idle()
 	}()
+
+	wg.Wait()
 
 }

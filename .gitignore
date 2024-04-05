@@ -1,5 +1,6 @@
 *.h
 *.so
+*.db
 *.cfg
 *.env
 *.log
