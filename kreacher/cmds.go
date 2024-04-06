@@ -4,12 +4,20 @@ import (
 	"fmt"
 
 	tele "gopkg.in/telebot.v3"
-	tmdw "gopkg.in/telebot.v3/middleware"
+	tg "github.com/amarnathcjd/gogram/telegram"
+	middleware "gopkg.in/telebot.v3/middleware"
 	cm "santiirepair.dev/kreacher/commands"
 )
 
 func cmds() {
-	adminMdw := tmdw.Whitelist([]int64{1027242622}...)
+	rawObj, err := ubot.ResolveUsername(BotConfig().Maintainer)
+	if err != nil {
+		panic(err)
+	}
+
+	mantainer := rawObj.(*tg.UserObj)
+
+	onlyAdmin := middleware.Whitelist([]int64{mantainer.ID}...)
 
 	bot.Handle(config, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
@@ -20,14 +28,6 @@ func cmds() {
 		return sent
 	})
 
-	bot.Handle(config, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
-		if sent != nil {
-			panic(sent.Error())
-		}
-		return sent
-	})
 
 	bot.Handle(help, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
@@ -67,8 +67,7 @@ func cmds() {
 	})
 
 	bot.Handle(playSong, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := cm.PlaySong(c)
+		sent := cm.PlaySong(c, ubot, ntgcalls)
 		if sent != nil {
 			panic(sent.Error())
 		}
@@ -102,16 +101,15 @@ func cmds() {
 		}
 
 		return sent
-	}, adminMdw)
+	}, onlyAdmin)
 
 	bot.Handle(speedtest, func(c tele.Context) error {
 		sent := cm.Speedtest(c)
 
 		if sent != nil {
-			fmt.Println(sent.Error())
 			Error(sent.Error())
 		}
 
 		return sent
-	}, adminMdw)
+	}, onlyAdmin)
 }

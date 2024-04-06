@@ -84,6 +84,6 @@ func TTS(text string, opts ...string) (string, error) {
 		return "", err
 	}
 
-	return stdout, nil
+	return stdout.String(), nil
 
 }

@@ -7,22 +7,21 @@ import (
 	"strings"
 )
 
-func Bash(cmd string) (string, error) {
-	var outb, errb bytes.Buffer
+func Bash(args ...string) (*bytes.Buffer, error) {
+	var outBytes, errBytes bytes.Buffer
 
-	c := exec.Command("bash", "-c", cmd)
-	c.Stdout = &outb
-	c.Stderr = &errb
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stdout = &outBytes
+	cmd.Stderr = &errBytes
 
-	err := c.Run()
+	err := cmd.Run()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	errStr := errb.String()
-	if errStr != "" {
-		return "", errors.New(strings.TrimSpace(errStr))
+	if errBytes.Len() > 0 {
+		return nil, errors.New(strings.TrimSpace(errBytes.String()))
 	}
 
-	return outb.String(), nil
+	return &outBytes, nil
 }

@@ -2,8 +2,27 @@ package helpers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 )
+
+func GetYoutubeStream(link string) (string, string, error) {
+	stdout, stderr := Bash("yt-dlp", "-g", "-f", "bestvideo+bestaudio/best", link)
+	if stderr != nil {
+		return "", "", stderr
+	}
+
+	output := stdout.String()
+	lines := strings.Split(output, "\n")
+	if len(lines) < 2 {
+		return "", "", fmt.Errorf("expected at least 2 lines of output, got %d", len(lines))
+	}
+
+	audioLink := lines[0]
+	videoLink := lines[1]
+	return audioLink, videoLink, nil
+}
 
 func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 	var ytsr YtSearchResult
@@ -13,11 +32,11 @@ func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 			return nil, err
 		}
 
-		if len(stdout) == 0 {
-			return nil, nil
+		if stdout.Len() == 0 {
+			return nil, errors.New("something has happed")
 		}
 
-		json.Unmarshal([]byte(stdout), &ytsr)
+		json.Unmarshal(stdout.Bytes(), &ytsr)
 		return &ytsr, nil
 	}
 
@@ -26,11 +45,11 @@ func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 		return nil, err
 	}
 
-	if len(stdout) == 0 {
-		return nil, nil
+	if stdout.Len() == 0 {
+		return nil, errors.New("something has happed")
 	}
 
-	json.Unmarshal([]byte(stdout), &ytsr)
+	json.Unmarshal(stdout.Bytes(), &ytsr)
 	return &ytsr, nil
 }
 

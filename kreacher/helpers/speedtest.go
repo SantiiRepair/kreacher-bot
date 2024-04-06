@@ -46,13 +46,13 @@ type STResult struct {
 func Speedtest() (*STResult, error) {
 	var stresult STResult
 
-	stdout, err := Bash("speedtest --json --share")
+	stdout, err := Bash("speedtest", "--json", "--share")
 
 	if err != nil {
 		return nil, err
 	}
 
-	json.Unmarshal([]byte(stdout), &stresult)
+	json.Unmarshal(stdout.Bytes(), &stresult)
 
 	return &stresult, nil
 }

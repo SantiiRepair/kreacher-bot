@@ -26,7 +26,7 @@ func Shell(c tele.Context) error {
 		return err
 	}
 
-	if stdout != "" {
+	if stdout.Len() > 0 {
 		text := fmt.Sprintf("```\n%s\n```", stdout)
 		err = c.Send(text, tele.ParseMode(tele.ModeMarkdownV2))
 

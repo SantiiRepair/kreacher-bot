@@ -59,7 +59,8 @@ func init() {
 	defer _rdc.Close()
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 
-	/* dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+	/* 
+	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
 		BotConfig().PostgresUser,
 		BotConfig().PostgresPassword,
 		BotConfig().PostgresHost,
@@ -73,9 +74,10 @@ func init() {
 		panic(err)
 	}
 
-	defer idbc.Close(ctx) */
+	defer idbc.Close(ctx) 
 	cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
-
+	*/
+	
 	// Set client instances to late vars in vars.go file.
 
 	bot = _bot
