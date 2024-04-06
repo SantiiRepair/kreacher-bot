@@ -5,6 +5,7 @@ package commands
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
@@ -14,6 +15,10 @@ import (
 )
 
 func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
+	if c.Chat().Type == tele.ChatPrivate {
+		return c.Send("This command is only for groups or channels")
+	}
+
 	var err error
 	var link string
 
@@ -30,7 +35,17 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			link = target
 		}
 
-		jsonParams, err := n.CreateCall(c.Chat().ID, ntgcalls.MediaDescription{
+		x := strconv.FormatInt(c.Chat().ID, 10)
+		y := strings.ReplaceAll(x, "-100", "")
+		z, _ := strconv.ParseInt(y, 10, 64)
+		
+
+		channel, err := u.GetChannel(z)
+		if err != nil {
+			return err
+		}
+
+		jsonParams, err := n.CreateCall(channel.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
 				SampleRate:    96000,
@@ -43,10 +58,6 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 		if err != nil {
 			return err
 		}
-
-		rawObj, _ := u.ResolveUsername(c.Chat().Username)
-
-		channel := rawObj.(*tg.Channel)
 
 		fullChatRaw, err := u.ChannelsGetFullChannel(
 			&tg.InputChannelObj{

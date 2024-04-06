@@ -41,7 +41,7 @@ func init() {
 		AppID:    int32(BotConfig().APIID),
 		AppHash:  BotConfig().APIHash,
 		Session:  ".mtproto",
-		LogLevel: tg.LogDebug,
+		LogLevel: tg.LogDisable,
 	})
 
 	if err != nil {
@@ -131,7 +131,7 @@ func main() {
 
 	go func() {
 		<-sigChan
-		fmt.Println("Received SIGINT, exiting...")
+		fmt.Println("\nReceived SIGINT, exiting...")
 
 		wg.Done()
 	}()
