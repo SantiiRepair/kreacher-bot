@@ -4,7 +4,10 @@ package main
 import "C"
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
 	tele "gopkg.in/telebot.v3"
@@ -17,7 +20,7 @@ import (
 func init() {
 
 	_ntgcalls := ntgc.NTgCalls()
-	defer _ntgcalls.Free()
+	//defer _ntgcalls.Free()
 
 	_bot, err := tele.NewBot(tele.Settings{
 		Token:  BotConfig().BotToken,
@@ -38,7 +41,7 @@ func init() {
 		AppID:    int32(BotConfig().APIID),
 		AppHash:  BotConfig().APIHash,
 		Session:  ".mtproto",
-		LogLevel: tg.LogDisable,
+		LogLevel: tg.LogDebug,
 	})
 
 	if err != nil {
@@ -59,25 +62,25 @@ func init() {
 	defer _rdc.Close()
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 
-	/* 
-	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
-		BotConfig().PostgresUser,
-		BotConfig().PostgresPassword,
-		BotConfig().PostgresHost,
-		BotConfig().PostgresPort,
-		BotConfig().PostgresDB,
-	)
+	/*
+		dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+			BotConfig().PostgresUser,
+			BotConfig().PostgresPassword,
+			BotConfig().PostgresHost,
+			BotConfig().PostgresPort,
+			BotConfig().PostgresDB,
+		)
 
-	idbc, err := pgx.Connect(ctx, dbUrl)
+		idbc, err := pgx.Connect(ctx, dbUrl)
 
-	if err != nil {
-		panic(err)
-	}
+		if err != nil {
+			panic(err)
+		}
 
-	defer idbc.Close(ctx) 
-	cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
+		defer idbc.Close(ctx)
+		cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
 	*/
-	
+
 	// Set client instances to late vars in vars.go file.
 
 	bot = _bot
@@ -87,6 +90,7 @@ func init() {
 }
 
 func main() {
+
 	var wg sync.WaitGroup
 
 	if err := bot.SetCommands([]tele.Command{
@@ -103,7 +107,34 @@ func main() {
 
 	cmds()
 
-	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
+	ntgcalls.OnStreamEnd(func(chatId int64, streamType ntgc.StreamType) {
+		fmt.Println(chatId)
+	})
+
+	ntgcalls.OnConnectionChange(func(chatId int64, state ntgc.ConnectionState) {
+		switch state {
+		case ntgc.Connecting:
+			fmt.Println("Connecting with chatId:", chatId)
+		case ntgc.Connected:
+			fmt.Println("Connected with chatId:", chatId)
+		case ntgc.Failed:
+			fmt.Println("Failed with chatId:", chatId)
+		case ntgc.Timeout:
+			fmt.Println("Timeout with chatId:", chatId)
+		case ntgc.Closed:
+			fmt.Println("Closed with chatId:", chatId)
+		}
+	})
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT)
+
+	go func() {
+		<-sigChan
+		fmt.Println("Received SIGINT, exiting...")
+
+		wg.Done()
+	}()
 
 	wg.Add(1)
 	go func() {
@@ -117,6 +148,8 @@ func main() {
 		ubot.Idle()
 	}()
 
+	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
+	
 	wg.Wait()
 
 }

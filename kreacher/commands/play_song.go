@@ -30,8 +30,6 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			link = target
 		}
 
-		fmt.Printf("seted stream url to %s", link)
-
 		jsonParams, err := n.CreateCall(c.Chat().ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
@@ -46,16 +44,9 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
-		print("created call")
+		rawObj, _ := u.ResolveUsername(c.Chat().Username)
 
-		channel, err := u.GetChannel(c.Chat().ID)
-		if err != nil {
-			return err
-		}
-
-		print("got channel")
-
-		// channel := rawChannel.(*tg.Channel)
+		channel := rawObj.(*tg.Channel)
 
 		fullChatRaw, err := u.ChannelsGetFullChannel(
 			&tg.InputChannelObj{
@@ -68,11 +59,12 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
-		print("got full channel")
-
 		fullChat := fullChatRaw.FullChat.(*tg.ChannelFull)
 
-		me, _ := u.GetMe()
+		me, err := u.GetMe()
+		if err != nil {
+			return err
+		}
 
 		callResRaw, err := u.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
@@ -93,8 +85,6 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
-		print("joined to the call")
-
 		callRes := callResRaw.(*tg.UpdatesObj)
 		for _, update := range callRes.Updates {
 			switch update.(type) {
@@ -104,18 +94,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			}
 		}
 
-		print("receiving updates")
-
-		err = c.Send("ok", &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
-			{
-				tele.InlineButton{
-					Text: "🏓",
-					Data: "ping_cbk",
-				},
-			},
-		}},
-			tele.ParseMode(tele.ModeHTML),
-		)
+		err = c.Send("Successful joined")
 
 		return err
 
