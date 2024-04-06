@@ -148,7 +148,7 @@ func main() {
 		ubot.Idle()
 	}()
 
-	cy.Printf("\nBot @%s started, receiving updates...\n", bot.Me.Username)
+	cy.Printf("\n\nBot @%s started, receiving updates...\n", bot.Me.Username)
 	
 	wg.Wait()
 

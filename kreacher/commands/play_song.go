@@ -98,11 +98,12 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 
 		callRes := callResRaw.(*tg.UpdatesObj)
 		for _, update := range callRes.Updates {
-			switch update.(type) {
-			case *tg.UpdateGroupCallConnection:
-				phoneCall := update.(*tg.UpdateGroupCallConnection)
-				_ = n.Connect(channel.ID, phoneCall.Params.Data)
+			updateTyped, ok := update.(*tg.UpdateGroupCallConnection)
+			if !ok {
+				continue
 			}
+
+			_ = n.Connect(channel.ID, updateTyped.Params.Data)
 		}
 
 		err = c.Send("Successful joined")
