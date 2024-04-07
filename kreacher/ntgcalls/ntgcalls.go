@@ -328,6 +328,10 @@ func (ctx *Client) Calls() map[int64]StreamStatus {
 	f.wait()
 	f = CreateFuture()
 	buffer := make([]C.ntg_group_call_struct, callSize)
+	if len(buffer) == 0 {
+		return mapReturn
+	}
+	
 	C.ntg_calls(C.uint32_t(ctx.uid), &buffer[0], callSize, f.ParseToC())
 	f.wait()
 	for _, call := range buffer {

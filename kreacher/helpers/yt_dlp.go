@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -27,26 +26,18 @@ func GetYoutubeStream(link string) (string, string, error) {
 func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 	var ytsr YtSearchResult
 	if len(opts) > 0 {
-		stdout, err := Bash(fmt.Sprintf("yt-dlp ytsearch%s:'%s' --dump-json --skip-download --quiet --ignore-errors", opts[0], query))
+		stdout, err := Bash("yt-dlp", fmt.Sprintf("ytsearch%s:'%s'", opts[0], query), "--dump-json", "--skip-download", "--quiet", "--ignore-errors")
 		if err != nil {
 			return nil, err
-		}
-
-		if stdout.Len() == 0 {
-			return nil, errors.New("something has happed")
 		}
 
 		json.Unmarshal(stdout.Bytes(), &ytsr)
 		return &ytsr, nil
 	}
 
-	stdout, err := Bash(fmt.Sprintf("yt-dlp ytsearch:'%s' --dump-json --skip-download --quiet --ignore-errors", query))
+	stdout, err := Bash("yt-dlp", fmt.Sprintf("ytsearch:'%s'", query), "--dump-json", "--skip-download", "--quiet", "--ignore-errors", "--extract-audio")
 	if err != nil {
 		return nil, err
-	}
-
-	if stdout.Len() == 0 {
-		return nil, errors.New("something has happed")
 	}
 
 	json.Unmarshal(stdout.Bytes(), &ytsr)
@@ -54,7 +45,7 @@ func YtSearch(query string, opts ...string) (*YtSearchResult, error) {
 }
 
 func YtDownloader(format string, link string) error {
-	_, err := Bash(fmt.Sprintf("yt-dlp -g -f '%s' %s", format, link))
+	_, err := Bash("yt-dlp", "-g", "-f", fmt.Sprintf("'%s' %s", format, link))
 	if err != nil {
 		return err
 	}
@@ -107,6 +98,7 @@ type YtSearchResult struct {
 	Format               string                 `json:"format"`
 	FormatID             string                 `json:"format_id"`
 	Ext                  string                 `json:"ext"`
+	URL                  string                 `json:"url"`
 	Protocol             string                 `json:"protocol"`
 	Language             string                 `json:"language"`
 	FormatNote           string                 `json:"format_note"`
