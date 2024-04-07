@@ -39,10 +39,10 @@ if [ "$1" == "--local" ]; then
     fi
 
     if [ -z $GOPATH ]; then
-        wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
-        sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
+        wget -O go.tar.gz https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
+        sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go.tar.gz
         echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
-        rm -rf go1.22.1.linux-amd64.tar.gz
+        rm -rf go.tar.gz
     fi
 
     if [[ -z $YT_DLP || -z $SPEEDTEST || -z $PIPER_TTS ]]; then
