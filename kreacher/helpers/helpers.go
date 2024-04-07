@@ -18,7 +18,7 @@ func GetURLType(s string) SourceType {
 		return YOUTUBE_URL
 	} else if isURL(s) {
 		return COMMON_URL
-	} 
+	}
 
 	return ITS_NOT_A_URL
 }
@@ -29,9 +29,9 @@ func isYouTubeURL(s string) bool {
 }
 
 func isURL(s string) bool {
-    u, err := url.Parse(s)
-    if err != nil || u.Scheme == "" || u.Host == "" {
-        return false
-    }
-    return true
+	u, err := url.Parse(s)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+	return true
 }

@@ -331,7 +331,7 @@ func (ctx *Client) Calls() map[int64]StreamStatus {
 	if len(buffer) == 0 {
 		return mapReturn
 	}
-	
+
 	C.ntg_calls(C.uint32_t(ctx.uid), &buffer[0], callSize, f.ParseToC())
 	f.wait()
 	for _, call := range buffer {
