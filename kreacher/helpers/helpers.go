@@ -6,11 +6,17 @@ import (
 )
 
 type SourceType int
+type MediaType string
 
 const (
 	YOUTUBE_URL SourceType = 1 << iota
 	COMMON_URL
 	ITS_NOT_A_URL
+)
+
+const (
+	Audio MediaType = "audio"
+	Video MediaType = "video"
 )
 
 func GetURLType(s string) SourceType {

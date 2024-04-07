@@ -67,6 +67,10 @@ func cmds() {
 	})
 
 	bot.Handle(playSong, func(c tele.Context) error {
+		if c.Chat().Type == tele.ChatPrivate {
+			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
+		}
+
 		sent := cm.PlaySong(c, ubot, ntgcalls)
 		if sent != nil {
 			panic(sent.Error())
@@ -76,11 +80,15 @@ func cmds() {
 	})
 
 	bot.Handle(playVideo, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
+		if c.Chat().Type == tele.ChatPrivate {
+			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
+		}
+
+		sent := cm.PlayVideo(c, ubot, ntgcalls)
 		if sent != nil {
 			panic(sent.Error())
 		}
+		
 		return sent
 	})
 

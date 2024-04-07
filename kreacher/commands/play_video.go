@@ -11,7 +11,7 @@ import (
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
-func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
+func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 	var err error
 	var target string
 
@@ -24,12 +24,13 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				return err
 			}
 		case h.ITS_NOT_A_URL:
-			response, err := h.YoutubeSearch(target, h.Audio)
+			response, err := h.YoutubeSearch(target, h.Video)
 			if err != nil {
 				return nil
 			}
 
-			target = response.AudioURL
+			target = response.VideoURL
+            fmt.Println(target)
 		}
 
 		x := strconv.FormatInt(c.Chat().ID, 10)
@@ -45,12 +46,12 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			for chat := range calls {
 				if chat == channel.ID {
 					err = n.ChangeStream(chat, ntgcalls.MediaDescription{
-						Audio: &ntgcalls.AudioDescription{
-							InputMode:     ntgcalls.InputModeShell,
-							SampleRate:    96000,
-							BitsPerSample: 16,
-							ChannelCount:  2,
-							Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target),
+						Video: &ntgcalls.VideoDescription{
+							InputMode: ntgcalls.InputModeShell,
+							Width:     1920,
+							Height:    1080,
+							Fps:       60,
+							Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target),
 						},
 					})
 
@@ -60,12 +61,12 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 		}
 
 		jsonParams, err := n.CreateCall(channel.ID, ntgcalls.MediaDescription{
-			Audio: &ntgcalls.AudioDescription{
-				InputMode:     ntgcalls.InputModeShell,
-				SampleRate:    96000,
-				BitsPerSample: 16,
-				ChannelCount:  2,
-				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target),
+			Video: &ntgcalls.VideoDescription{
+				InputMode: ntgcalls.InputModeShell,
+				Width:     1920,
+				Height:    1080,
+				Fps:       60,
+				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target),
 			},
 		})
 
@@ -94,7 +95,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 		callResRaw, err := u.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
 				Muted:        false,
-				VideoStopped: true,
+				VideoStopped: false,
 				Call:         fullChat.Call,
 				Params: &tg.DataJson{
 					Data: jsonParams,

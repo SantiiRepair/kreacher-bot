@@ -20,9 +20,11 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20231011050154-1d073bb38998 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.0 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -32,6 +34,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
+	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
