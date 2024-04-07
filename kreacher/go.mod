@@ -6,6 +6,7 @@ require (
 	github.com/amarnathcjd/gogram v0.0.0-20240405190855-48b97bb3ffe0
 	github.com/chromedp/chromedp v0.9.3
 	github.com/fatih/color v1.16.0
+	github.com/fogleman/gg v1.3.0
 	github.com/google/uuid v1.1.2
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/joho/godotenv v1.5.1
@@ -20,7 +21,6 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20231011050154-1d073bb38998 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.3.0 // indirect
