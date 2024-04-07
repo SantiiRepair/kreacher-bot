@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
 	tele "gopkg.in/telebot.v3"
@@ -9,10 +10,10 @@ import (
 	cm "santiirepair.dev/kreacher/commands"
 )
 
-func cmds() {
+func commands() {
 	rawObj, err := ubot.ResolveUsername(BotConfig().Maintainer)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	mantainer := rawObj.(*tg.UserObj)

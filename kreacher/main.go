@@ -105,8 +105,6 @@ func main() {
 		panic(err)
 	}
 
-	cmds()
-
 	ntgcalls.OnStreamEnd(func(chatId int64, streamType ntgc.StreamType) {
 		fmt.Println(chatId)
 	})
@@ -128,6 +126,8 @@ func main() {
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT)
+
+	go commands()
 
 	go func() {
 		<-sigChan
