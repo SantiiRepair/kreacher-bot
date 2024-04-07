@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	tele "gopkg.in/telebot.v3"
 	tg "github.com/amarnathcjd/gogram/telegram"
+	tele "gopkg.in/telebot.v3"
 	middleware "gopkg.in/telebot.v3/middleware"
 	cm "santiirepair.dev/kreacher/commands"
 )
@@ -27,7 +27,6 @@ func cmds() {
 		}
 		return sent
 	})
-
 
 	bot.Handle(help, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
@@ -88,7 +87,7 @@ func cmds() {
 		if sent != nil {
 			panic(sent.Error())
 		}
-		
+
 		return sent
 	})
 

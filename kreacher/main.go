@@ -149,7 +149,7 @@ func main() {
 	}()
 
 	cy.Printf("\n\nBot @%s started, receiving updates...\n", bot.Me.Username)
-	
+
 	wg.Wait()
 
 }

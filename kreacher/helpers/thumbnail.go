@@ -36,6 +36,6 @@ func GenThumbnail(text string) error {
 
 	png.Encode(out, dc.Image())
 	out.Close()
-	
+
 	return nil
 }

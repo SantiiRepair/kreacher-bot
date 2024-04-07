@@ -35,7 +35,7 @@ func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*Y
 		args = append(args, fmt.Sprintf("ytsearch:'%s'", query))
 	}
 
-	args = append(args, "-f", "bestvideo+bestaudio/best", "--get-title", "--get-url")
+	args = append(args, "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best", "--get-title", "--get-url", "--get-format")
 
 	stdout, err := Bash(args...)
 	if err != nil {
@@ -49,6 +49,7 @@ func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*Y
 			"title":     k[0],
 			"audio_url": k[2],
 			"video_url": k[1],
+			"format":    k[3],
 		})
 
 	if err != nil {
@@ -72,4 +73,5 @@ type YoutubeSearchResult struct {
 	Title    string `json:"title"`
 	AudioURL string `json:"audio_url"`
 	VideoURL string `json:"video_url"`
+	Format   string `json:"format"`
 }

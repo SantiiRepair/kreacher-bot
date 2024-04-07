@@ -13,13 +13,13 @@ import (
 
 func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 	var err error
-	var target string
+	var audioURL string
 
-	target = strings.Join(c.Args(), " ")
+	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		switch h.GetURLType(target) {
 		case h.YOUTUBE_URL:
-			target, _, err = h.GetYoutubeStream(target)
+			audioURL, _, err = h.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
@@ -29,7 +29,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				return nil
 			}
 
-			target = response.AudioURL
+			audioURL = response.AudioURL
 		}
 
 		x := strconv.FormatInt(c.Chat().ID, 10)
@@ -50,7 +50,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 							SampleRate:    96000,
 							BitsPerSample: 16,
 							ChannelCount:  2,
-							Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target),
+							Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 						},
 					})
 
@@ -65,7 +65,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				SampleRate:    96000,
 				BitsPerSample: 16,
 				ChannelCount:  2,
-				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target),
+				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 			},
 		})
 

@@ -13,13 +13,14 @@ import (
 
 func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 	var err error
-	var target string
+	var audioURL string
+	var videoURL string
 
-	target = strings.Join(c.Args(), " ")
+	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		switch h.GetURLType(target) {
 		case h.YOUTUBE_URL:
-			target, _, err = h.GetYoutubeStream(target)
+			audioURL, videoURL, err = h.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
@@ -29,8 +30,8 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				return nil
 			}
 
-			target = response.VideoURL
-            fmt.Println(target)
+			audioURL = response.AudioURL
+			videoURL = response.VideoURL
 		}
 
 		x := strconv.FormatInt(c.Chat().ID, 10)
@@ -46,12 +47,19 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			for chat := range calls {
 				if chat == channel.ID {
 					err = n.ChangeStream(chat, ntgcalls.MediaDescription{
+						Audio: &ntgcalls.AudioDescription{
+							InputMode:     ntgcalls.InputModeShell,
+							SampleRate:    96000,
+							BitsPerSample: 16,
+							ChannelCount:  2,
+							Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+						},
 						Video: &ntgcalls.VideoDescription{
 							InputMode: ntgcalls.InputModeShell,
 							Width:     1920,
 							Height:    1080,
 							Fps:       60,
-							Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target),
+							Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL),
 						},
 					})
 
@@ -61,12 +69,19 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 		}
 
 		jsonParams, err := n.CreateCall(channel.ID, ntgcalls.MediaDescription{
+			Audio: &ntgcalls.AudioDescription{
+				InputMode:     ntgcalls.InputModeShell,
+				SampleRate:    96000,
+				BitsPerSample: 16,
+				ChannelCount:  2,
+				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+			},
 			Video: &ntgcalls.VideoDescription{
 				InputMode: ntgcalls.InputModeShell,
 				Width:     1920,
 				Height:    1080,
 				Fps:       60,
-				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target),
+				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL),
 			},
 		})
 
