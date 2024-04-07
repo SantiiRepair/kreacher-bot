@@ -2,3 +2,13 @@
 	path = deps/ntgcalls
 	url = https://github.com/pytgcalls/ntgcalls
 	branch = dev
+
+[submodule "deps/yt-dlp"]
+	path = deps/yt-dlp
+	url = https://github.com/yt-dlp/yt-dlp
+	branch = master
+
+[submodule "deps/speedtest-cli"]
+	path = deps/speedtest-cli
+	url = https://github.com/sivel/speedtest-cli
+	branch = master
