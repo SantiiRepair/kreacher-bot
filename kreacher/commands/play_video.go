@@ -48,15 +48,15 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 		var inputVideo string
 
 		if audioURL != "" {
-			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target)
-		} else {
 			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
+		} else {
+			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target)
 		}
 
 		if videoURL != "" {
-			inputVideo = fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target)
-		} else {
 			inputVideo = fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL)
+		} else {
+			inputVideo = fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target)
 		}
 
 		if calls := n.Calls(); len(calls) > 0 {

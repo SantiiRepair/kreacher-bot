@@ -24,12 +24,12 @@ func init() {
 
 	_, err = exec.LookPath("yt-dlp")
 	if err != nil {
-		panic("yt-dlp is not installed")
+		panic("yt-dlp isn't installed")
 	}
 
 	_, err = exec.LookPath("speedtest")
 	if err != nil {
-		panic("speedtest is not installed")
+		panic("speedtest isn't installed")
 	}
 
 	ntgcalls = ntgc.NTgCalls()

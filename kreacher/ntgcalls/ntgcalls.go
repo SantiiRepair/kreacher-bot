@@ -182,58 +182,6 @@ func (ctx *Client) CreateCall(chatId int64, desc MediaDescription) (string, erro
 	return C.GoString(&buffer[0]), parseErrorCode(*f.errCode)
 }
 
-func (ctx *Client) CreateP2PCall(chatId int64, g int32, p []byte, r []byte, gAHash []byte, desc MediaDescription) ([]byte, error) {
-	f := CreateFuture()
-	var buffer [32]C.uint8_t
-	size := C.int(len(buffer))
-	pC, pSize := parseBytes(p)
-	rC, rSize := parseBytes(r)
-	gAHashC, gAHashSize := parseBytes(gAHash)
-	C.ntg_create_p2p(C.uint32_t(ctx.uid), C.int64_t(chatId), C.int32_t(g), pC, pSize, rC, rSize, gAHashC, gAHashSize, desc.ParseToC(), &buffer[0], size, f.ParseToC())
-	f.wait()
-	return C.GoBytes(unsafe.Pointer(&buffer[0]), size), parseErrorCode(*f.errCode)
-}
-
-func (ctx *Client) ExchangeKeys(chatId int64, gAB []byte, fingerprint int64) (AuthParams, error) {
-	f := CreateFuture()
-	var buffer C.ntg_auth_params_struct
-	gABC, gABSize := parseBytes(gAB)
-	C.ntg_exchange_keys(C.uint32_t(ctx.uid), C.int64_t(chatId), gABC, gABSize, C.int64_t(fingerprint), &buffer, f.ParseToC())
-	f.wait()
-	return AuthParams{
-		GAOrB:          C.GoBytes(unsafe.Pointer(buffer.g_a_or_b), buffer.sizeGAB),
-		KeyFingerprint: int64(buffer.key_fingerprint),
-	}, parseErrorCode(*f.errCode)
-}
-
-func (ctx *Client) ConnectP2P(chatId int64, rtcServers []RTCServer, versions []string, P2PAllowed bool) error {
-	f := CreateFuture()
-	servers := make([]C.ntg_rtc_server_struct, len(rtcServers))
-	for i, server := range rtcServers {
-		servers[i] = C.ntg_rtc_server_struct{
-			ipv4:        C.CString(server.Ipv4),
-			ipv6:        C.CString(server.Ipv6),
-			username:    C.CString(server.Username),
-			password:    C.CString(server.Password),
-			port:        C.uint16_t(server.Port),
-			turn:        C.bool(server.Turn),
-			stun:        C.bool(server.Stun),
-			tcp:         C.bool(server.Tcp),
-			peerTag:     nil,
-			peerTagSize: 0,
-		}
-		if len(server.PeerTag) > 0 {
-			peerTagC, peerTagSize := parseBytes(server.PeerTag)
-			servers[i].peerTag = peerTagC
-			servers[i].peerTagSize = peerTagSize
-		}
-	}
-	versionsC, sizeVersions := parseStringVectorC(versions)
-	C.ntg_connect_p2p(C.uint32_t(ctx.uid), C.int64_t(chatId), (*C.ntg_rtc_server_struct)(unsafe.Pointer(&servers[0])), C.int(len(servers)), versionsC, C.int(sizeVersions), C.bool(P2PAllowed), f.ParseToC())
-	f.wait()
-	return parseErrorCode(*f.errCode)
-}
-
 func (ctx *Client) SendSignalingData(chatId int64, data []byte) error {
 	f := CreateFuture()
 	dataC, dataSize := parseBytes(data)
