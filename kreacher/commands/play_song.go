@@ -12,6 +12,7 @@ import (
 )
 
 func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
+
 	var err error
 	var audioURL string
 
@@ -41,6 +42,14 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
+		var inputAudio string
+
+		if audioURL != "" {
+			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target)
+		} else {
+			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
+		}
+
 		if calls := n.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
@@ -50,7 +59,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 							SampleRate:    96000,
 							BitsPerSample: 16,
 							ChannelCount:  2,
-							Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+							Input:         inputAudio,
 						},
 					})
 
@@ -65,7 +74,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				SampleRate:    96000,
 				BitsPerSample: 16,
 				ChannelCount:  2,
-				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+				Input:         inputAudio,
 			},
 		})
 

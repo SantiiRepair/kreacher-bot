@@ -19,6 +19,7 @@ import (
 )
 
 func init() {
+	
 	var err error
 
 	_, err = exec.LookPath("yt-dlp")
