@@ -41,7 +41,7 @@ func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*Y
 	if err != nil {
 		return nil, err
 	}
-
+	
 	k := strings.Split(stdout.String(), "\n")
 
 	mb, err := json.Marshal(
