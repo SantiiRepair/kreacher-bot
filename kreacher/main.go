@@ -5,6 +5,7 @@ import "C"
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
 	"sync"
 	"syscall"
@@ -18,11 +19,22 @@ import (
 )
 
 func init() {
+	var err error
 
-	_ntgcalls := ntgc.NTgCalls()
-	//defer _ntgcalls.Free()
+	_, err = exec.LookPath("yt-dlp")
+	if err != nil {
+		panic("yt-dlp is not installed")
+	}
 
-	_bot, err := tele.NewBot(tele.Settings{
+	_, err = exec.LookPath("speedtest")
+	if err != nil {
+		panic("speedtest is not installed")
+	}
+
+	ntgcalls = ntgc.NTgCalls()
+	// defer ntgcalls.Free()
+
+	bot, err = tele.NewBot(tele.Settings{
 		Token:  BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {
@@ -34,10 +46,10 @@ func init() {
 		panic(err)
 	}
 
-	defer _bot.Close()
-	cy.Printf("\n✔️ Bot client connected to %s", _bot.URL)
+	defer bot.Close()
+	cy.Printf("✔️ Bot client connected to %s", bot.URL)
 
-	_ubot, err := tg.NewClient(tg.ClientConfig{
+	ubot, err = tg.NewClient(tg.ClientConfig{
 		AppID:    int32(BotConfig().APIID),
 		AppHash:  BotConfig().APIHash,
 		Session:  ".mtproto",
@@ -48,18 +60,17 @@ func init() {
 		panic(err)
 	}
 
-	_ubot.Start()
-
+	ubot.Start()
 	cy.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
-	_rdc := redis.NewClient(&redis.Options{
+	rdc = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
 		Password: BotConfig().RedisPassword,
 		DB:       0, // use default DB
 		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 	})
 
-	defer _rdc.Close()
+	defer rdc.Close()
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 
 	/*
@@ -82,11 +93,6 @@ func init() {
 	*/
 
 	// Set client instances to late vars in vars.go file.
-
-	bot = _bot
-	ubot = _ubot
-	rdc = _rdc
-	ntgcalls = _ntgcalls
 }
 
 func main() {

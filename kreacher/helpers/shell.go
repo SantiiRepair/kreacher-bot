@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Bash(args ...string) (*bytes.Buffer, error) {
+func Shell(args ...string) (*bytes.Buffer, error) {
 	var outBytes, errBytes bytes.Buffer
 
 	cmd := exec.Command(args[0], args[1:]...)

@@ -65,7 +65,7 @@ func TTS(text string, opts ...string) (string, error) {
 		os.MkdirAll(outputFile, 0755)
 	}
 
-	stdout, err := Bash(fmt.Sprintf(
+	stdout, err := Shell(fmt.Sprintf(
 		"piper -m %s --download-dir %s --data-dir %s -f %s < %s",
 		"",
 		piperModelsPath,

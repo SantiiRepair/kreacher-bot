@@ -17,7 +17,7 @@ func Shell(c tele.Context) error {
 		return err
 	}
 
-	stdout, err := helpers.Bash(cmd)
+	stdout, err := helpers.Shell(cmd)
 
 	if err != nil {
 		text := fmt.Sprintf("```\n%s\n```", err)

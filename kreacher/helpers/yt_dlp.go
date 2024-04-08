@@ -7,7 +7,7 @@ import (
 )
 
 func GetYoutubeStream(link string) (string, string, error) {
-	stdout, stderr := Bash("yt-dlp", "-g", "-f", "bestvideo+bestaudio/best", link)
+	stdout, stderr := Shell("yt-dlp", "-g", "-f", "bestvideo+bestaudio/best", link)
 	if stderr != nil {
 		return "", "", stderr
 	}
@@ -37,11 +37,11 @@ func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*Y
 
 	args = append(args, "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best", "--get-title", "--get-url", "--get-format")
 
-	stdout, err := Bash(args...)
+	stdout, err := Shell(args...)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	k := strings.Split(stdout.String(), "\n")
 
 	mb, err := json.Marshal(
@@ -61,7 +61,7 @@ func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*Y
 }
 
 func YoutubeDownloader(format string, link string) error {
-	_, err := Bash("yt-dlp", "-g", "-f", fmt.Sprintf("'%s' %s", format, link))
+	_, err := Shell("yt-dlp", "-g", "-f", fmt.Sprintf("'%s' %s", format, link))
 	if err != nil {
 		return err
 	}

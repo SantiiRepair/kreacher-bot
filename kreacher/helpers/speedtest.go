@@ -46,7 +46,7 @@ type STResult struct {
 func Speedtest() (*STResult, error) {
 	var stresult STResult
 
-	stdout, err := Bash("speedtest", "--json", "--share")
+	stdout, err := Shell("speedtest", "--json", "--share")
 
 	if err != nil {
 		return nil, err
