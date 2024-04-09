@@ -31,7 +31,7 @@ type Server struct {
 	Latency float64 `json:"latency"`
 }
 
-type STResult struct {
+type SpeedtestResult struct {
 	Download      float64 `json:"download"`
 	Upload        float64 `json:"upload"`
 	Ping          float64 `json:"ping"`
@@ -43,8 +43,8 @@ type STResult struct {
 	Client        Client  `json:"client"`
 }
 
-func Speedtest() (*STResult, error) {
-	var stresult STResult
+func Speedtest() (*SpeedtestResult, error) {
+	var speedtestResult SpeedtestResult
 
 	stdout, err := Shell("speedtest", "--json", "--share")
 
@@ -52,7 +52,10 @@ func Speedtest() (*STResult, error) {
 		return nil, err
 	}
 
-	json.Unmarshal(stdout.Bytes(), &stresult)
-
-	return &stresult, nil
+	err = json.Unmarshal(stdout.Bytes(), &speedtestResult)
+	if err != nil {
+		return nil, err
+	}
+	
+	return &speedtestResult, nil
 }
