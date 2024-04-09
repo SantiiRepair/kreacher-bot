@@ -1,4 +1,4 @@
-FROM golang:lastest
+FROM golang:latest
 COPY . /wd/
 WORKDIR /wd/
 RUN bash setenv.sh

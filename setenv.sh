@@ -27,6 +27,7 @@ install_speedtest() {
         wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
         pyinstaller --onefile speedtest.py
         $SUDO mv dist/speedtest /usr/bin/speedtest
+        $SUDO chmod +rwx /usr/bin/speedtest
         rm -rf speedtest.py build dist __pycache__ *.spec
     fi
 }
