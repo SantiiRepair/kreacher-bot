@@ -7,5 +7,6 @@
 *.rdb
 *.sum
 *.lock
+*.spec
 *.build
 *.mtproto

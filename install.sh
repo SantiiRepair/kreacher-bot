@@ -21,11 +21,11 @@ install_yt_dlp() {
 
 install_speedtest() {
     if [ -z "$(which speedtest)" ]; then
-        wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
-        pyinstaller --onefile speedtest.py
+        cd deps/speedtest-cli
+        python3 -m PyInstaller --onefile speedtest.py
         $SUDO mv dist/speedtest /usr/bin/speedtest
-        $SUDO chmod +rwx /usr/bin/speedtest
         rm -rf speedtest.py build dist __pycache__ *.spec
+        cd - > /dev/null
     fi
 }
 
