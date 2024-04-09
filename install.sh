@@ -1,8 +1,5 @@
 #!/bin/bash
 
-Cyan="\033[0;36m"
-CWD=$(pwd)
-
 GO_VERSION="1.22.1"
 PIPER_VERSION="1.2.0"
 
@@ -42,6 +39,26 @@ install_piper() {
     fi
 }
 
+build_ntgcalls() {
+    cd deps/ntgcalls
+    python3 setup.py build_lib
+
+    shared_output="shared-output"
+    ntgcalls="$shared_output/release/include/ntgcalls.h"
+    libntgcalls="$shared_output/release/libntgcalls.so"
+
+    if [ -d "$shared_output" ] && [ -f "$libntgcalls" ] && [ -f "$ntgcalls" ]; then
+        mv $libntgcalls ../../kreacher/
+        mv $ntgcalls ../../kreacher/ntgcalls/
+    else
+        echo "Error: Expected files not found after building ntgcalls."
+        return 1
+    fi
+
+    cd - > /dev/null
+}
+
+
 if [ "$1" == "--sudo" ]; then
     SUDO="sudo"
 else
@@ -79,11 +96,11 @@ if [ "$1" == "--sudo" ]; then
     fi
 fi
 
+build_ntgcalls
 install_chrome
 install_yt_dlp
 install_speedtest
 install_piper
 
-echo -e "\n${Cyan}Successfully installed resources!"
-cd $CWD
+echo "Successfully installed resources!"
 exit 0

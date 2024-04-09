@@ -24,7 +24,7 @@ First of all you must create a `.env` file that contains access keys, database c
 If you will be running the bot locally you can run the following command to install some necessary things:
 
 ```sh
-$ bash setenv.sh --local
+$ bash install.sh --sudo
 ```
 
 This will install postgres, redis, google chrome and other things if they are not installed.

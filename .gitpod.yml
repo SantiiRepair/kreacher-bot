@@ -5,7 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - before: bash setenv.sh --sudo
+  - before: bash install.sh --sudo
   - init: make install
   - command: make start
 
