@@ -25,12 +25,12 @@ install_yt_dlp() {
 install_speedtest() {
     if [ -z "$(which speedtest)" ]; then
         wget -O speedtest.py https://github.com/sivel/speedtest-cli/blob/master/speedtest.py?raw=true
-        pip3 install nuitka
-        python3 -m nuitka speedtest.py
-        $SUDO mv speedtest.bin /usr/bin/speedtest
-        rm -rf speedtest.py *.build
+        pyinstaller --onefile speedtest.py
+        $SUDO mv dist/speedtest /usr/bin/speedtest
+        rm -rf speedtest.py build dist __pycache__ *.spec
     fi
 }
+
 
 install_piper() {
     if [ -z "$(which piper)" ]; then
@@ -48,7 +48,17 @@ else
 fi
 
 $SUDO apt-get update && $SUDO apt-get upgrade -y
-$SUDO apt-get install -y curl gcc build-essential libx11-dev git-all poppler-utils python3 python3-pip ffmpeg tree
+$SUDO apt-get install -y curl \
+                         gcc \
+                         build-essential \
+                         libx11-dev \
+                         git-all \
+                         python3 \
+                         python3-pip \
+                         ffmpeg \
+                         tree
+                         
+python3 -m pip install pyinstaller
 
 if [ "$1" == "--sudo" ]; then
     $SUDO apt-get install -y postgresql
