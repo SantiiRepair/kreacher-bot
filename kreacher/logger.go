@@ -1,24 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	lg *logrus.Logger
-)
+var lg *logrus.Logger
 
 func init() {
-	botLogsPath := path.Join(
-		BotConfig().Advanced.LogsPath,
-		strings.ToLower(fmt.Sprintf("%s.log", BotConfig().ProjectName)))
+	botLogsPath := path.Join("..", "logs", "bot.log")
 
 	file, err := os.OpenFile(botLogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 

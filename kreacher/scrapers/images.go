@@ -8,35 +8,68 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// SearchImageOpts represents image search options.
-// By default, returns the image string path if the goal is achieved.
-// However, if 'ReturnAsBytes' is set to 'true', it will return the image in bytes.
-//
-// You can also specify the `NumberOfImages` to search according to the query and the desired image resolution range using 'MinResolution' and 'MaxResolution'.
-type SearchImageOpts struct {
-	NumberOfImages int
-	MinResolution  []int
-	MaxResolution  []int
-	ReturnAsBytes  bool
-	OutputImage    string
+type ImageFinder struct {
+	target         string
+	numberOfImages int
 }
 
-func GetImageFromQuery(ctx context.Context, query string, opts SearchImageOpts) (interface{}, error) {
-	ctx, cancel := chromedp.NewContext(ctx)
+// Start a new search engine with the given options
+func NewImageFinder(target string, numberOfImages int) *ImageFinder {
+	return &ImageFinder{
+		target:         target,
+		numberOfImages: numberOfImages,
+	}
+}
 
+// Searches for high resolution images in Yahoo Search and returns the url of the target image
+func (finder *ImageFinder) FindImageURLs() ([]string, error) {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", true),
+	)
+
+	allocCtx, cancelAlloc := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancelAlloc()
+
+	ctx, cancel := chromedp.NewContext(allocCtx)
 	defer cancel()
 
-	var htmlContent string
-
-	url := fmt.Sprintf("https://www.google.com/search?q=%s&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947", query)
-
 	if err := chromedp.Run(ctx,
-		chromedp.Navigate(url),
-		chromedp.Sleep(2*time.Second),
-		chromedp.OuterHTML("html", &htmlContent),
+		chromedp.Navigate(fmt.Sprintf("https://images.search.yahoo.com/search/images;?fr2=sb-top-images.search&p=%s", finder.target)),
+		chromedp.Sleep(3*time.Second),
 	); err != nil {
 		return nil, err
 	}
 
-	return htmlContent, nil
+	var imageUrls []string
+	searchString := `//*[@id="results"]/div/ul/li[%d]/a/img`
+
+	for i := range finder.numberOfImages {
+		var imgSrc string
+
+		if err := chromedp.Run(ctx,
+			chromedp.Click(fmt.Sprintf(searchString, i+1), chromedp.BySearch),
+			chromedp.Sleep(1*time.Second),
+			chromedp.AttributeValue(`//*[@id="img"]`, "src", &imgSrc, nil),
+			chromedp.Click(`//*[@class="close"]`, chromedp.BySearch),
+			chromedp.Sleep(1*time.Second),
+		); err != nil {
+			return nil, err
+		}
+
+		if imgSrc != "" && !contains(imageUrls, imgSrc) {
+			imageUrls = append(imageUrls, imgSrc)
+		}
+
+	}
+
+	return imageUrls, nil
+}
+
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }

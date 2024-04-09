@@ -1,13 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"strings"
-
-	ini "gopkg.in/ini.v1"
 
 	"github.com/joho/godotenv"
 )
@@ -20,41 +16,7 @@ func init() {
 }
 
 func BotConfig() *botConfig {
-	cfg, err := ini.Load(fmt.Sprintf(
-		"../%s.cfg", strings.ToLower(os.Getenv("PROJECT_NAME")),
-	))
-
-	if err != nil {
-		log.Fatalf("error loading cfg file: %v", err)
-	}
-
-	ast := cfg.Section("ADVANCED")
-
-	logsPathKey, err := ast.GetKey("LOGS_PATH")
-
-	if err != nil {
-		log.Fatalf("error getting LOGS_PATH value: %v", err)
-	}
-
-	piperDataPathKey, err := ast.GetKey("PIPER_DATA_PATH")
-
-	if err != nil {
-		log.Fatalf("error getting PIPER_DATA_PATH value: %v", err)
-	}
-
-	tempPathKey, err := ast.GetKey("TEMP_PATH")
-
-	if err != nil {
-		log.Fatalf("error getting TEMP_PATH value: %v", err)
-	}
-
-	advanced := &botConfigAdvanced{
-		LogsPath:      logsPathKey.String(),
-		PiperDataPath: piperDataPathKey.String(),
-		TempPath:      tempPathKey.String(),
-	}
-
-	projectName := os.Getenv("PROJECT_NAME")
+	
 	apiID, _ := strconv.Atoi(os.Getenv("API_ID"))
 	apiHash := os.Getenv("API_HASH")
 	botToken := os.Getenv("BOT_TOKEN")
@@ -73,8 +35,6 @@ func BotConfig() *botConfig {
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 
 	return &botConfig{
-		Advanced:         advanced,
-		ProjectName:      projectName,
 		APIID:            apiID,
 		APIHash:          apiHash,
 		BotToken:         botToken,
