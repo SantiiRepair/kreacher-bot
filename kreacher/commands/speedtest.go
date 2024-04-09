@@ -20,7 +20,9 @@ func Speedtest(c tele.Context) error {
 	st, err := helpers.Speedtest()
 
 	if err != nil {
-		return err
+		c.Bot().Delete(&mdb)
+
+		return c.Send("*_A problem occurred running the speedtest_*", tele.ParseMode(tele.ModeMarkdownV2))
 	}
 
 	if st.Share != "" {
