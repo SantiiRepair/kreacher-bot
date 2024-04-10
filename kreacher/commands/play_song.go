@@ -6,26 +6,30 @@ import (
 	"strings"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
+	"github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
-	h "santiirepair.dev/kreacher/helpers"
+	hl "santiirepair.dev/kreacher/helpers"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
-func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
+func PlaySong(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client) error {
 
 	var err error
 	var audioURL string
 
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
-		switch h.GetURLType(target) {
-		case h.YOUTUBE_URL:
-			audioURL, _, err = h.GetYoutubeStream(target)
+		switch hl.GetURLType(target) {
+		case hl.YOUTUBE_URL:
+			audioURL, _, err = hl.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
-		case h.ITS_NOT_A_URL:
-			response, err := h.YoutubeSearch(target, h.Audio)
+
+		case hl.COMMON_URL:
+			audioURL = target
+		case hl.ITS_NOT_A_URL:
+			response, err := hl.YoutubeSearch(target, hl.Audio)
 			if err != nil {
 				return nil
 			}
@@ -42,28 +46,21 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
-		var inputAudio string
-
-		if audioURL != "" {
-			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
-		} else {
-			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target)
-		}
+		inputAudio := fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
 
 		if calls := n.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					err = n.ChangeStream(chat, ntgcalls.MediaDescription{
-						Audio: &ntgcalls.AudioDescription{
-							InputMode:     ntgcalls.InputModeShell,
-							SampleRate:    96000,
-							BitsPerSample: 16,
-							ChannelCount:  2,
-							Input:         inputAudio,
-						},
+					queueNumber, err := hl.AddToQueue(r, c.Chat().ID, &hl.Queue{
+						Requester:   c.Sender().ID,
+						AudioStream: audioURL,
 					})
 
-					return err
+					if err != nil {
+						return err
+					}
+
+					return c.Reply(fmt.Sprintf("In queue %d", queueNumber))
 				}
 			}
 		}
@@ -129,7 +126,7 @@ func PlaySong(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			_ = n.Connect(channel.ID, updateTyped.Params.Data)
 		}
 
-		err = c.Send("Successful joined")
+		err = c.Reply("Successful joined")
 
 		return err
 

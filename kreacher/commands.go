@@ -71,7 +71,7 @@ func commands() {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
 
-		sent := cm.PlaySong(c, ubot, ntgcalls)
+		sent := cm.PlaySong(c, rdc, ubot, ntgcalls)
 		if sent != nil {
 			panic(sent.Error())
 		}
