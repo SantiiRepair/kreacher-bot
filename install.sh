@@ -24,7 +24,7 @@ install_speedtest() {
         cd deps/speedtest-cli
         python3 -m PyInstaller --onefile speedtest.py
         $SUDO mv dist/speedtest /usr/bin/speedtest
-        rm -rf speedtest.py build dist __pycache__ *.spec
+        rm -rf build dist __pycache__ *.spec
         cd - > /dev/null
     fi
 }

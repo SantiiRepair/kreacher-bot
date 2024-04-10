@@ -5,9 +5,6 @@ import (
 	"regexp"
 )
 
-type SourceType int
-type MediaType string
-
 const (
 	YOUTUBE_URL SourceType = 1 << iota
 	COMMON_URL
