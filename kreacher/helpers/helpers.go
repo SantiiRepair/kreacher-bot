@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	YOUTUBE_URL SourceType = 1 << iota
-	COMMON_URL
-	ITS_NOT_A_URL
+	YoutubeURL SourceType = iota
+	CommonURL
+	NotURL
 )
 
 const (
@@ -18,12 +18,12 @@ const (
 
 func GetURLType(s string) SourceType {
 	if isYouTubeURL(s) {
-		return YOUTUBE_URL
+		return YoutubeURL
 	} else if isURL(s) {
-		return COMMON_URL
+		return CommonURL
 	}
 
-	return ITS_NOT_A_URL
+	return NotURL
 }
 
 func isYouTubeURL(s string) bool {

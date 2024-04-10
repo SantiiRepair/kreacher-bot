@@ -72,6 +72,7 @@ func init() {
 	})
 
 	defer rdc.Close()
+
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 
 	/*

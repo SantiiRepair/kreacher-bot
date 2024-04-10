@@ -8,7 +8,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// Adds a new item to the queue in Redis
+// Adds a new item to the queue in Redis.
 func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
 	s := strconv.FormatInt(chatId, 10)
 
@@ -21,7 +21,6 @@ func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
 		Requester:     params.Requester,
 		AudioStream:   params.AudioStream,
 		VideoStream:   params.VideoStream,
-		NumberInQueue: 0,
 	}
 
 	var result []queue
@@ -51,7 +50,7 @@ func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
 	return data.NumberInQueue, nil
 }
 
-// GetInQueue devuelve el elemento en la cola para un chatId dado.
+// Returns the element in the queue for a given chatId.
 func GetQueue(r *redis.Client, chatId int64) ([]Queue, error) {
 	s := strconv.FormatInt(chatId, 10)
 
@@ -71,8 +70,16 @@ func GetQueue(r *redis.Client, chatId int64) ([]Queue, error) {
 	return queue, nil
 }
 
-// RemoveQueue elimina la cola para un chatId dado.
-func RemoveAllQueue(r *redis.Client, chatId int64) error {
+// Deletes the queue for a given chatId.
+func PopQueue(r *redis.Client, chatId int64) error {
+	s := strconv.FormatInt(chatId, 10)
+
+	_, err := r.Del(context.Background(), s).Result()
+	return err
+}
+
+// Deletes the queue for a given chatId.
+func DeleteQueue(r *redis.Client, chatId int64) error {
 	s := strconv.FormatInt(chatId, 10)
 
 	_, err := r.Del(context.Background(), s).Result()

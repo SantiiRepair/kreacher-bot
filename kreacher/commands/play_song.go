@@ -20,15 +20,15 @@ func PlaySong(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client)
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		switch hl.GetURLType(target) {
-		case hl.YOUTUBE_URL:
+		case hl.YoutubeURL:
 			audioURL, _, err = hl.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
 
-		case hl.COMMON_URL:
+		case hl.CommonURL:
 			audioURL = target
-		case hl.ITS_NOT_A_URL:
+		case hl.NotURL:
 			response, err := hl.YoutubeSearch(target, hl.Audio)
 			if err != nil {
 				return nil

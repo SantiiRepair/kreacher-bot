@@ -20,12 +20,12 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		switch h.GetURLType(target) {
-		case h.YOUTUBE_URL:
+		case h.YoutubeURL:
 			audioURL, videoURL, err = h.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
-		case h.ITS_NOT_A_URL:
+		case h.NotURL:
 			response, err := h.YoutubeSearch(target, h.Video)
 			if err != nil {
 				return nil
