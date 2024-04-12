@@ -8,7 +8,7 @@ import (
 	"santiirepair.dev/kreacher/helpers"
 )
 
-func Speedtest(c tele.Context) error {
+func speedtest(c tele.Context) error {
 	msg, err := c.Bot().Send(c.Recipient(), stStarted, tele.ParseMode(tele.ModeHTML))
 
 	if err != nil {

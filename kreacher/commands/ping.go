@@ -2,7 +2,7 @@ package commands
 
 import tele "gopkg.in/telebot.v3"
 
-func Ping(c tele.Context) error {
+func ping(c tele.Context) error {
 
 	err := c.Send(pong, &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
 		{

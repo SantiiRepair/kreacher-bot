@@ -8,7 +8,7 @@ import (
 	"santiirepair.dev/kreacher/helpers"
 )
 
-func Shell(c tele.Context) error {
+func sh(c tele.Context) error {
 	cmd := strings.Join(c.Args(), " ")
 
 	if cmd == "" {

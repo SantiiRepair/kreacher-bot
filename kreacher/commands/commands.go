@@ -13,19 +13,20 @@ import (
 )
 
 const (
-	config    string = "/config"
-	help      string = "/help"
-	leave     string = "/leave"
-	ping      string = "/ping"
-	playBook  string = "/play_book"
-	playSong  string = "/play_song"
-	playVideo string = "/play_video"
-	shell     string = "/sh"
-	speedtest string = "/speedtest"
-	streaming string = "/streaming"
+	START      string = "/start"
+	CONFIG     string = "/config"
+	HELP       string = "/help"
+	LEAVE      string = "/leave"
+	PING       string = "/ping"
+	PLAY_BOOK  string = "/play_book"
+	PLAY_SONG  string = "/play_song"
+	PLAY_VIDEO string = "/play_video"
+	SH         string = "/sh"
+	SPEEDTEST  string = "/speedtest"
+	STREAMING  string = "/streaming"
 )
 
-func init() {
+func Start() {
 	rawObj, err := inst.U.ResolveUsername(cfg.BotConfig().Maintainer)
 	if err != nil {
 		log.Fatalln(err)
@@ -35,7 +36,7 @@ func init() {
 
 	onlyAdmin := middleware.Whitelist([]int64{mantainer.ID}...)
 
-	inst.B.Handle(config, func(c tele.Context) error {
+	inst.B.Handle(CONFIG, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -44,7 +45,7 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(help, func(c tele.Context) error {
+	inst.B.Handle(HELP, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -53,7 +54,7 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(leave, func(c tele.Context) error {
+	inst.B.Handle(LEAVE, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -62,8 +63,8 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(ping, func(c tele.Context) error {
-		sent := Ping(c)
+	inst.B.Handle(PING, func(c tele.Context) error {
+		sent := ping(c)
 
 		if sent != nil {
 			panic(sent.Error())
@@ -72,7 +73,7 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(playBook, func(c tele.Context) error {
+	inst.B.Handle(PLAY_BOOK, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -81,12 +82,12 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(playSong, func(c tele.Context) error {
+	inst.B.Handle(PLAY_SONG, func(c tele.Context) error {
 		if c.Chat().Type == tele.ChatPrivate {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
 
-		sent := PlaySong(c)
+		sent := playSong(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
@@ -94,12 +95,12 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(playVideo, func(c tele.Context) error {
+	inst.B.Handle(PLAY_VIDEO, func(c tele.Context) error {
 		if c.Chat().Type == tele.ChatPrivate {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
 
-		sent := PlayVideo(c)
+		sent := playVideo(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
@@ -107,7 +108,7 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(streaming, func(c tele.Context) error {
+	inst.B.Handle(STREAMING, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -116,8 +117,8 @@ func init() {
 		return sent
 	})
 
-	inst.B.Handle(shell, func(c tele.Context) error {
-		sent := Shell(c)
+	inst.B.Handle(SH, func(c tele.Context) error {
+		sent := sh(c)
 
 		if sent != nil {
 			panic(sent.Error())
@@ -126,8 +127,8 @@ func init() {
 		return sent
 	}, onlyAdmin)
 
-	inst.B.Handle(speedtest, func(c tele.Context) error {
-		sent := Speedtest(c)
+	inst.B.Handle(SPEEDTEST, func(c tele.Context) error {
+		sent := speedtest(c)
 
 		if sent != nil {
 			logger.Error(sent.Error())

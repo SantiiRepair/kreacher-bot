@@ -12,7 +12,7 @@ import (
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
-func PlaySong(c tele.Context) error {
+func playSong(c tele.Context) error {
 
 	var err error
 	var audioURL string

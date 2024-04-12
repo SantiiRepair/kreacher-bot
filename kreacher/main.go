@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	tele "gopkg.in/telebot.v3"
+	"santiirepair.dev/kreacher/commands"
 	inst "santiirepair.dev/kreacher/instances"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
@@ -70,6 +71,8 @@ func main() {
 		defer wg.Done()
 		inst.U.Idle()
 	}()
+
+	go commands.Start()
 
 	inst.CY.Printf("\n\nBot @%s started, receiving updates...\n", inst.B.Me.Username)
 

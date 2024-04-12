@@ -12,7 +12,7 @@ import (
 	inst "santiirepair.dev/kreacher/instances"
 )
 
-func PlayVideo(c tele.Context) error {
+func playVideo(c tele.Context) error {
 
 	var err error
 	var audioURL, videoURL string
