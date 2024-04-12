@@ -1,18 +1,6 @@
-package main
+package config
 
-// Custom logger set config for entire bot.
-type Logger struct {
-	Name string
-	Path string
-}
-
-// Database SQL params.
-type DB struct {
-	DriverName string
-	DriverConn string
-}
-
-type botConfig struct {
+type TBotConfig struct {
 	APIID            int
 	APIHash          string
 	BotToken         string

@@ -5,106 +5,20 @@ import "C"
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"os/signal"
 	"sync"
 	"syscall"
-	"time"
 
-	"golang.org/x/net/context"
 	tele "gopkg.in/telebot.v3"
-	ntgc "santiirepair.dev/kreacher/ntgcalls"
-
-	tg "github.com/amarnathcjd/gogram/telegram"
-	redis "github.com/redis/go-redis/v9"
+	inst "santiirepair.dev/kreacher/instances"
+	"santiirepair.dev/kreacher/ntgcalls"
 )
-
-func init() {
-	
-	var err error
-
-	_, err = exec.LookPath("yt-dlp")
-	if err != nil {
-		panic("yt-dlp isn't installed")
-	}
-
-	_, err = exec.LookPath("speedtest")
-	if err != nil {
-		panic("speedtest isn't installed")
-	}
-
-	ntgcalls = ntgc.NTgCalls()
-
-	bot, err = tele.NewBot(tele.Settings{
-		Token:  BotConfig().BotToken,
-		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
-		OnError: func(err error, ctx tele.Context) {
-			Error(err.Error())
-		},
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer bot.Close()
-	cy.Printf("✔️ Bot client connected to %s", bot.URL)
-
-	ubot, err = tg.NewClient(tg.ClientConfig{
-		AppID:    int32(BotConfig().APIID),
-		AppHash:  BotConfig().APIHash,
-		Session:  ".mtproto",
-		LogLevel: tg.LogDisable,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	ubot.Start()
-	cy.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
-
-	rdc = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", BotConfig().RedisHost, BotConfig().RedisPort),
-		Password: BotConfig().RedisPassword,
-		DB:       0, // use default DB
-		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
-	})
-
-	_, err = rdc.Ping(context.Background()).Result()
-	if err != nil {
-		panic(err)
-	}
-
-	cy.Print("✔️ Redis client connected, waiting for requests...")
-
-	/*
-		dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
-			BotConfig().PostgresUser,
-			BotConfig().PostgresPassword,
-			BotConfig().PostgresHost,
-			BotConfig().PostgresPort,
-			BotConfig().PostgresDB,
-		)
-
-		idbc, err := pgx.Connect(ctx, dbUrl)
-
-		if err != nil {
-			panic(err)
-		}
-
-		defer idbc.Close(ctx)
-		cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
-	*/
-
-	// Set client instances to late vars in vars.go file.
-}
 
 func main() {
 
 	var wg sync.WaitGroup
 
-	if err := bot.SetCommands([]tele.Command{
+	if err := inst.B.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "ping", Description: "Check the server's latency"},
@@ -116,29 +30,27 @@ func main() {
 		panic(err)
 	}
 
-	ntgcalls.OnStreamEnd(func(chatId int64, streamType ntgc.StreamType) {
+	inst.N.OnStreamEnd(func(chatId int64, streamType ntgcalls.StreamType) {
 		fmt.Println(chatId)
 	})
 
-	ntgcalls.OnConnectionChange(func(chatId int64, state ntgc.ConnectionState) {
+	inst.N.OnConnectionChange(func(chatId int64, state ntgcalls.ConnectionState) {
 		switch state {
-		case ntgc.Connecting:
+		case ntgcalls.Connecting:
 			fmt.Println("Connecting with chatId:", chatId)
-		case ntgc.Connected:
+		case ntgcalls.Connected:
 			fmt.Println("Connected with chatId:", chatId)
-		case ntgc.Failed:
+		case ntgcalls.Failed:
 			fmt.Println("Failed with chatId:", chatId)
-		case ntgc.Timeout:
+		case ntgcalls.Timeout:
 			fmt.Println("Timeout with chatId:", chatId)
-		case ntgc.Closed:
+		case ntgcalls.Closed:
 			fmt.Println("Closed with chatId:", chatId)
 		}
 	})
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT)
-
-	go commands()
 
 	go func() {
 		<-sigChan
@@ -150,16 +62,16 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		bot.Start()
+		inst.B.Start()
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		ubot.Idle()
+		inst.U.Idle()
 	}()
 
-	cy.Printf("\n\nBot @%s started, receiving updates...\n", bot.Me.Username)
+	inst.CY.Printf("\n\nBot @%s started, receiving updates...\n", inst.B.Me.Username)
 
 	wg.Wait()
 

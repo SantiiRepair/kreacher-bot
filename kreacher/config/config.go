@@ -1,21 +1,22 @@
-package main
+package config
 
 import (
 	"log"
 	"os"
+	"path"
 	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 func init() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load(path.Join("..", ".env"))
 	if err != nil {
 		log.Fatalf("No .env file found")
 	}
 }
 
-func BotConfig() *botConfig {
+func BotConfig() *TBotConfig {
 	
 	apiID, _ := strconv.Atoi(os.Getenv("API_ID"))
 	apiHash := os.Getenv("API_HASH")
@@ -34,7 +35,7 @@ func BotConfig() *botConfig {
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 
-	return &botConfig{
+	return &TBotConfig{
 		APIID:            apiID,
 		APIHash:          apiHash,
 		BotToken:         botToken,

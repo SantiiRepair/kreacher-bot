@@ -6,13 +6,14 @@ import (
 	"strconv"
 
 	"github.com/redis/go-redis/v9"
+	inst "santiirepair.dev/kreacher/instances"
 )
 
 // Adds a new item to the queue in Redis.
-func AddToQueue(r *redis.Client, chatId int64, data *Queue) (int, error) {
+func AddToQueue(chatId int64, data *Queue) (int, error) {
 	s := strconv.FormatInt(chatId, 10)
 
-	k, err := r.Get(context.Background(), s).Result()
+	k, err := inst.R.Get(context.Background(), s).Result()
 	if err != nil && err != redis.Nil {
 		return 0, nil
 	}
@@ -42,7 +43,7 @@ func AddToQueue(r *redis.Client, chatId int64, data *Queue) (int, error) {
 		return 0, err
 	}
 
-	_, err = r.Set(context.Background(), s, mj, 0).Result()
+	_, err = inst.R.Set(context.Background(), s, mj, 0).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -51,10 +52,10 @@ func AddToQueue(r *redis.Client, chatId int64, data *Queue) (int, error) {
 }
 
 // Returns the element in the queue for a given chatId.
-func GetQueue(r *redis.Client, chatId int64) ([]Queue, error) {
+func GetQueue(chatId int64) ([]Queue, error) {
 	s := strconv.FormatInt(chatId, 10)
 
-	k, err := r.Get(context.Background(), s).Result()
+	k, err := inst.R.Get(context.Background(), s).Result()
 	if err == redis.Nil {
 		return nil, nil
 	} else if err != nil {

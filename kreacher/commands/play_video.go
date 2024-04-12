@@ -6,13 +6,13 @@ import (
 	"strings"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
-	"github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
 	hl "santiirepair.dev/kreacher/helpers"
 	"santiirepair.dev/kreacher/ntgcalls"
+	inst "santiirepair.dev/kreacher/instances"
 )
 
-func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client) error {
+func PlayVideo(c tele.Context) error {
 
 	var err error
 	var audioURL, videoURL string
@@ -42,15 +42,15 @@ func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client
 		y := strings.ReplaceAll(x, "-100", "")
 		z, _ := strconv.ParseInt(y, 10, 64)
 
-		channel, err := u.GetChannel(z)
+		channel, err := inst.U.GetChannel(z)
 		if err != nil {
 			return err
 		}
 
-		if calls := n.Calls(); len(calls) > 0 {
+		if calls := inst.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					queue, err := hl.AddToQueue(r, c.Chat().ID, &hl.Queue{
+					queue, err := hl.AddToQueue(c.Chat().ID, &hl.Queue{
 						Requester:   c.Sender().ID,
 						AudioSource: audioURL,
 					})
@@ -64,7 +64,7 @@ func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client
 			}
 		}
 
-		jsonParams, err := n.CreateCall(channel.ID, ntgcalls.MediaDescription{
+		jsonParams, err := inst.N.CreateCall(channel.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
 				SampleRate:    96000,
@@ -85,7 +85,7 @@ func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client
 			return err
 		}
 
-		fullChatRaw, err := u.ChannelsGetFullChannel(
+		fullChatRaw, err := inst.U.ChannelsGetFullChannel(
 			&tg.InputChannelObj{
 				ChannelID:  channel.ID,
 				AccessHash: channel.AccessHash,
@@ -98,12 +98,12 @@ func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client
 
 		fullChat := fullChatRaw.FullChat.(*tg.ChannelFull)
 
-		me, err := u.GetMe()
+		me, err := inst.U.GetMe()
 		if err != nil {
 			return err
 		}
 
-		callResRaw, err := u.PhoneJoinGroupCall(
+		callResRaw, err := inst.U.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
 				Muted:        false,
 				VideoStopped: false,
@@ -129,7 +129,7 @@ func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client
 				continue
 			}
 
-			_ = n.Connect(channel.ID, updateTyped.Params.Data)
+			_ = inst.N.Connect(channel.ID, updateTyped.Params.Data)
 		}
 
 		err = c.Send("Successful joined")
