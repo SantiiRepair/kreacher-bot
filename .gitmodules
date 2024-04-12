@@ -10,5 +10,5 @@
 
 [submodule "deps/speedtest-cli"]
 	path = deps/speedtest-cli
-	url = https://github.com/sivel/speedtest-cli
+	url = https://github.com/SantiiRepair/speedtest-cli
 	branch = master

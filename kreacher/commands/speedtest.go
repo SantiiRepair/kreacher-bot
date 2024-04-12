@@ -18,7 +18,7 @@ func Speedtest(c tele.Context) error {
 	mdb := tele.StoredMessage{ChatID: msg.Chat.ID, MessageID: strconv.Itoa(msg.ID)}
 
 	st, err := helpers.Speedtest()
-
+	
 	if err != nil {
 		c.Bot().Delete(&mdb)
 

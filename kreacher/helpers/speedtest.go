@@ -5,16 +5,16 @@ import (
 )
 
 type Client struct {
-	IP        string  `json:"ip"`
-	Lat       float64 `json:"lat"`
-	Lon       float64 `json:"lon"`
-	ISP       string  `json:"isp"`
-	ISPRating float64 `json:"isprating"`
-	Rating    float64 `json:"rating"`
-	ISPDLAVG  float64 `json:"ispdlavg"`
-	ISPULAVG  float64 `json:"ispulavg"`
-	LoggedIn  float64 `json:"loggedin"`
-	Country   string  `json:"country"`
+	IP        string `json:"ip"`
+	Lat       string `json:"lat"`
+	Lon       string `json:"lon"`
+	ISP       string `json:"isp"`
+	ISPRating string `json:"isprating"`
+	Rating    string `json:"rating"`
+	ISPDLAVG  string `json:"ispdlavg"`
+	ISPULAVG  string `json:"ispulavg"`
+	LoggedIn  string `json:"loggedin"`
+	Country   string `json:"country"`
 }
 
 type Server struct {
@@ -47,7 +47,7 @@ func Speedtest() (*SpeedtestResult, error) {
 	var speedtestResult SpeedtestResult
 
 	stdout, err := Shell("speedtest", "--json", "--share")
-
+	
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +56,6 @@ func Speedtest() (*SpeedtestResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &speedtestResult, nil
 }
