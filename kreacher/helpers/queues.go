@@ -9,7 +9,7 @@ import (
 )
 
 // Adds a new item to the queue in Redis.
-func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
+func AddToQueue(r *redis.Client, chatId int64, data *Queue) (int, error) {
 	s := strconv.FormatInt(chatId, 10)
 
 	k, err := r.Get(context.Background(), s).Result()
@@ -17,13 +17,7 @@ func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
 		return 0, nil
 	}
 
-	data := &queue{
-		Requester:     params.Requester,
-		AudioStream:   params.AudioStream,
-		VideoStream:   params.VideoStream,
-	}
-
-	var result []queue
+	var result []Queue
 	if k != "" {
 		err = json.Unmarshal([]byte(k), &result)
 		if err != nil {
@@ -33,6 +27,12 @@ func AddToQueue(r *redis.Client, chatId int64, params *Queue) (int, error) {
 		data.NumberInQueue = result[len(result)-1].NumberInQueue + 1
 	} else {
 		data.NumberInQueue = 1
+	}
+
+	if data.AudioSource != "" && data.VideoSource != "" {
+		data.StreamType = "video"
+	} else {
+		data.StreamType = "audio"
 	}
 
 	result = append(result, *data)

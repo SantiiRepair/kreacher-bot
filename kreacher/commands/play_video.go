@@ -6,27 +6,30 @@ import (
 	"strings"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
+	"github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
-	h "santiirepair.dev/kreacher/helpers"
+	hl "santiirepair.dev/kreacher/helpers"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
-func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
+func PlayVideo(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client) error {
 
 	var err error
-	var audioURL string
-	var videoURL string
+	var audioURL, videoURL string
 
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
-		switch h.GetURLType(target) {
-		case h.YoutubeURL:
-			audioURL, videoURL, err = h.GetYoutubeStream(target)
+		switch hl.GetURLType(target) {
+		case hl.YoutubeURL:
+			audioURL, videoURL, err = hl.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
-		case h.NotURL:
-			response, err := h.YoutubeSearch(target, h.Video)
+		case hl.CommonURL:
+			audioURL = target
+			videoURL = target
+		case hl.NotURL:
+			response, err := hl.YoutubeSearch(target)
 			if err != nil {
 				return nil
 			}
@@ -44,42 +47,19 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 			return err
 		}
 
-		var inputAudio string
-		var inputVideo string
-
-		if audioURL != "" {
-			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
-		} else {
-			inputAudio = fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", target)
-		}
-
-		if videoURL != "" {
-			inputVideo = fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL)
-		} else {
-			inputVideo = fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", target)
-		}
-
 		if calls := n.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					err = n.ChangeStream(chat, ntgcalls.MediaDescription{
-						Audio: &ntgcalls.AudioDescription{
-							InputMode:     ntgcalls.InputModeShell,
-							SampleRate:    96000,
-							BitsPerSample: 16,
-							ChannelCount:  2,
-							Input:         inputAudio,
-						},
-						Video: &ntgcalls.VideoDescription{
-							InputMode: ntgcalls.InputModeShell,
-							Width:     1920,
-							Height:    1080,
-							Fps:       60,
-							Input:     inputVideo,
-						},
+					queue, err := hl.AddToQueue(r, c.Chat().ID, &hl.Queue{
+						Requester:   c.Sender().ID,
+						AudioSource: audioURL,
 					})
 
-					return err
+					if err != nil {
+						return err
+					}
+
+					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
 		}
@@ -90,14 +70,14 @@ func PlayVideo(c tele.Context, u *tg.Client, n *ntgcalls.Client) error {
 				SampleRate:    96000,
 				BitsPerSample: 16,
 				ChannelCount:  2,
-				Input:         inputAudio,
+				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 			},
 			Video: &ntgcalls.VideoDescription{
 				InputMode: ntgcalls.InputModeShell,
 				Width:     1920,
 				Height:    1080,
 				Fps:       60,
-				Input:     inputVideo,
+				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL),
 			},
 		})
 

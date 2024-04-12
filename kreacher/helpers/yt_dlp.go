@@ -23,7 +23,7 @@ func GetYoutubeStream(link string) (string, string, error) {
 	return audioLink, videoLink, nil
 }
 
-func YoutubeSearch(query string, mediaType MediaType, searchRange ...string) (*YoutubeSearchResult, error) {
+func YoutubeSearch(query string, searchRange ...string) (*YoutubeSearchResult, error) {
 	var result YoutubeSearchResult
 	args := make([]string, 0)
 
@@ -67,11 +67,4 @@ func YoutubeDownloader(format string, link string) error {
 	}
 
 	return nil
-}
-
-type YoutubeSearchResult struct {
-	Title    string `json:"title"`
-	AudioURL string `json:"audio_url"`
-	VideoURL string `json:"video_url"`
-	Format   string `json:"format"`
 }

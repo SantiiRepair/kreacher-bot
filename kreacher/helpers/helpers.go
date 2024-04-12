@@ -11,11 +11,6 @@ const (
 	NotURL
 )
 
-const (
-	Audio MediaType = "audio"
-	Video MediaType = "video"
-)
-
 func GetURLType(s string) SourceType {
 	if isYouTubeURL(s) {
 		return YoutubeURL

@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"golang.org/x/net/context"
 	tele "gopkg.in/telebot.v3"
 	ntgc "santiirepair.dev/kreacher/ntgcalls"
 
@@ -33,7 +34,6 @@ func init() {
 	}
 
 	ntgcalls = ntgc.NTgCalls()
-	// defer ntgcalls.Free()
 
 	bot, err = tele.NewBot(tele.Settings{
 		Token:  BotConfig().BotToken,
@@ -71,7 +71,10 @@ func init() {
 		Protocol: 3, // specify 2 for RESP 2 or 3 for RESP 3
 	})
 
-	defer rdc.Close()
+	_, err = rdc.Ping(context.Background()).Result()
+	if err != nil {
+		panic(err)
+	}
 
 	cy.Print("✔️ Redis client connected, waiting for requests...")
 

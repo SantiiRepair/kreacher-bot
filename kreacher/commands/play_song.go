@@ -29,7 +29,7 @@ func PlaySong(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client)
 		case hl.CommonURL:
 			audioURL = target
 		case hl.NotURL:
-			response, err := hl.YoutubeSearch(target, hl.Audio)
+			response, err := hl.YoutubeSearch(target)
 			if err != nil {
 				return nil
 			}
@@ -46,21 +46,19 @@ func PlaySong(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client)
 			return err
 		}
 
-		inputAudio := fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL)
-
 		if calls := n.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					queueNumber, err := hl.AddToQueue(r, c.Chat().ID, &hl.Queue{
+					queue, err := hl.AddToQueue(r, c.Chat().ID, &hl.Queue{
 						Requester:   c.Sender().ID,
-						AudioStream: audioURL,
+						AudioSource: audioURL,
 					})
 
 					if err != nil {
 						return err
 					}
 
-					return c.Reply(fmt.Sprintf("In queue %d", queueNumber))
+					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
 		}
@@ -71,7 +69,7 @@ func PlaySong(c tele.Context, r *redis.Client, u *tg.Client, n *ntgcalls.Client)
 				SampleRate:    96000,
 				BitsPerSample: 16,
 				ChannelCount:  2,
-				Input:         inputAudio,
+				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 			},
 		})
 
