@@ -6,10 +6,10 @@ func ping(c tele.Context) error {
 
 	err := c.Send(pong, &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
 		{
-			tele.InlineButton{
-				Text: "🏓",
+			{
+				Text:   "🏓",
 				Unique: "ping",
-				Data: "",
+				Data:   "",
 			},
 		},
 	}},

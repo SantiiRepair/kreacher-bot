@@ -134,17 +134,17 @@ func playVideo(c tele.Context) error {
 			InlineKeyboard: [][]tele.InlineButton{
 				{
 					{
-						Text:   "Prev",
+						Text:   "⏮",
 						Data:   "",
 						Unique: "prev",
 					},
 					{
-						Text:   "Pause",
+						Text:   "⏸️",
 						Data:   "",
 						Unique: "pause",
 					},
 					{
-						Text:   "Next",
+						Text:   "⏭️",
 						Data:   "",
 						Unique: "next",
 					},

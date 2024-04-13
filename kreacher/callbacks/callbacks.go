@@ -50,14 +50,56 @@ func Start() {
 	})
 
 	core.B.Handle(&pauseBtn, func(c tele.Context) error {
-		return c.Respond(&tele.CallbackResponse{
-			Text: "Callback triggered!",
+		chatId := helpers.ParsePeer(c.Chat().ID)
+		core.N.Pause(chatId)
+
+		return c.Edit(c.Message().Text, &tele.ReplyMarkup{
+			InlineKeyboard: [][]tele.InlineButton{
+				{
+					{
+						Text:   "⏮",
+						Data:   "",
+						Unique: "prev",
+					},
+					{
+						Text:   "▶",
+						Data:   "",
+						Unique: "resume",
+					},
+					{
+						Text:   "⏭️",
+						Data:   "",
+						Unique: "next",
+					},
+				},
+			},
 		})
 	})
 
-	core.B.Handle(&playBtn, func(c tele.Context) error {
-		return c.Respond(&tele.CallbackResponse{
-			Text: "Callback triggered!",
+	core.B.Handle(&resumeBtn, func(c tele.Context) error {
+		chatId := helpers.ParsePeer(c.Chat().ID)
+		core.N.Resume(chatId)
+
+		return c.Edit(c.Message().Text, &tele.ReplyMarkup{
+			InlineKeyboard: [][]tele.InlineButton{
+				{
+					{
+						Text:   "⏮",
+						Data:   "",
+						Unique: "prev",
+					},
+					{
+						Text:   "⏸️",
+						Data:   "",
+						Unique: "pause",
+					},
+					{
+						Text:   "⏭️",
+						Data:   "",
+						Unique: "next",
+					},
+				},
+			},
 		})
 	})
 
@@ -100,7 +142,8 @@ func Start() {
 
 	core.B.Handle(&pingBtn, func(c tele.Context) error {
 		return c.Respond(&tele.CallbackResponse{
-			Text: "Callback triggered!",
+			ShowAlert: true,
+			Text:      "Callback triggered!",
 		})
 	})
 }
