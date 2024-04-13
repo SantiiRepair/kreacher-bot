@@ -84,7 +84,6 @@ func init() {
 		cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
 	*/
 
-	// Set client instances to late vars in vars.go file.
 }
 
 var (
@@ -93,5 +92,6 @@ var (
 	R  *redis.Client
 	D  *pgx.Conn
 	N  *ntgcalls.Client
+	S  = time.Now()
 	CY = color.New(color.FgCyan)
 )

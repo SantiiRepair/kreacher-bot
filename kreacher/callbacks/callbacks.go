@@ -2,6 +2,8 @@ package callbacks
 
 import (
 	"fmt"
+	"math"
+	"time"
 
 	tele "gopkg.in/telebot.v3"
 	"santiirepair.dev/kreacher/core"
@@ -141,9 +143,29 @@ func Start() {
 	})
 
 	core.B.Handle(&pingBtn, func(c tele.Context) error {
+		respTime := time.Now()
+		upTime := time.Since(core.S)
+
+		hours := math.Round(upTime.Hours())
+		minutes := math.Round(upTime.Minutes())
+		seconds := math.Round(upTime.Seconds())
+
+		var formattedDuration string
+
+		if hours > 0 {
+			formattedDuration = fmt.Sprintf("%.0fh", hours)
+		} else if minutes > 0 {
+			formattedDuration = fmt.Sprintf("%.0fm", minutes)
+		} else {
+			formattedDuration = fmt.Sprintf("%.0fs", seconds)
+		}
+
+		text := fmt.Sprintf("Ping: %v\n", time.Since(respTime))
+		text += fmt.Sprintf("Bot Uptime: %s\n", formattedDuration)
+
 		return c.Respond(&tele.CallbackResponse{
+			Text:      text,
 			ShowAlert: true,
-			Text:      "Callback triggered!",
 		})
 	})
 }

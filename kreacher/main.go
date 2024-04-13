@@ -123,5 +123,5 @@ func main() {
 	core.CY.Printf("\n\nBot @%s started, receiving updates...\n", core.B.Me.Username)
 
 	wg.Wait()
-
+	
 }
