@@ -11,7 +11,7 @@ import (
 )
 
 // Adds a new item to the queue in Redis.
-func AddToQueue(chatId int64, data *Queue) (int, error) {
+func AddToPlayList(chatId int64, data *Queue) (int, error) {
 	s := strconv.FormatInt(chatId, 10)
 
 	k, err := core.R.Get(context.Background(), s).Result()
@@ -28,10 +28,11 @@ func AddToQueue(chatId int64, data *Queue) (int, error) {
 
 		data.NumberInQueue = result[len(result)-1].NumberInQueue + 1
 	} else {
-		data.NumberInQueue = 1
+		data.Active = true
+		data.NumberInQueue = 0
 	}
 
-	if data.AudioSource != "" && data.VideoSource != "" {
+	if data.VideoSource != "" {
 		data.StreamType = "video"
 	} else {
 		data.StreamType = "audio"
@@ -53,7 +54,7 @@ func AddToQueue(chatId int64, data *Queue) (int, error) {
 }
 
 // Changes the active queue for the given chatId.
-func ChangeQueue(chatId int64, switchTo string) (*Queue, error) {
+func MovePlayList(chatId int64, switchTo string) (*Queue, error) {
 	s := strconv.FormatInt(chatId, 10)
 
 	k, err := core.R.Get(context.Background(), s).Result()

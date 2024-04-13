@@ -47,7 +47,7 @@ func main() {
 	}
 
 	core.N.OnStreamEnd(func(chatId int64, streamType ntgcalls.StreamType) {
-		result, err := helpers.ChangeQueue(chatId, "next")
+		result, err := helpers.MovePlayList(chatId, "next")
 		if err != nil {
 			logger.Error(err)
 			return

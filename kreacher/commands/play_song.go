@@ -43,18 +43,18 @@ func playSong(c tele.Context) error {
 			return err
 		}
 
+		queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
+			Requester:   c.Sender().ID,
+			AudioSource: audioURL,
+		})
+
+		if err != nil {
+			return err
+		}
+
 		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					queue, err := helpers.AddToQueue(peerId, &helpers.Queue{
-						Requester:   c.Sender().ID,
-						AudioSource: audioURL,
-					})
-
-					if err != nil {
-						return err
-					}
-
 					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
