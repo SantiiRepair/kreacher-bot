@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	tele "gopkg.in/telebot.v3"
+	"santiirepair.dev/kreacher/callbacks"
 	"santiirepair.dev/kreacher/commands"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/helpers"
@@ -38,9 +39,9 @@ func main() {
 		{Text: "config", Description: "Set the bot's configuration"},
 		{Text: "help", Description: "How to use this"},
 		{Text: "ping", Description: "Check the server's latency"},
-		{Text: "play_book", Description: "Play a pdf or epub file as an audio book"},
-		{Text: "play_song", Description: "Play audio in the voice chat"},
-		{Text: "play_video", Description: "Play video in the voice chat"},
+		{Text: "bplay", Description: "Play a pdf or epub file as an audio book"},
+		{Text: "play", Description: "Play audio in the voice chat"},
+		{Text: "vplay", Description: "Play video in the voice chat"},
 		{Text: "streaming", Description: "Any movie or series"},
 	}); err != nil {
 		panic(err)
@@ -53,27 +54,29 @@ func main() {
 			return
 		}
 
-		var desc ntgcalls.MediaDescription
-		desc.Audio = &ntgcalls.AudioDescription{
-			InputMode:     ntgcalls.InputModeShell,
-			SampleRate:    96000,
-			BitsPerSample: 16,
-			ChannelCount:  2,
-			Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", result.AudioSource),
-		}
-		if result.VideoSource != "" {
-			desc.Video = &ntgcalls.VideoDescription{
-				InputMode: ntgcalls.InputModeShell,
-				Width:     1920,
-				Height:    1080,
-				Fps:       60,
-				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", result.VideoSource),
+		if result != nil {
+			var desc ntgcalls.MediaDescription
+			desc.Audio = &ntgcalls.AudioDescription{
+				InputMode:     ntgcalls.InputModeShell,
+				SampleRate:    96000,
+				BitsPerSample: 16,
+				ChannelCount:  2,
+				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", result.AudioSource),
 			}
-		}
+			if result.VideoSource != "" {
+				desc.Video = &ntgcalls.VideoDescription{
+					InputMode: ntgcalls.InputModeShell,
+					Width:     1920,
+					Height:    1080,
+					Fps:       60,
+					Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", result.VideoSource),
+				}
+			}
 
-		err = core.N.ChangeStream(chatId, desc)
-		if err != nil {
-			logger.Error(err)
+			err = core.N.ChangeStream(chatId, desc)
+			if err != nil {
+				logger.Error(err)
+			}
 		}
 	})
 
@@ -115,6 +118,7 @@ func main() {
 	}()
 
 	go commands.Start()
+	go callbacks.Start()
 
 	core.CY.Printf("\n\nBot @%s started, receiving updates...\n", core.B.Me.Username)
 

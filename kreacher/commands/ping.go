@@ -8,7 +8,8 @@ func ping(c tele.Context) error {
 		{
 			tele.InlineButton{
 				Text: "🏓",
-				Data: "ping_cbk",
+				Unique: "ping",
+				Data: "",
 			},
 		},
 	}},

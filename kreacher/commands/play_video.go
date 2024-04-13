@@ -57,27 +57,7 @@ func playVideo(c tele.Context) error {
 		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					return c.Reply(fmt.Sprintf("In queue %d", queue), &tele.ReplyMarkup{
-						InlineKeyboard: [][]tele.InlineButton{
-							{
-								{
-									Text:   "Prev",
-									Data:   "",
-									Unique: "prev",
-								},
-								{
-									Text:   "Pause",
-									Data:   "",
-									Unique: "pause",
-								},
-								{
-									Text:   "Next",
-									Data:   "",
-									Unique: "next",
-								},
-							},
-						},
-					})
+					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
 		}
@@ -150,7 +130,27 @@ func playVideo(c tele.Context) error {
 			_ = core.N.Connect(channel.ID, updateTyped.Params.Data)
 		}
 
-		err = c.Send("Successful joined")
+		err = c.Send("Successful joined", &tele.ReplyMarkup{
+			InlineKeyboard: [][]tele.InlineButton{
+				{
+					{
+						Text:   "Prev",
+						Data:   "",
+						Unique: "prev",
+					},
+					{
+						Text:   "Pause",
+						Data:   "",
+						Unique: "pause",
+					},
+					{
+						Text:   "Next",
+						Data:   "",
+						Unique: "next",
+					},
+				},
+			},
+		})
 
 		return err
 
