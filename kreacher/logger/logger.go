@@ -41,6 +41,6 @@ func Warn(format string, v ...interface{}) {
 }
 
 // Error logger, redirect error to log file.
-func Error(format string, v ...interface{}) {
-	lg.Errorf(format, v...)
+func Error(format error, v ...interface{}) {
+	lg.Errorf(format.Error(), v...)
 }

@@ -1,9 +1,8 @@
-package instances
+package core
 
 import (
 	"context"
 	"fmt"
-	"os/exec"
 	"time"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
@@ -11,32 +10,23 @@ import (
 	pgx "github.com/jackc/pgx/v5"
 	redis "github.com/redis/go-redis/v9"
 	tele "gopkg.in/telebot.v3"
+
 	"santiirepair.dev/kreacher/config"
 	"santiirepair.dev/kreacher/logger"
-	n "santiirepair.dev/kreacher/ntgcalls"
+	"santiirepair.dev/kreacher/ntgcalls"
 )
 
 func init() {
 
 	var err error
 
-	_, err = exec.LookPath("yt-dlp")
-	if err != nil {
-		panic("yt-dlp isn't installed")
-	}
-
-	_, err = exec.LookPath("speedtest")
-	if err != nil {
-		panic("speedtest isn't installed")
-	}
-
-	N = n.NTgCalls()
+	N = ntgcalls.NTgCalls()
 
 	B, err = tele.NewBot(tele.Settings{
 		Token:  config.BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {
-			logger.Error(err.Error())
+			logger.Error(err)
 		},
 	})
 
@@ -98,10 +88,10 @@ func init() {
 }
 
 var (
-	B *tele.Bot
-	U *tg.Client
-	R *redis.Client
-	D *pgx.Conn
-	N *n.Client
+	B  *tele.Bot
+	U  *tg.Client
+	R  *redis.Client
+	D  *pgx.Conn
+	N  *ntgcalls.Client
 	CY = color.New(color.FgCyan)
 )

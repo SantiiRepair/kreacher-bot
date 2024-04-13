@@ -1,8 +1,11 @@
 package helpers
 
 import (
+	"fmt"
 	"net/url"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -32,4 +35,20 @@ func isURL(s string) bool {
 		return false
 	}
 	return true
+}
+
+func ParsePeer(chatId int64) int64 {
+	x := strconv.FormatInt(chatId, 10)
+	y := strings.ReplaceAll(x, "-100", "")
+	z, _ := strconv.ParseInt(y, 10, 64)
+
+	return z
+}
+
+func UnparsePeer(peerId int64) int64 {
+	x := strconv.FormatInt(peerId, 10)
+	y := fmt.Sprintf("-100%s", x)
+	z, _ := strconv.ParseInt(y, 10, 64)
+
+	return z
 }

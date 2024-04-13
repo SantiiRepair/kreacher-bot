@@ -2,13 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	tg "github.com/amarnathcjd/gogram/telegram"
-	inst "santiirepair.dev/kreacher/instances"
 	tele "gopkg.in/telebot.v3"
-	hl "santiirepair.dev/kreacher/helpers"
+	"santiirepair.dev/kreacher/core"
+	"santiirepair.dev/kreacher/helpers"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
@@ -19,17 +18,17 @@ func playSong(c tele.Context) error {
 
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
-		switch hl.GetURLType(target) {
-		case hl.YoutubeURL:
-			audioURL, _, err = hl.GetYoutubeStream(target)
+		switch helpers.GetURLType(target) {
+		case helpers.YoutubeURL:
+			audioURL, _, err = helpers.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
 
-		case hl.CommonURL:
+		case helpers.CommonURL:
 			audioURL = target
-		case hl.NotURL:
-			response, err := hl.YoutubeSearch(target)
+		case helpers.NotURL:
+			response, err := helpers.YoutubeSearch(target)
 			if err != nil {
 				return nil
 			}
@@ -37,19 +36,17 @@ func playSong(c tele.Context) error {
 			audioURL = response.AudioURL
 		}
 
-		x := strconv.FormatInt(c.Chat().ID, 10)
-		y := strings.ReplaceAll(x, "-100", "")
-		z, _ := strconv.ParseInt(y, 10, 64)
+		peerId := helpers.ParsePeer(c.Chat().ID)
 
-		channel, err := inst.U.GetChannel(z)
+		channel, err := core.U.GetChannel(peerId)
 		if err != nil {
 			return err
 		}
 
-		if calls := inst.N.Calls(); len(calls) > 0 {
+		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					queue, err := hl.AddToQueue(c.Chat().ID, &hl.Queue{
+					queue, err := helpers.AddToQueue(peerId, &helpers.Queue{
 						Requester:   c.Sender().ID,
 						AudioSource: audioURL,
 					})
@@ -63,7 +60,7 @@ func playSong(c tele.Context) error {
 			}
 		}
 
-		jsonParams, err := inst.N.CreateCall(channel.ID, ntgcalls.MediaDescription{
+		jsonParams, err := core.N.CreateCall(channel.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
 				SampleRate:    96000,
@@ -77,7 +74,7 @@ func playSong(c tele.Context) error {
 			return err
 		}
 
-		fullChatRaw, err := inst.U.ChannelsGetFullChannel(
+		fullChatRaw, err := core.U.ChannelsGetFullChannel(
 			&tg.InputChannelObj{
 				ChannelID:  channel.ID,
 				AccessHash: channel.AccessHash,
@@ -90,12 +87,12 @@ func playSong(c tele.Context) error {
 
 		fullChat := fullChatRaw.FullChat.(*tg.ChannelFull)
 
-		me, err := inst.U.GetMe()
+		me, err := core.U.GetMe()
 		if err != nil {
 			return err
 		}
 
-		callResRaw, err := inst.U.PhoneJoinGroupCall(
+		callResRaw, err := core.U.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
 				Muted:        false,
 				VideoStopped: true,
@@ -121,7 +118,7 @@ func playSong(c tele.Context) error {
 				continue
 			}
 
-			_ = inst.N.Connect(channel.ID, updateTyped.Params.Data)
+			_ = core.N.Connect(channel.ID, updateTyped.Params.Data)
 		}
 
 		err = c.Reply("Successful joined")

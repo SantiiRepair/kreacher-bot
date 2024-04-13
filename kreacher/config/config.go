@@ -17,7 +17,7 @@ func init() {
 }
 
 func BotConfig() *TBotConfig {
-	
+
 	apiID, _ := strconv.Atoi(os.Getenv("API_ID"))
 	apiHash := os.Getenv("API_HASH")
 	botToken := os.Getenv("BOT_TOKEN")

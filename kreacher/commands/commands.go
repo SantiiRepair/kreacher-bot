@@ -6,9 +6,9 @@ import (
 
 	tg "github.com/amarnathcjd/gogram/telegram"
 	tele "gopkg.in/telebot.v3"
-	middleware "gopkg.in/telebot.v3/middleware"
 	cfg "santiirepair.dev/kreacher/config"
-	inst "santiirepair.dev/kreacher/instances"
+	"gopkg.in/telebot.v3/middleware"	
+	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/logger"
 )
 
@@ -27,7 +27,7 @@ const (
 )
 
 func Start() {
-	rawObj, err := inst.U.ResolveUsername(cfg.BotConfig().Maintainer)
+	rawObj, err := core.U.ResolveUsername(cfg.BotConfig().Maintainer)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -36,7 +36,7 @@ func Start() {
 
 	onlyAdmin := middleware.Whitelist([]int64{mantainer.ID}...)
 
-	inst.B.Handle(CONFIG, func(c tele.Context) error {
+	core.B.Handle(CONFIG, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -45,7 +45,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(HELP, func(c tele.Context) error {
+	core.B.Handle(HELP, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -54,7 +54,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(LEAVE, func(c tele.Context) error {
+	core.B.Handle(LEAVE, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -63,7 +63,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(PING, func(c tele.Context) error {
+	core.B.Handle(PING, func(c tele.Context) error {
 		sent := ping(c)
 
 		if sent != nil {
@@ -73,7 +73,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(PLAY_BOOK, func(c tele.Context) error {
+	core.B.Handle(PLAY_BOOK, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -82,7 +82,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(PLAY_SONG, func(c tele.Context) error {
+	core.B.Handle(PLAY_SONG, func(c tele.Context) error {
 		if c.Chat().Type == tele.ChatPrivate {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
@@ -95,7 +95,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(PLAY_VIDEO, func(c tele.Context) error {
+	core.B.Handle(PLAY_VIDEO, func(c tele.Context) error {
 		if c.Chat().Type == tele.ChatPrivate {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
@@ -108,7 +108,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(STREAMING, func(c tele.Context) error {
+	core.B.Handle(STREAMING, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
@@ -117,7 +117,7 @@ func Start() {
 		return sent
 	})
 
-	inst.B.Handle(SH, func(c tele.Context) error {
+	core.B.Handle(SH, func(c tele.Context) error {
 		sent := sh(c)
 
 		if sent != nil {
@@ -127,11 +127,11 @@ func Start() {
 		return sent
 	}, onlyAdmin)
 
-	inst.B.Handle(SPEEDTEST, func(c tele.Context) error {
+	core.B.Handle(SPEEDTEST, func(c tele.Context) error {
 		sent := speedtest(c)
 
 		if sent != nil {
-			logger.Error(sent.Error())
+			logger.Error(sent)
 		}
 
 		return sent

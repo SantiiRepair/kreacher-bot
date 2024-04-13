@@ -4,6 +4,7 @@ type SourceType int
 type MediaType string
 
 type Queue struct {
+	Active        bool   `json:"active"`
 	Requester     int64  `json:"requester"`
 	AudioSource   string `json:"audio_source"`
 	VideoSource   string `json:"video_source"`

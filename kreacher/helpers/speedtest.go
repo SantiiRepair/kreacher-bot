@@ -8,7 +8,7 @@ func Speedtest() (*SpeedtestResult, error) {
 	var speedtestResult SpeedtestResult
 
 	stdout, err := Shell("speedtest", "--json", "--share")
-	
+
 	if err != nil {
 		return nil, err
 	}
