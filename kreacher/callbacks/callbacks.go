@@ -144,8 +144,11 @@ func Start() {
 
 	core.B.Handle(&pingBtn, func(c tele.Context) error {
 		respTime := time.Now()
-		upTime := time.Since(core.S)
+		c.Bot().ChatByID(c.Chat().ID)
+		latency := time.Since(respTime)
+		text := fmt.Sprintf("Ping: %v\n", fmt.Sprintf("%dms", latency.Milliseconds()))
 
+		upTime := time.Since(core.S)
 		hours := math.Round(upTime.Hours())
 		minutes := math.Round(upTime.Minutes())
 		seconds := math.Round(upTime.Seconds())
@@ -153,14 +156,13 @@ func Start() {
 		var formattedDuration string
 
 		if hours > 0 {
-			formattedDuration = fmt.Sprintf("%.0fh", hours)
+			formattedDuration = fmt.Sprintf("%.0f hours", hours)
 		} else if minutes > 0 {
-			formattedDuration = fmt.Sprintf("%.0fm", minutes)
+			formattedDuration = fmt.Sprintf("%.0f minutes", minutes)
 		} else {
-			formattedDuration = fmt.Sprintf("%.0fs", seconds)
+			formattedDuration = fmt.Sprintf("%.0f seconds", seconds)
 		}
 
-		text := fmt.Sprintf("Ping: %v\n", time.Since(respTime))
 		text += fmt.Sprintf("Bot Uptime: %s\n", formattedDuration)
 
 		return c.Respond(&tele.CallbackResponse{
