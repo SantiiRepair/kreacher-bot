@@ -55,7 +55,27 @@ func playSong(c tele.Context) error {
 		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.ID {
-					return c.Reply(fmt.Sprintf("In queue %d", queue))
+					return c.Reply(fmt.Sprintf("In queue %d", queue), &tele.ReplyMarkup{
+						InlineKeyboard: [][]tele.InlineButton{
+							{
+								{
+									Text:   "Prev",
+									Data:   "",
+									Unique: "prev",
+								},
+								{
+									Text:   "Pause",
+									Data:   "",
+									Unique: "pause",
+								},
+								{
+									Text:   "Next",
+									Data:   "",
+									Unique: "next",
+								},
+							},
+						},
+					})
 				}
 			}
 		}
