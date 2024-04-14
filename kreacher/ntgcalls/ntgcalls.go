@@ -275,7 +275,7 @@ func (ctx *Client) Calls() map[int64]StreamStatus {
 	_ = C.ntg_calls_count(C.uint32_t(ctx.uid), &callSize, f.ParseToC())
 	f.wait()
 	f = CreateFuture()
-	buffer := make([]C.ntg_group_call_struct, callSize)
+	buffer := make([]C.ntg_call_struct, callSize)
 	if len(buffer) == 0 {
 		return mapReturn
 	}
