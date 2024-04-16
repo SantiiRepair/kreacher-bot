@@ -37,12 +37,12 @@ func main() {
 
 	if err := core.B.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
-		{Text: "help", Description: "How to use this"},
-		{Text: "ping", Description: "Check the server's latency"},
-		{Text: "bplay", Description: "Play a pdf or epub file as an audio book"},
+		{Text: "accio", Description: "Check the server's latency"},		
 		{Text: "play", Description: "Play audio in the voice chat"},
 		{Text: "vplay", Description: "Play video in the voice chat"},
+		{Text: "bplay", Description: "Play a pdf or epub file as an audio book"},
 		{Text: "streaming", Description: "Any movie or series"},
+		{Text: "help", Description: "How to use this"},
 	}); err != nil {
 		panic(err)
 	}
@@ -63,6 +63,7 @@ func main() {
 				ChannelCount:  2,
 				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", result.AudioSource),
 			}
+
 			if result.VideoSource != "" {
 				desc.Video = &ntgcalls.VideoDescription{
 					InputMode: ntgcalls.InputModeShell,
@@ -123,5 +124,5 @@ func main() {
 	core.CY.Printf("\n\nBot @%s started, receiving updates...\n", core.B.Me.Username)
 
 	wg.Wait()
-	
+
 }

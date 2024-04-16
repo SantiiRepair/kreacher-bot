@@ -2,13 +2,13 @@ package commands
 
 import tele "gopkg.in/telebot.v3"
 
-func ping(c tele.Context) error {
+func accio(c tele.Context) error {
 
 	err := c.Send(pong, &tele.ReplyMarkup{InlineKeyboard: [][]tele.InlineButton{
 		{
 			{
-				Text:   "🏓",
-				Unique: "ping",
+				Text:   "🔮",
+				Unique: "accio",
 				Data:   "",
 			},
 		},
@@ -19,4 +19,4 @@ func ping(c tele.Context) error {
 	return err
 }
 
-var pong = "<b><i>PONG!!</i></b>"
+var pong = "<b><i>Master!!</i></b>"

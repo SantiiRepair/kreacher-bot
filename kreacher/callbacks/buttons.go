@@ -8,5 +8,5 @@ var (
 	pauseBtn  = selector.Data("", "pause")
 	resumeBtn = selector.Data("", "resume")
 	nextBtn   = selector.Data("", "next")
-	pingBtn   = selector.Data("", "ping")
+	accioBtn  = selector.Data("", "accio")
 )

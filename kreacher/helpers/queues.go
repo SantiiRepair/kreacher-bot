@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	"santiirepair.dev/kreacher/core"
 )
@@ -53,11 +54,17 @@ func AddToPlayList(chatId int64, data *Queue) (int, error) {
 	return data.NumberInQueue, nil
 }
 
+const (
+	cacheExpiration = 0 // no expiration
+)
+
 // Changes the active queue for the given chatId.
+//
+// It returns the deactivated queue and an error if any.
 func MovePlayList(chatId int64, switchTo string) (*Queue, error) {
 	s := strconv.FormatInt(chatId, 10)
 
-	k, err := core.R.Get(context.Background(), s).Result()
+	queuesBytes, err := core.R.Get(context.Background(), s).Bytes()
 	if err == redis.Nil {
 		return nil, nil
 	} else if err != nil {
@@ -65,39 +72,57 @@ func MovePlayList(chatId int64, switchTo string) (*Queue, error) {
 	}
 
 	var queues []Queue
-	err = json.Unmarshal([]byte(k), &queues)
+	err = json.Unmarshal(queuesBytes, &queues)
 	if err != nil {
 		return nil, err
 	}
 
+	if len(queues) < 2 {
+		return nil, errors.New("not enough streams to move")
+	}
+
+	activeQueueIndex := -1
 	for i, queue := range queues {
 		if queue.Active {
-			queues[i].Active = !queues[i].Active
-			if strings.ToLower(switchTo) == "next" {
-				if i < len(queues)-1 {
-					queues[i+1].Active = true
-				}
-			} else {
-				if i > 0 {
-					queues[i-1].Active = true
-				}
-			}
-
-			mj, err := json.Marshal(queues)
-			if err != nil {
-				return nil, err
-			}
-
-			_, err = core.R.Set(context.Background(), s, mj, 0).Result()
-			if err != nil {
-				return nil, err
-			}
-
-			return &queues[i], nil
+			activeQueueIndex = i
+			break
 		}
 	}
 
-	return nil, nil
+	if activeQueueIndex == -1 {
+		return nil, errors.New("no active queue found")
+	}
+
+	queues[activeQueueIndex].Active = false
+
+	switch strings.ToLower(switchTo) {
+	case "next":
+		if activeQueueIndex < len(queues)-1 {
+			queues[activeQueueIndex+1].Active = true
+		} else {
+			return nil, errors.New("no next queue found")
+		}
+	case "prev":
+		if activeQueueIndex > 0 {
+			queues[activeQueueIndex-1].Active = true
+		} else {
+			return nil, errors.New("no previous queue found")
+		}
+	default:
+		return nil, errors.New("invalid switchTo parameter")
+	}
+
+	updatedQueuesBytes, err := json.Marshal(queues)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = core.R.Set(context.Background(), s, updatedQueuesBytes, cacheExpiration).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	return &queues[activeQueueIndex], nil
 }
 
 // Deletes the queue for a given chatId.

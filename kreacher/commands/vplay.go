@@ -11,22 +11,22 @@ import (
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
-func playSong(c tele.Context) error {
+func vplay(c tele.Context) error {
 
 	var err error
-	var audioURL string
+	var audioURL, videoURL string
 
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		switch helpers.GetURLType(target) {
 		case helpers.YoutubeURL:
-			audioURL, _, err = helpers.GetYoutubeStream(target)
+			audioURL, videoURL, err = helpers.GetYoutubeStream(target)
 			if err != nil {
 				return err
 			}
-
 		case helpers.CommonURL:
 			audioURL = target
+			videoURL = target
 		case helpers.NotURL:
 			response, err := helpers.YoutubeSearch(target)
 			if err != nil {
@@ -34,6 +34,7 @@ func playSong(c tele.Context) error {
 			}
 
 			audioURL = response.AudioURL
+			videoURL = response.VideoURL
 		}
 
 		peerId := helpers.ParsePeer(c.Chat().ID)
@@ -46,6 +47,7 @@ func playSong(c tele.Context) error {
 		queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
 			Requester:   c.Sender().ID,
 			AudioSource: audioURL,
+			VideoSource: videoURL,
 		})
 
 		if err != nil {
@@ -67,6 +69,13 @@ func playSong(c tele.Context) error {
 				BitsPerSample: 16,
 				ChannelCount:  2,
 				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+			},
+			Video: &ntgcalls.VideoDescription{
+				InputMode: ntgcalls.InputModeShell,
+				Width:     1920,
+				Height:    1080,
+				Fps:       60,
+				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL),
 			},
 		})
 
@@ -95,7 +104,7 @@ func playSong(c tele.Context) error {
 		callResRaw, err := core.U.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
 				Muted:        false,
-				VideoStopped: true,
+				VideoStopped: false,
 				Call:         fullChat.Call,
 				Params: &tg.DataJson{
 					Data: jsonParams,

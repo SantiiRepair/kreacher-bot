@@ -121,6 +121,7 @@ func Start() {
 				ChannelCount:  2,
 				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", result.AudioSource),
 			}
+
 			if result.VideoSource != "" {
 				desc.Video = &ntgcalls.VideoDescription{
 					InputMode: ntgcalls.InputModeShell,
@@ -142,7 +143,7 @@ func Start() {
 		return nil
 	})
 
-	core.B.Handle(&pingBtn, func(c tele.Context) error {
+	core.B.Handle(&accioBtn, func(c tele.Context) error {
 		respTime := time.Now()
 		c.Bot().ChatByID(c.Chat().ID)
 		latency := time.Since(respTime)
@@ -164,6 +165,13 @@ func Start() {
 		}
 
 		text += fmt.Sprintf("Bot Uptime: %s\n", formattedDuration)
+
+		mem := helpers.GetMemoryUsage()
+		text += fmt.Sprintf("\nMemory Usage: %.2f%%\n", mem)
+		nu, err := core.N.CpuUsage()
+		if err == nil {
+			text += fmt.Sprintf("Ntgcalls CPU: %.2f%%\n", nu)
+		}
 
 		return c.Respond(&tele.CallbackResponse{
 			Text:      text,

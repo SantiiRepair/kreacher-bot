@@ -17,7 +17,7 @@ const (
 	CONFIG     string = "/config"
 	HELP       string = "/help"
 	LEAVE      string = "/leave"
-	PING       string = "/ping"
+	ACCIO       string = "/accio"
 	PLAY_BOOK  string = "/bplay"
 	PLAY_SONG  string = "/play"
 	PLAY_VIDEO string = "/vplay"
@@ -63,8 +63,8 @@ func Start() {
 		return sent
 	})
 
-	core.B.Handle(PING, func(c tele.Context) error {
-		sent := ping(c)
+	core.B.Handle(ACCIO, func(c tele.Context) error {
+		sent := accio(c)
 
 		if sent != nil {
 			panic(sent.Error())
@@ -87,7 +87,7 @@ func Start() {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
 
-		sent := playSong(c)
+		sent := play(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
@@ -100,7 +100,7 @@ func Start() {
 			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
 		}
 
-		sent := playVideo(c)
+		sent := vplay(c)
 		if sent != nil {
 			panic(sent.Error())
 		}
