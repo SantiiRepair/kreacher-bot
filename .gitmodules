@@ -1,7 +1,7 @@
 [submodule "deps/ntgcalls"]
 	path = deps/ntgcalls
 	url = https://github.com/pytgcalls/ntgcalls
-	branch = dev
+	branch = master
 
 [submodule "deps/yt-dlp"]
 	path = deps/yt-dlp

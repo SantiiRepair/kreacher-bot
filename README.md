@@ -18,6 +18,14 @@ ______________________________________________________________________
 
 </div>
 
+## Cloning
+
+First we must clone the project with its respective submodules, for this execute the following command in your working directory.
+
+```sh
+git clone https://github.com/SantiiRepair/kreacher-bot.git --recurse-submodules
+```
+
 ## Setting Up
 First of all you must create a `.env` file that contains access keys, database configurations, etc... you can do it by copying and pasting the `.env.example` file and renaming it to just `.env` then fill out the fields, you can get the `API_ID` and `API_HASH` [here](https://my.telegram.org/) the bot uses [Telegram's MTProto API](https://core.telegram.org/mtproto) to download large files faster since the bot api is [limited](https://core.telegram.org/bots/faq#how-do-i-download-files) to only 20MB and the download is slower.
 
