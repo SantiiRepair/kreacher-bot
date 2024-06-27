@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/joho/godotenv v1.5.1
+	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/sirupsen/logrus v1.9.3
 	gopkg.in/ini.v1 v1.67.0
@@ -31,7 +32,6 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect

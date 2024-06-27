@@ -1,15 +1,14 @@
 package logger
 
 import (
-	"io"
-	"log"
+	"fmt"
 	"os"
 	"path"
 
 	"github.com/sirupsen/logrus"
 )
 
-var lg *logrus.Logger
+var log = logrus.New()
 
 func init() {
 	botLogsPath := path.Join("..", "logs", "bot.log")
@@ -17,30 +16,24 @@ func init() {
 	file, err := os.OpenFile(botLogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		panic(fmt.Sprintf("error opening file: %v", err))
 	}
 
-	defer file.Close()
-
-	log := logrus.New()
-
 	log.SetReportCaller(true)
-
-	mw := io.MultiWriter(os.Stdout, file)
-	log.SetOutput(mw)
+	log.SetOutput(file)
 }
 
 // Info logger, redirect info to log file.
 func Info(format string, v ...interface{}) {
-	lg.Infof(format, v...)
+	log.Infof(format, v...)
 }
 
 // Warn logger, redirect warning to log file.
 func Warn(format string, v ...interface{}) {
-	lg.Warnf(format, v...)
+	log.Warnf(format, v...)
 }
 
 // Error logger, redirect error to log file.
 func Error(format error, v ...interface{}) {
-	lg.Errorf(format.Error(), v...)
+	log.Errorf(format.Error(), v...)
 }

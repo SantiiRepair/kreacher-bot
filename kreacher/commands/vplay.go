@@ -83,7 +83,7 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		fullChatRaw, err := core.U.ChannelsGetFullChannel(
+		mcf, err := core.U.ChannelsGetFullChannel(
 			&tg.InputChannelObj{
 				ChannelID:  channel.ID,
 				AccessHash: channel.AccessHash,
@@ -94,14 +94,14 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		fullChat := fullChatRaw.FullChat.(*tg.ChannelFull)
+		fullChat := mcf.FullChat.(*tg.ChannelFull)
 
 		me, err := core.U.GetMe()
 		if err != nil {
 			return err
 		}
 
-		callResRaw, err := core.U.PhoneJoinGroupCall(
+		updates, err := core.U.PhoneJoinGroupCall(
 			&tg.PhoneJoinGroupCallParams{
 				Muted:        false,
 				VideoStopped: false,
@@ -120,7 +120,7 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		callRes := callResRaw.(*tg.UpdatesObj)
+		callRes := updates.(*tg.UpdatesObj)
 		for _, update := range callRes.Updates {
 			updateTyped, ok := update.(*tg.UpdateGroupCallConnection)
 			if !ok {

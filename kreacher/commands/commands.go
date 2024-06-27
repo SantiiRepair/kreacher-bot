@@ -17,7 +17,7 @@ const (
 	CONFIG     string = "/config"
 	HELP       string = "/help"
 	LEAVE      string = "/leave"
-	ACCIO       string = "/accio"
+	ACCIO      string = "/accio"
 	PLAY_BOOK  string = "/bplay"
 	PLAY_SONG  string = "/play"
 	PLAY_VIDEO string = "/vplay"
@@ -40,7 +40,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 		return sent
 	})
@@ -49,7 +49,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 		return sent
 	})
@@ -58,7 +58,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 		return sent
 	})
@@ -67,7 +67,7 @@ func Start() {
 		sent := accio(c)
 
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 
 		return sent
@@ -77,7 +77,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 		return sent
 	})
@@ -89,7 +89,7 @@ func Start() {
 
 		sent := play(c)
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 
 		return sent
@@ -102,7 +102,7 @@ func Start() {
 
 		sent := vplay(c)
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 
 		return sent
@@ -112,7 +112,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 		return sent
 	})
@@ -121,7 +121,7 @@ func Start() {
 		sent := sh(c)
 
 		if sent != nil {
-			panic(sent.Error())
+			logger.Error(sent)
 		}
 
 		return sent
