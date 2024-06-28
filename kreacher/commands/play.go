@@ -32,6 +32,7 @@ func play(c tele.Context) error {
 		audioURL = target
 	case helpers.NotURL:
 		response, err := helpers.YoutubeSearch(target)
+
 		if err != nil {
 			return nil
 		}

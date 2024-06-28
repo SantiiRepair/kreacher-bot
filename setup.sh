@@ -16,6 +16,7 @@ install_yt_dlp() {
         wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
         $SUDO mv yt-dlp /usr/bin/yt-dlp
         $SUDO chmod +rwx /usr/bin/yt-dlp
+        $SUDO /usr/bin/yt-dlp --update-to master
     fi
 }
 

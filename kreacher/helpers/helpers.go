@@ -34,6 +34,7 @@ func isURL(s string) bool {
 	if err != nil || u.Scheme == "" || u.Host == "" {
 		return false
 	}
+	
 	return true
 }
 

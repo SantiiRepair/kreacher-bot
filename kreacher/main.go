@@ -51,7 +51,6 @@ func main() {
 		result, err := helpers.MovePlayList(chatId, "next")
 		if err != nil {
 			logger.Error(err)
-			return
 		}
 
 		if result != nil {
