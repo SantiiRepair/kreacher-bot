@@ -8,7 +8,6 @@ import (
 	"time"
 
 	pebbledb "github.com/cockroachdb/pebble"
-	"github.com/fatih/color"
 	boltstor "github.com/gotd/contrib/bbolt"
 	"github.com/gotd/contrib/middleware/floodwait"
 	"github.com/gotd/contrib/middleware/ratelimit"
@@ -51,7 +50,7 @@ func init() {
 	}
 
 	defer B.Close()
-	CY.Printf("✔️ Bot client connected to %s", B.URL)
+	fmt.Printf("✔️ Bot client connected to %s", B.URL)
 
 	sessionDir := filepath.Join("..", "session")
 	if err := os.MkdirAll(sessionDir, 0700); err != nil {
@@ -119,9 +118,9 @@ func init() {
 				}
 
 				// Getting info about current user.
-				self, err := U.Self(ctx)
+				self, err := U.Self(context.Background())
 				if err != nil {
-					return errors.Wrap(err, "call self")
+					panic(err)
 				}
 
 				name := self.FirstName
@@ -130,7 +129,7 @@ func init() {
 					name = fmt.Sprintf("%s (@%s)", name, self.Username)
 				}
 
-				fmt.Println("Current user:", name)
+				fmt.Printf("\n✔️ Initialized new MTProto client, %s\n", name)
 
 				logger.Info("login",
 					zap.String("first_name", self.FirstName),
@@ -139,7 +138,7 @@ func init() {
 					zap.Int64("id", self.ID),
 				)
 
-				fmt.Println("Filling peer storage from dialogs to cache entities")
+				logger.Info("filling peer storage from dialogs to cache entities")
 				collector := storage.CollectPeers(PDB)
 				if err := collector.Dialogs(ctx, query.GetDialogs(U.API()).Iter()); err != nil {
 					return errors.Wrap(err, "collect peers")
@@ -148,7 +147,7 @@ func init() {
 				return updatesRecovery.Run(ctx, U.API(), self.ID, updates.AuthOptions{
 					IsBot: self.Bot,
 					OnStart: func(ctx context.Context) {
-						fmt.Println("Update recovery initialized and started, listening for events")
+						logger.Info("update recovery initialized and started, listening for events")
 					},
 				})
 			}); err != nil {
@@ -160,8 +159,6 @@ func init() {
 	}()
 
 	time.Sleep(2 * time.Second)
-
-	CY.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
 	R = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.BotConfig().RedisHost, config.BotConfig().RedisPort),
@@ -175,7 +172,7 @@ func init() {
 		panic(err)
 	}
 
-	CY.Print("✔️ Redis client connected, waiting for requests...\n")
+	fmt.Print("✔️ Redis client connected, waiting for requests...\n")
 
 	/*
 		dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
@@ -193,12 +190,10 @@ func init() {
 		}
 
 		defer idbc.Close(ctx)
-		cy.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
+		fmt.Println("\n✔️ PGX client connected to PostgreSQL database, waiting for requests...")
 	*/
 
 }
-
-
 
 var (
 	B   *tele.Bot
@@ -207,6 +202,5 @@ var (
 	D   *pgx.Conn
 	N   *ntgcalls.Client
 	S   = time.Now()
-	CY  = color.New(color.FgCyan)
 	PDB = &pebble.PeerStorage{}
 )
