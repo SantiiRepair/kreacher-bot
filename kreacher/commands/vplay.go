@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
-	tg "github.com/amarnathcjd/gogram/telegram"
+	"github.com/gotd/contrib/storage"
+	"github.com/gotd/td/tg"
 	tele "gopkg.in/telebot.v3"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/helpers"
@@ -39,7 +41,7 @@ func vplay(c tele.Context) error {
 
 		peerId := helpers.ParsePeer(c.Chat().ID)
 
-		channel, err := core.U.GetChannel(peerId)
+		channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: c.Chat().ID})
 		if err != nil {
 			return err
 		}
@@ -56,13 +58,13 @@ func vplay(c tele.Context) error {
 
 		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
-				if chat == channel.ID {
+				if chat == channel.Key.ID {
 					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
 		}
 
-		jsonParams, err := core.N.CreateCall(channel.ID, ntgcalls.MediaDescription{
+		jsonParams, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
 				SampleRate:    96000,
@@ -83,10 +85,11 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		mcf, err := core.U.ChannelsGetFullChannel(
-			&tg.InputChannelObj{
-				ChannelID:  channel.ID,
-				AccessHash: channel.AccessHash,
+		mcf, err := core.U.API().ChannelsGetFullChannel(
+			context.Background(),
+			&tg.InputChannel{
+				ChannelID:  channel.Key.ID,
+				AccessHash: channel.Key.AccessHash,
 			},
 		)
 
@@ -96,17 +99,18 @@ func vplay(c tele.Context) error {
 
 		fullChat := mcf.FullChat.(*tg.ChannelFull)
 
-		me, err := core.U.GetMe()
+		me, err := core.U.Self(context.Background())
 		if err != nil {
 			return err
 		}
 
-		updates, err := core.U.PhoneJoinGroupCall(
-			&tg.PhoneJoinGroupCallParams{
+		_, err = core.U.API().PhoneJoinGroupCall(
+			context.Background(),
+			&tg.PhoneJoinGroupCallRequest{
 				Muted:        false,
 				VideoStopped: false,
 				Call:         fullChat.Call,
-				Params: &tg.DataJson{
+				Params: tg.DataJSON{
 					Data: jsonParams,
 				},
 				JoinAs: &tg.InputPeerUser{
@@ -120,15 +124,17 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		callRes := updates.(*tg.UpdatesObj)
+		/*callRes := updates.(*tg.UpdatesObj)
 		for _, update := range callRes.Updates {
 			updateTyped, ok := update.(*tg.UpdateGroupCallConnection)
 			if !ok {
 				continue
 			}
 
-			_ = core.N.Connect(channel.ID, updateTyped.Params.Data)
-		}
+
+		}*/
+
+		_ = core.N.Connect(channel.Key.ID, jsonParams)
 
 		err = c.Send("Successful joined", &tele.ReplyMarkup{
 			InlineKeyboard: [][]tele.InlineButton{

@@ -1,38 +1,45 @@
 package logger
 
 import (
-	"fmt"
-	"os"
 	"path"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	lj "gopkg.in/natefinch/lumberjack.v2"
 )
 
-var log = logrus.New()
-var LogsPath = path.Join("..", "logs", "bot.log")
-
 func init() {
-	file, err := os.OpenFile(LogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	logWriter := zapcore.AddSync(&lj.Logger{
+		Filename: LogsPath,
+		// MaxBackups: 3,
+		// MaxSize:    1, // megabytes
+		// MaxAge:     7, // days
+	})
 
-	if err != nil {
-		panic(fmt.Sprintf("error opening file: %v", err))
-	}
+	logCore := zapcore.NewCore(
+		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+		logWriter,
+		zap.DebugLevel,
+	)
 
-	log.SetReportCaller(true)
-	log.SetOutput(file)
+	T = zap.New(logCore)
+	defer func() { _ = T.Sync() }()
 }
+
+var T = &zap.Logger{}
+var LogsPath = path.Join("..", "logs", "bot.json")
 
 // Info logger, redirect info to log file.
 func Info(format string, v ...interface{}) {
-	log.Infof(format, v...)
+	T.Sugar().Infof(format, v...)
 }
 
 // Warn logger, redirect warning to log file.
 func Warn(format string, v ...interface{}) {
-	log.Warnf(format, v...)
+	T.Sugar().Warnf(format, v...)
 }
 
 // Error logger, redirect error to log file.
 func Error(format error, v ...interface{}) {
-	log.Errorf(format.Error(), v...)
+	T.Sugar().Errorf(format.Error(), v...)
 }

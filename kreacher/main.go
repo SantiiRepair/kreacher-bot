@@ -37,7 +37,7 @@ func main() {
 
 	if err := core.B.SetCommands([]tele.Command{
 		{Text: "config", Description: "Set the bot's configuration"},
-		{Text: "accio", Description: "Check the server's latency"},		
+		{Text: "accio", Description: "Check the server's latency"},
 		{Text: "play", Description: "Play audio in the voice chat"},
 		{Text: "vplay", Description: "Play video in the voice chat"},
 		{Text: "bplay", Description: "Play a pdf or epub file as an audio book"},
@@ -109,12 +109,6 @@ func main() {
 	go func() {
 		defer wg.Done()
 		core.B.Start()
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		core.U.Idle()
 	}()
 
 	go commands.Start()

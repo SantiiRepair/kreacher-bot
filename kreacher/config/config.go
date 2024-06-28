@@ -18,14 +18,13 @@ func init() {
 
 func BotConfig() *TBotConfig {
 
-	apiID, _ := strconv.Atoi(os.Getenv("API_ID"))
+	apiId, _ := strconv.Atoi(os.Getenv("API_ID"))
 	apiHash := os.Getenv("API_HASH")
 	botToken := os.Getenv("BOT_TOKEN")
 	channel := os.Getenv("CHANNEL")
 	esMoviesChannel := os.Getenv("ES_MOVIES_CHANNEL")
 	esSeriesChannel := os.Getenv("ES_SERIES_CHANNEL")
 	managementMode := os.Getenv("MANAGEMENT_MODE")
-	maintainer := os.Getenv("MAINTAINER")
 	postgresDB := os.Getenv("POSTGRES_DB")
 	postgresUser := os.Getenv("POSTGRES_USER")
 	postgressPassword := os.Getenv("POSTGRES_PASSWORD")
@@ -36,14 +35,13 @@ func BotConfig() *TBotConfig {
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 
 	return &TBotConfig{
-		APIID:            apiID,
+		APIID:            apiId,
 		APIHash:          apiHash,
 		BotToken:         botToken,
 		Channel:          channel,
 		ESMoviesChannel:  esMoviesChannel,
 		ESSeriesChannel:  esSeriesChannel,
 		ManagementMode:   managementMode,
-		Maintainer:       maintainer,
 		PostgresDB:       postgresDB,
 		PostgresUser:     postgresUser,
 		PostgresPassword: postgressPassword,

@@ -3,10 +3,12 @@
 *.db
 *.cfg
 *.env
-*.log
 *.rdb
 *.sum
 *.lock
 *.spec
 *.build
 *.mtproto
+
+/logs/*.json
+/session/*.json

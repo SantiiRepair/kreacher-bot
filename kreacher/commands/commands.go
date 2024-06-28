@@ -1,13 +1,12 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"log"
 
-	tg "github.com/amarnathcjd/gogram/telegram"
 	tele "gopkg.in/telebot.v3"
 	"gopkg.in/telebot.v3/middleware"
-	cfg "santiirepair.dev/kreacher/config"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/logger"
 )
@@ -28,12 +27,10 @@ const (
 )
 
 func Start() {
-	rawObj, err := core.U.ResolveUsername(cfg.BotConfig().Maintainer)
+	mantainer, err := core.U.Self(context.Background())
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	mantainer := rawObj.(*tg.UserObj)
 
 	onlyAdmin := middleware.Whitelist([]int64{mantainer.ID}...)
 
