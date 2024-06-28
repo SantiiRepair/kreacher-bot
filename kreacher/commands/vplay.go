@@ -71,17 +71,17 @@ func vplay(c tele.Context) error {
 
 		params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
-				InputMode:     ntgcalls.InputModeShell,
-				SampleRate:    96000,
-				BitsPerSample: 16,
 				ChannelCount:  2,
+				BitsPerSample: 16,
+				SampleRate:    96000,
+				InputMode:     ntgcalls.InputModeShell,
 				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 			},
 			Video: &ntgcalls.VideoDescription{
-				InputMode: ntgcalls.InputModeShell,
+				Fps:       60,
 				Width:     1920,
 				Height:    1080,
-				Fps:       60,
+				InputMode: ntgcalls.InputModeShell,
 				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", videoURL),
 			},
 		})

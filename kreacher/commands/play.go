@@ -73,10 +73,10 @@ func play(c tele.Context) error {
 
 	params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
 		Audio: &ntgcalls.AudioDescription{
-			InputMode:     ntgcalls.InputModeShell,
-			SampleRate:    96000,
-			BitsPerSample: 16,
 			ChannelCount:  2,
+			BitsPerSample: 16,
+			SampleRate:    96000,
+			InputMode:     ntgcalls.InputModeShell,
 			Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
 		},
 	})
