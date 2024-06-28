@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16.1-alpine3.19
+    image: postgres:latest
     restart: always
     user: "$PGUSER"
     volumes:
@@ -14,7 +14,7 @@ services:
     networks:
       - kreacher
   cache:
-    image: redis:7.2.3-alpine3.19
+    image: redis:latest
     restart: always
     volumes:
       - ./container/redis:/data

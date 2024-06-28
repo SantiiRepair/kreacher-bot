@@ -9,11 +9,10 @@ import (
 )
 
 var log = logrus.New()
+var LogsPath = path.Join("..", "logs", "bot.log")
 
 func init() {
-	botLogsPath := path.Join("..", "logs", "bot.log")
-
-	file, err := os.OpenFile(botLogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(LogsPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 
 	if err != nil {
 		panic(fmt.Sprintf("error opening file: %v", err))

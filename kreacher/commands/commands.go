@@ -22,6 +22,7 @@ const (
 	PLAY_SONG  string = "/play"
 	PLAY_VIDEO string = "/vplay"
 	SH         string = "/sh"
+	LOGS       string = "/logs"
 	SPEEDTEST  string = "/speedtest"
 	STREAMING  string = "/streaming"
 )
@@ -119,6 +120,16 @@ func Start() {
 
 	core.B.Handle(SH, func(c tele.Context) error {
 		sent := sh(c)
+
+		if sent != nil {
+			logger.Error(sent)
+		}
+
+		return sent
+	}, onlyAdmin)
+
+	core.B.Handle(LOGS, func(c tele.Context) error {
+		sent := logs(c)
 
 		if sent != nil {
 			logger.Error(sent)
