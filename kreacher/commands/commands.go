@@ -41,7 +41,8 @@ func Start() {
 		if sent != nil {
 			logger.Error("config command", zap.Error(sent))
 		}
-		return sent
+
+		return nil
 	})
 
 	core.B.Handle(HELP, func(c tele.Context) error {
@@ -50,16 +51,17 @@ func Start() {
 		if sent != nil {
 			logger.Error("help command", zap.Error(sent))
 		}
-		return sent
+
+		return nil
 	})
 
 	core.B.Handle(LEAVE, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
+		sent := leave(c)
 		if sent != nil {
 			logger.Error("leave command", zap.Error(sent))
 		}
-		return sent
+
+		return nil
 	})
 
 	core.B.Handle(ACCIO, func(c tele.Context) error {
@@ -69,7 +71,7 @@ func Start() {
 			logger.Error("accio command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	})
 
 	core.B.Handle(PLAY_BOOK, func(c tele.Context) error {
@@ -78,7 +80,8 @@ func Start() {
 		if sent != nil {
 			logger.Error("play book command", zap.Error(sent))
 		}
-		return sent
+
+		return nil
 	})
 
 	core.B.Handle(PLAY_SONG, func(c tele.Context) error {
@@ -91,7 +94,7 @@ func Start() {
 			logger.Error("play audio command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	})
 
 	core.B.Handle(PLAY_VIDEO, func(c tele.Context) error {
@@ -104,7 +107,7 @@ func Start() {
 			logger.Error("play video command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	})
 
 	core.B.Handle(STREAMING, func(c tele.Context) error {
@@ -113,7 +116,8 @@ func Start() {
 		if sent != nil {
 			logger.Error("streaming command", zap.Error(sent))
 		}
-		return sent
+		
+		return nil
 	})
 
 	core.B.Handle(SH, func(c tele.Context) error {
@@ -123,7 +127,7 @@ func Start() {
 			logger.Error("sh command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	}, onlyAdmin)
 
 	core.B.Handle(LOGS, func(c tele.Context) error {
@@ -133,7 +137,7 @@ func Start() {
 			logger.Error("logs command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	}, onlyAdmin)
 
 	core.B.Handle(SPEEDTEST, func(c tele.Context) error {
@@ -143,7 +147,7 @@ func Start() {
 			logger.Error("speedtest command", zap.Error(sent))
 		}
 
-		return sent
+		return nil
 	}, onlyAdmin)
 }
 

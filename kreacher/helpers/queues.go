@@ -126,9 +126,9 @@ func MovePlayList(chatId int64, switchTo string) (*Queue, error) {
 }
 
 // Deletes the queue for a given chatId.
-func DeleteQueue(r *redis.Client, chatId int64) error {
+func DeleteQueue(chatId int64) error {
 	s := strconv.FormatInt(chatId, 10)
 
-	_, err := r.Del(context.Background(), s).Result()
+	_, err := core.R.Del(context.Background(), s).Result()
 	return err
 }
