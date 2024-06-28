@@ -116,7 +116,7 @@ func Start() {
 		if sent != nil {
 			logger.Error("streaming command", zap.Error(sent))
 		}
-		
+
 		return nil
 	})
 

@@ -10,10 +10,10 @@ import (
 
 func init() {
 	writer := zapcore.AddSync(&lj.Logger{
-		Filename: LogsPath,
-		// MaxBackups: 3,
-		// MaxSize:    1, // megabytes
-		// MaxAge:     7, // days
+		MaxBackups: 3,  // old log files to retain
+		MaxSize:    10, // megabytes
+		MaxAge:     7,  // days
+		Filename:   LogsPath,
 	})
 
 	encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())

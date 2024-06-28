@@ -35,7 +35,7 @@ func (terminal) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string, er
 	if err != nil {
 		return "", err
 	}
-	
+
 	return strings.TrimSpace(code), nil
 }
 
