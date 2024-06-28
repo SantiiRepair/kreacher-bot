@@ -50,7 +50,7 @@ func main() {
 	core.N.OnStreamEnd(func(chatId int64, streamType ntgcalls.StreamType) {
 		result, err := helpers.MovePlayList(chatId, "next")
 		if err != nil {
-			logger.Error(err)
+			logger.Error(err.Error())
 		}
 
 		if result != nil {
@@ -75,7 +75,7 @@ func main() {
 
 			err = core.N.ChangeStream(chatId, desc)
 			if err != nil {
-				logger.Error(err)
+				logger.Error(err.Error())
 			}
 		}
 	})
@@ -83,15 +83,15 @@ func main() {
 	core.N.OnConnectionChange(func(chatId int64, state ntgcalls.ConnectionState) {
 		switch state {
 		case ntgcalls.Connecting:
-			logger.Info("connecting with chatId:", chatId)
+			logger.Infof("connecting with chatId: %d", chatId)
 		case ntgcalls.Connected:
-			logger.Info("connected with chatId:", chatId)
+			logger.Infof("connected with chatId: %d", chatId)
 		case ntgcalls.Failed:
-			logger.Info("failed with chatId:", chatId)
+			logger.Infof("failed with chatId: %d", chatId)
 		case ntgcalls.Timeout:
-			logger.Info("timeout with chatId:", chatId)
+			logger.Infof("timeout with chatId: %d", chatId)
 		case ntgcalls.Closed:
-			logger.Info("closed with chatId:", chatId)
+			logger.Infof("closed with chatId: %d", chatId)
 		}
 	})
 

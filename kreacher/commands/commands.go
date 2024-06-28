@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"go.uber.org/zap"
 	tele "gopkg.in/telebot.v3"
 	"gopkg.in/telebot.v3/middleware"
 	"santiirepair.dev/kreacher/core"
@@ -38,7 +39,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("config command", zap.Error(sent))
 		}
 		return sent
 	})
@@ -47,7 +48,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("help command", zap.Error(sent))
 		}
 		return sent
 	})
@@ -56,7 +57,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("leave command", zap.Error(sent))
 		}
 		return sent
 	})
@@ -65,7 +66,7 @@ func Start() {
 		sent := accio(c)
 
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("accio command", zap.Error(sent))
 		}
 
 		return sent
@@ -75,7 +76,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("play book command", zap.Error(sent))
 		}
 		return sent
 	})
@@ -87,7 +88,7 @@ func Start() {
 
 		sent := play(c)
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("play audio command", zap.Error(sent))
 		}
 
 		return sent
@@ -100,7 +101,7 @@ func Start() {
 
 		sent := vplay(c)
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("play video command", zap.Error(sent))
 		}
 
 		return sent
@@ -110,7 +111,7 @@ func Start() {
 		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("streaming command", zap.Error(sent))
 		}
 		return sent
 	})
@@ -119,7 +120,7 @@ func Start() {
 		sent := sh(c)
 
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("sh command", zap.Error(sent))
 		}
 
 		return sent
@@ -129,7 +130,7 @@ func Start() {
 		sent := logs(c)
 
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("logs command", zap.Error(sent))
 		}
 
 		return sent
@@ -139,7 +140,7 @@ func Start() {
 		sent := speedtest(c)
 
 		if sent != nil {
-			logger.Error(sent)
+			logger.Error("speedtest command", zap.Error(sent))
 		}
 
 		return sent

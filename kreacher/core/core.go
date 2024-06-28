@@ -41,7 +41,7 @@ func init() {
 		Token:  config.BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {
-			logger.Error(err)
+			logger.Error(err.Error())
 		},
 	})
 

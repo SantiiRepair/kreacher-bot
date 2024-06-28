@@ -32,7 +32,7 @@ func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted b
 
 	call, ok := mcf.GetFullChat().GetCall()
 	if !ok {
-		logger.Warn("no calls for %d found, trying to create a new one", channel.Key.ID)
+		logger.Warnf("no calls for %d found, trying to create a new one", channel.Key.ID)
 
 		rand.New(rand.NewSource(time.Now().UnixNano()))
 		_, err := core.U.API().PhoneCreateGroupCall(context.Background(), &tg.PhoneCreateGroupCallRequest{
@@ -64,7 +64,7 @@ func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted b
 			return errors.Errorf("it was not possible to create the call for %d, check logger for details", channel.Key.ID)
 		}
 
-		logger.Info("created new call for %d", channel.Key.ID)
+		logger.Infof("created new call for %d", channel.Key.ID)
 	}
 
 	updates, err := core.U.API().PhoneJoinGroupCall(context.Background(), &tg.PhoneJoinGroupCallRequest{
