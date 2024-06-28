@@ -46,7 +46,7 @@ func vplay(c tele.Context) error {
 
 		peerId := helpers.ParsePeer(c.Chat().ID)
 
-		channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: c.Chat().ID})
+		channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: peerId})
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		err = internal.StartGroupCall(channel, params, false, false)
+		err = internal.StartGroupCall(channel, params, true, false)
 		if err != nil {
 			return err
 		}
