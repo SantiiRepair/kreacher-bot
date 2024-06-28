@@ -17,9 +17,6 @@ import (
 
 // Terminal implements auth.UserAuthenticator prompting the terminal for
 // input.
-//
-// This is only example implementation, you should not use it in your code.
-// Copy it and modify to fit your needs.
 type terminal struct {
 	PhoneNumber string // optional, will be prompted if empty
 }
@@ -38,6 +35,7 @@ func (terminal) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string, er
 	if err != nil {
 		return "", err
 	}
+	
 	return strings.TrimSpace(code), nil
 }
 
@@ -45,11 +43,13 @@ func (a terminal) Phone(_ context.Context) (string, error) {
 	if a.PhoneNumber != "" {
 		return a.PhoneNumber, nil
 	}
+
 	fmt.Print("Enter phone in international format (e.g. +1234567890): ")
 	phone, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
 		return "", err
 	}
+
 	return strings.TrimSpace(phone), nil
 }
 
@@ -59,5 +59,6 @@ func (terminal) Password(_ context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return strings.TrimSpace(string(bytePwd)), nil
 }

@@ -10,6 +10,7 @@ import (
 	tele "gopkg.in/telebot.v3"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/helpers"
+	"santiirepair.dev/kreacher/internal"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
@@ -64,7 +65,7 @@ func vplay(c tele.Context) error {
 			}
 		}
 
-		jsonParams, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
+		params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				InputMode:     ntgcalls.InputModeShell,
 				SampleRate:    96000,
@@ -85,56 +86,10 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		mcf, err := core.U.API().ChannelsGetFullChannel(
-			context.Background(),
-			&tg.InputChannel{
-				ChannelID:  channel.Key.ID,
-				AccessHash: channel.Key.AccessHash,
-			},
-		)
-
+		err = internal.StartGroupCall(channel, params, false, false)
 		if err != nil {
 			return err
 		}
-
-		fullChat := mcf.FullChat.(*tg.ChannelFull)
-
-		me, err := core.U.Self(context.Background())
-		if err != nil {
-			return err
-		}
-
-		_, err = core.U.API().PhoneJoinGroupCall(
-			context.Background(),
-			&tg.PhoneJoinGroupCallRequest{
-				Muted:        false,
-				VideoStopped: false,
-				Call:         fullChat.Call,
-				Params: tg.DataJSON{
-					Data: jsonParams,
-				},
-				JoinAs: &tg.InputPeerUser{
-					UserID:     me.ID,
-					AccessHash: me.AccessHash,
-				},
-			},
-		)
-
-		if err != nil {
-			return err
-		}
-
-		/*callRes := updates.(*tg.UpdatesObj)
-		for _, update := range callRes.Updates {
-			updateTyped, ok := update.(*tg.UpdateGroupCallConnection)
-			if !ok {
-				continue
-			}
-
-
-		}*/
-
-		_ = core.N.Connect(channel.Key.ID, jsonParams)
 
 		err = c.Send("Successful joined", &tele.ReplyMarkup{
 			InlineKeyboard: [][]tele.InlineButton{

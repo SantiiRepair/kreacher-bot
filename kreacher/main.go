@@ -83,15 +83,15 @@ func main() {
 	core.N.OnConnectionChange(func(chatId int64, state ntgcalls.ConnectionState) {
 		switch state {
 		case ntgcalls.Connecting:
-			fmt.Println("Connecting with chatId:", chatId)
+			logger.Info("connecting with chatId:", chatId)
 		case ntgcalls.Connected:
-			fmt.Println("Connected with chatId:", chatId)
+			logger.Info("connected with chatId:", chatId)
 		case ntgcalls.Failed:
-			fmt.Println("Failed with chatId:", chatId)
+			logger.Info("failed with chatId:", chatId)
 		case ntgcalls.Timeout:
-			fmt.Println("Timeout with chatId:", chatId)
+			logger.Info("timeout with chatId:", chatId)
 		case ntgcalls.Closed:
-			fmt.Println("Closed with chatId:", chatId)
+			logger.Info("closed with chatId:", chatId)
 		}
 	})
 
@@ -114,7 +114,7 @@ func main() {
 	go commands.Start()
 	go callbacks.Start()
 
-	core.CY.Printf("\n\nBot @%s started, receiving updates...\n", core.B.Me.Username)
+	fmt.Println("\nListening for updates. Interrupt (Ctrl+C) to stop.")
 
 	wg.Wait()
 

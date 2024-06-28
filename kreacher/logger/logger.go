@@ -9,20 +9,17 @@ import (
 )
 
 func init() {
-	logWriter := zapcore.AddSync(&lj.Logger{
+	writer := zapcore.AddSync(&lj.Logger{
 		Filename: LogsPath,
 		// MaxBackups: 3,
 		// MaxSize:    1, // megabytes
 		// MaxAge:     7, // days
 	})
 
-	logCore := zapcore.NewCore(
-		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
-		logWriter,
-		zap.DebugLevel,
-	)
+	encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+	core := zapcore.NewCore(encoder, writer, zap.DebugLevel)
 
-	T = zap.New(logCore)
+	T = zap.New(core)
 	defer func() { _ = T.Sync() }()
 }
 

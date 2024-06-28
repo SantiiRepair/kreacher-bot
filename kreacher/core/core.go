@@ -69,7 +69,7 @@ func init() {
 	}
 
 	PDB = pebble.NewPeerStorage(db)
-	logger.Info("storage", zap.String("path", sessionDir).String)
+	logger.Info("storage", zap.String("path", sessionDir))
 
 	// Setting up client.
 	//
@@ -94,7 +94,7 @@ func init() {
 
 	waiter := floodwait.NewWaiter().WithCallback(func(ctx context.Context, wait floodwait.FloodWait) {
 		// Notifying about flood wait.
-		logger.Warn("flood wait", zap.Duration("wait", wait.Duration).String)
+		logger.Warn("flood wait", zap.Duration("wait", wait.Duration))
 	})
 
 	U = telegram.NewClient(config.BotConfig().APIID, config.BotConfig().APIHash, telegram.Options{
@@ -129,6 +129,7 @@ func init() {
 					// Username is optional.
 					name = fmt.Sprintf("%s (@%s)", name, self.Username)
 				}
+
 				fmt.Println("Current user:", name)
 
 				logger.Info("login",
@@ -144,8 +145,6 @@ func init() {
 					return errors.Wrap(err, "collect peers")
 				}
 
-				// Waiting until context is done.
-				fmt.Println("Listening for updates. Interrupt (Ctrl+C) to stop.")
 				return updatesRecovery.Run(ctx, U.API(), self.ID, updates.AuthOptions{
 					IsBot: self.Bot,
 					OnStart: func(ctx context.Context) {
@@ -159,6 +158,8 @@ func init() {
 			return nil
 		})
 	}()
+
+	time.Sleep(2 * time.Second)
 
 	CY.Println("\n✔️ Initialized new MTProto client, waiting to connect...")
 
@@ -174,7 +175,7 @@ func init() {
 		panic(err)
 	}
 
-	CY.Print("✔️ Redis client connected, waiting for requests...")
+	CY.Print("✔️ Redis client connected, waiting for requests...\n")
 
 	/*
 		dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
@@ -196,6 +197,8 @@ func init() {
 	*/
 
 }
+
+
 
 var (
 	B   *tele.Bot
