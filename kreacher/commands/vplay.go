@@ -40,6 +40,10 @@ func vplay(c tele.Context) error {
 			videoURL = response.VideoURL
 		}
 
+		if !helpers.UrlExists(audioURL) {
+			return c.Send(urlMitasken)
+		}
+
 		peerId := helpers.ParsePeer(c.Chat().ID)
 
 		channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: c.Chat().ID})

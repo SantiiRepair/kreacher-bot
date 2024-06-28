@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -52,4 +53,19 @@ func UnparsePeer(peerId int64) int64 {
 	z, _ := strconv.ParseInt(y, 10, 64)
 
 	return z
+}
+
+func UrlExists(url string) bool {
+	resp, err := http.Head(url)
+	if err != nil {
+		return false
+	}
+	
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		return true
+	}
+
+	return false
 }

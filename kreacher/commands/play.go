@@ -43,6 +43,10 @@ func play(c tele.Context) error {
 		audioURL = response.AudioURL
 	}
 
+	if !helpers.UrlExists(audioURL) {
+		return c.Send(urlMitasken)
+	}
+
 	peerId := helpers.ParsePeer(c.Chat().ID)
 
 	channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: peerId})
@@ -110,9 +114,3 @@ func play(c tele.Context) error {
 
 	return err
 }
-
-var forgottenUsage = `
-It seems you forgot something 🤔\!
-
-If you have any questions or problems with the command we recommend reading our [wiki](https://github.com/SantiiRepair/kreacher-bot/wiki/Usage#play)
-`
