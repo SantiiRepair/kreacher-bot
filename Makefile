@@ -6,7 +6,7 @@ build:
 clean:
 	docker compose down --volumes
 
-docker: clean build
+docker:
 	docker compose up -d --remove-orphans
 
 install:

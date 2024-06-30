@@ -36,7 +36,6 @@ func Start() {
 	onlyAdmin := middleware.Whitelist([]int64{mantainer.ID}...)
 
 	core.B.Handle(CONFIG, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
 			logger.Error("config command", zap.Error(sent))
@@ -46,9 +45,11 @@ func Start() {
 	})
 
 	core.B.Handle(HELP, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
-		sent := c.Send("Hello to you too!")
-		if sent != nil {
+		if sent := c.Send(
+			"For info on how to use the bot we recommend reading our [wiki](https://github.com/SantiiRepair/kreacher-bot/wiki)",
+			tele.ParseMode(tele.ModeMarkdownV2),
+			tele.NoPreview,
+		); sent != nil {
 			logger.Error("help command", zap.Error(sent))
 		}
 
@@ -66,7 +67,6 @@ func Start() {
 
 	core.B.Handle(ACCIO, func(c tele.Context) error {
 		sent := accio(c)
-
 		if sent != nil {
 			logger.Error("accio command", zap.Error(sent))
 		}
@@ -75,7 +75,6 @@ func Start() {
 	})
 
 	core.B.Handle(PLAY_BOOK, func(c tele.Context) error {
-		fmt.Println("Got a hello message")
 		sent := c.Send("Hello to you too!")
 		if sent != nil {
 			logger.Error("play book command", zap.Error(sent))
@@ -122,7 +121,6 @@ func Start() {
 
 	core.B.Handle(SH, func(c tele.Context) error {
 		sent := sh(c)
-
 		if sent != nil {
 			logger.Error("sh command", zap.Error(sent))
 		}
@@ -132,7 +130,6 @@ func Start() {
 
 	core.B.Handle(LOGS, func(c tele.Context) error {
 		sent := logs(c)
-
 		if sent != nil {
 			logger.Error("logs command", zap.Error(sent))
 		}
@@ -142,7 +139,6 @@ func Start() {
 
 	core.B.Handle(SPEEDTEST, func(c tele.Context) error {
 		sent := speedtest(c)
-
 		if sent != nil {
 			logger.Error("speedtest command", zap.Error(sent))
 		}
