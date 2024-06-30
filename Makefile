@@ -1,9 +1,9 @@
-.PHONY: build clean
+.PHONY: build-docker clean-docker
 
-build:
+build-docker:
 	docker compose build
 
-clean:
+clean-docker:
 	docker compose down --volumes
 
 docker:
@@ -13,10 +13,10 @@ install:
 	cd kreacher && go mod tidy && cd ..
 
 format:
-	cd kreacher && go fmt && cd ..
+	@find kreacher -mindepth 1 -maxdepth 1 -type d -exec sh -c 'cd {} && go fmt' \;
 
 start:
 	cd kreacher && go run . && cd ..
 
-setvars:
+senv:
 	export $(cat .env | xargs)

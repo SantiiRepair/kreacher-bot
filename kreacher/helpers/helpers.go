@@ -35,7 +35,7 @@ func isURL(s string) bool {
 	if err != nil || u.Scheme == "" || u.Host == "" {
 		return false
 	}
-	
+
 	return true
 }
 
@@ -60,7 +60,7 @@ func UrlExists(url string) bool {
 	if err != nil {
 		return false
 	}
-	
+
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {

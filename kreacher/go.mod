@@ -5,7 +5,6 @@ go 1.22.1
 require (
 	github.com/chromedp/chromedp v0.9.3
 	github.com/cockroachdb/pebble v1.1.1
-	github.com/fatih/color v1.16.0
 	github.com/fogleman/gg v1.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.20.0
@@ -55,8 +54,6 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/prometheus/client_golang v1.19.0 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.48.0 // indirect

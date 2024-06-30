@@ -147,28 +147,28 @@ func Start() {
 		c.Bot().ChatByID(c.Chat().ID)
 		latency := time.Since(respTime)
 		text := fmt.Sprintf("Ping: %v\n", fmt.Sprintf("%dms", latency.Milliseconds()))
-	
+
 		upTime := time.Since(core.S)
 		hours := int(upTime.Hours())
 		minutes := int(upTime.Minutes()) % 60
 		seconds := int(upTime.Seconds()) % 60
-	
+
 		var formattedDuration string
 		if hours > 0 {
 			formattedDuration = fmt.Sprintf("%dH:%02dM:%02dS", hours, minutes, seconds)
 		} else {
 			formattedDuration = fmt.Sprintf("%dM:%02dS", minutes, seconds)
 		}
-	
+
 		text += fmt.Sprintf("Bot Uptime: %s\n", formattedDuration)
-	
+
 		mem := helpers.GetMemoryUsage()
 		text += fmt.Sprintf("\nMemory Usage: %.2f%%\n", mem)
 		nu, err := core.N.CpuUsage()
 		if err == nil {
 			text += fmt.Sprintf("Ntgcalls CPU: %.2f%%\n", nu)
 		}
-	
+
 		return c.Respond(&tele.CallbackResponse{
 			Text:      text,
 			ShowAlert: true,

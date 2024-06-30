@@ -27,7 +27,6 @@ func Shell(args ...string) (*bytes.Buffer, error) {
 	return &outBytes, nil
 }
 
-
 func GetMemoryUsage() float64 {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
