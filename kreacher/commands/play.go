@@ -1,12 +1,9 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
-	"github.com/gotd/contrib/storage"
-	"github.com/gotd/td/tg"
 	tele "gopkg.in/telebot.v3"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/helpers"
@@ -49,7 +46,7 @@ func play(c tele.Context) error {
 
 	peerId := helpers.ParsePeer(c.Chat().ID)
 
-	channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: peerId})
+	channel, err := internal.GetPeer(peerId)
 	if err != nil {
 		return err
 	}

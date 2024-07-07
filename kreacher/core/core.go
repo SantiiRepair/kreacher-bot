@@ -106,7 +106,7 @@ func init() {
 					return errors.Wrap(err, "auth")
 				}
 
-				if self, err = U.Self(context.Background()); err != nil {
+				if self, err = U.Self(ctx); err != nil {
 					return err
 				}
 

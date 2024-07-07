@@ -1,9 +1,11 @@
 package commands
 
 import (
+	"fmt"
 	tele "gopkg.in/telebot.v3"
 	"santiirepair.dev/kreacher/core"
 	"santiirepair.dev/kreacher/helpers"
+	"santiirepair.dev/kreacher/internal"
 )
 
 func leave(c tele.Context) error {
@@ -19,6 +21,11 @@ func leave(c tele.Context) error {
 				err = helpers.DeleteQueue(chat)
 				if err != nil {
 					return err
+				}
+
+				err = internal.LeaveGroupCall(chat)
+				if err != nil {
+					fmt.Println(err.Error())
 				}
 
 				return c.Reply("Stream cut off, queues emptied")
