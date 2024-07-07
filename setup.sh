@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GO_VERSION="1.22.1"
 PIPER_VERSION="1.2.0"
+GO_VERSION=$(<.go-version)
 
 install_chrome() {
     if [ -z "$(which google-chrome-stable)" ]; then
