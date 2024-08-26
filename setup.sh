@@ -40,25 +40,26 @@ install_piper() {
     fi
 }
 
-build_ntgcalls() {
-    cd deps/ntgcalls
-    python3 setup.py build_lib
+install_ntgcalls() {
+    LATEST_URL=$(curl -s https://api.github.com/repos/pytgcalls/ntgcalls/releases/latest | grep "browser_download_url" | grep "ntgcalls.linux-x86_64-shared_libs.zip" | cut -d '"' -f 4)
+    wget "$LATEST_URL" -O ntgcalls.zip
+    mkdir -p shared-output
+    unzip ntgcalls.zip -d shared-output
 
-    shared_output="shared-output"
-    ntgcalls="$shared_output/release/include/ntgcalls.h"
-    libntgcalls="$shared_output/release/libntgcalls.so"
+    ntgcalls="shared-output/release/include/ntgcalls.h"
+    libntgcalls="shared-output/release/libntgcalls.so"
 
-    if [ -d "$shared_output" ] && [ -f "$libntgcalls" ] && [ -f "$ntgcalls" ]; then
-        mv $libntgcalls ../../kreacher/
-        mv $ntgcalls ../../kreacher/ntgcalls/
+    if [ -f "$libntgcalls" ] && [ -f "$ntgcalls" ]; then
+        mv "$libntgcalls" kreacher/
+        mv "$ntgcalls" kreacher/ntgcalls/
     else
-        echo "Error: Expected files not found after building ntgcalls."
+        echo "Error: Expected files not found after extracting ntgcalls."
         return 1
     fi
 
-    cd - > /dev/null
+    rm ntgcalls.zip
+    rm -rf shared-output
 }
-
 
 if [ "$1" == "--sudo" ]; then
     SUDO="sudo"
@@ -97,7 +98,7 @@ if [ "$1" == "--sudo" ]; then
     fi
 fi
 
-build_ntgcalls
+install_ntgcalls
 install_chrome
 install_yt_dlp
 install_speedtest

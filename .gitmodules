@@ -1,13 +1,3 @@
-[submodule "deps/ntgcalls"]
-	path = deps/ntgcalls
-	url = https://github.com/pytgcalls/ntgcalls
-	branch = master
-
-[submodule "deps/yt-dlp"]
-	path = deps/yt-dlp
-	url = https://github.com/yt-dlp/yt-dlp
-	branch = master
-
 [submodule "deps/speedtest-cli"]
 	path = deps/speedtest-cli
 	url = https://github.com/SantiiRepair/speedtest-cli
