@@ -1,6 +1,6 @@
 module santiirepair.dev/kreacher
 
-go 1.22.1
+go 1.22.5
 
 require (
 	github.com/chromedp/chromedp v0.9.3
