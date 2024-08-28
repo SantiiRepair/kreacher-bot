@@ -153,7 +153,7 @@ It seems you forgot something 🤔\!
 If you have any questions or problems with the command we recommend reading our [wiki](https://github.com/SantiiRepair/kreacher-bot/wiki/Usage#play)
 `
 
-var urlMitasken = `
+var urlMistaken = `
 There seems to be a problem, why?
 
 • URL is invalid

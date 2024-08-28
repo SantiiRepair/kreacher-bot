@@ -41,7 +41,7 @@ func play(c tele.Context) error {
 	}
 
 	if !helpers.UrlExists(audioURL) {
-		return c.Send(urlMitasken)
+		return c.Send(urlMistaken)
 	}
 
 	peerId := helpers.ParsePeer(c.Chat().ID)

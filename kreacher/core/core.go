@@ -33,12 +33,12 @@ import (
 
 type noLogger struct{}
 
-func (n *noLogger) Logf(format string, args ...interface{}) {}
-func (n *noLogger) Infof(format string, args ...interface{}) {}
+func (n *noLogger) Logf(format string, args ...interface{})     {}
+func (n *noLogger) Infof(format string, args ...interface{})    {}
 func (n *noLogger) Warningf(format string, args ...interface{}) {}
-func (n *noLogger) Errorf(format string, args ...interface{}) {}
-func (n *noLogger) Fatalf(format string, args ...interface{}) {}
-func (n *noLogger) Close() {}
+func (n *noLogger) Errorf(format string, args ...interface{})   {}
+func (n *noLogger) Fatalf(format string, args ...interface{})   {}
+func (n *noLogger) Close()                                      {}
 
 func init() {
 
