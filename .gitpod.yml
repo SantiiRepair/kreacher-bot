@@ -5,8 +5,9 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - before: bash setup.sh --sudo
-  - init: make install
-  - command: make start
-
-
+  - name: Setup, Install & Run
+    before: bash setup.sh --sudo
+    init: |
+      make install
+      make docker
+    command: make start

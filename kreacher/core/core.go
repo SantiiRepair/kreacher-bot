@@ -36,6 +36,7 @@ func init() {
 	var err error
 	N = ntgcalls.NTgCalls()
 	B, err = tele.NewBot(tele.Settings{
+		URL:    "http://0.0.0.0:8081",
 		Token:  config.BotConfig().BotToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 		OnError: func(err error, ctx tele.Context) {

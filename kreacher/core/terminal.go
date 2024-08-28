@@ -15,8 +15,7 @@ import (
 	"github.com/gotd/td/tg"
 )
 
-// Terminal implements auth.UserAuthenticator prompting the terminal for
-// input.
+// Terminal implements auth.UserAuthenticator prompting the terminal for input.
 type terminal struct {
 	PhoneNumber string // optional, will be prompted if empty
 }

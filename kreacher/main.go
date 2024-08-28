@@ -20,14 +20,13 @@ import (
 )
 
 func init() {
-	_, err := exec.LookPath("yt-dlp")
-	if err != nil {
-		panic("yt-dlp isn't installed")
-	}
-
-	_, err = exec.LookPath("speedtest")
-	if err != nil {
-		panic("speedtest isn't installed")
+	tools := []string{"yt-dlp", "ffmpeg", "speedtest"}
+	for _, tool := range tools {
+		_, err := exec.LookPath(tool)
+		if err != nil {
+			fmt.Printf("%s is not installed\n", tool)
+			os.Exit(1)
+		}
 	}
 }
 

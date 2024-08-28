@@ -8,6 +8,7 @@
 *.lock
 *.spec
 *.build
+*.binlog
 *.mtproto
 
 /logs/*.json
