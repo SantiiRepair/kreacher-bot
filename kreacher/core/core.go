@@ -31,6 +31,15 @@ import (
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
+type noLogger struct{}
+
+func (n *noLogger) Logf(format string, args ...interface{}) {}
+func (n *noLogger) Infof(format string, args ...interface{}) {}
+func (n *noLogger) Warningf(format string, args ...interface{}) {}
+func (n *noLogger) Errorf(format string, args ...interface{}) {}
+func (n *noLogger) Fatalf(format string, args ...interface{}) {}
+func (n *noLogger) Close() {}
+
 func init() {
 
 	var err error
@@ -60,7 +69,7 @@ func init() {
 		Path: filepath.Join(sessionDir, "session.json"),
 	}
 
-	db, err := pebbledb.Open(filepath.Join(sessionDir, "peers.pebble.db"), &pebbledb.Options{})
+	db, err := pebbledb.Open(filepath.Join(sessionDir, "peers.pebble.db"), &pebbledb.Options{Logger: &noLogger{}})
 	if err != nil {
 		panic(err)
 	}
