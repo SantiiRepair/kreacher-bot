@@ -74,7 +74,7 @@ func play(c tele.Context) error {
 			BitsPerSample: 16,
 			SampleRate:    96000,
 			InputMode:     ntgcalls.InputModeShell,
-			Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", audioURL),
+			Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k pipe:1", audioURL),
 		},
 	})
 

@@ -23,7 +23,7 @@ ______________________________________________________________________
 First we must clone the project with its respective submodules, for this execute the following command in your working directory.
 
 ```sh
-git clone https://github.com/SantiiRepair/kreacher-bot.git --recurse-submodules
+$ git clone https://github.com/SantiiRepair/kreacher-bot.git --recurse-submodules
 ```
 
 ## Setting Up

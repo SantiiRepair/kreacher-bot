@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PIPER_VERSION="1.2.0"
+FFMPEG_VERSION="7.0.2"
 GO_VERSION=$(<.go-version)
 
 install_chrome() {
@@ -26,10 +27,8 @@ install_speedtest() {
         python3 -m PyInstaller --onefile speedtest.py
         $SUDO mv dist/speedtest /usr/bin/speedtest
         rm -rf build dist __pycache__ *.spec
-        cd - > /dev/null
     fi
 }
-
 
 install_piper() {
     if [ -z "$(which piper)" ]; then
@@ -38,6 +37,14 @@ install_piper() {
         echo "export PATH=$PATH:/usr/local/piper" >> ~/.bashrc
         rm -rf piper_amd64.tar.gz
     fi
+}
+
+install_ffmpeg() {
+    wget https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz -O deps/ffmpeg.tar.xz 
+    mkdir -p deps/ffmpeg && tar -xf deps/ffmpeg.tar.xz -C deps/ffmpeg --strip-components=1 && cd deps/ffmpeg
+    ./configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-libmp3lame --enable-libopus --enable-libvorbis --enable-libvpx --enable-openssl
+    make -j$(nproc) && sudo make install && cd ../..
+    rm -rf deps/ffmpeg.tar.xz 
 }
 
 install_ntgcalls() {
@@ -67,35 +74,56 @@ else
     SUDO=""
 fi
 
-$SUDO apt-get update && $SUDO apt-get upgrade -y
-$SUDO apt-get install -y curl \
-                         gcc \
-                         build-essential \
-                         libx11-dev \
-                         git-all \
-                         python3 \
-                         python3-pip \
-                         ffmpeg \
-                         tree
-                         
-python3 -m pip install pyinstaller
+install_deps() {
+    {
+        $SUDO apt-get update && $SUDO apt-get upgrade -y
+        
+        $SUDO apt install -y \
+            rlwrap \
+            autoconf \
+            automake \
+            build-essential \
+            cmake \
+            git \
+            libass-dev \
+            libfdk-aac-dev \
+            libfreetype6-dev \
+            libmp3lame-dev \
+            libopus-dev \
+            libtheora-dev \
+            libtool \
+            libvorbis-dev \
+            libx264-dev \
+            libx265-dev \
+            libvpx-dev \
+            pkg-config \
+            texinfo \
+            wget \
+            yasm \
+            curl \
+            gcc \
+            libx11-dev \
+            libssl-dev \
+            libcurl4-openssl-dev \
+            python3 \
+            python3-pip \
+            tree    
 
-if [ "$1" == "--sudo" ]; then
-    $SUDO apt-get install -y postgresql
+        python3 -m pip install pyinstaller
 
-    if [ -z "$(which redis-cli)" ]; then
-        $SUDO apt-get install -y lsb-release gpg
-        curl -fsSL https://packages.redis.io/gpg | $SUDO gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | $SUDO tee /etc/apt/sources.list.d/redis.list
-        $SUDO apt-get install redis -y
-    fi
+        if [ -z "$(command -v go)" ]; then
+            wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+            $SUDO rm -rf /usr/local/go && $SUDO tar -C /usr/local -xzf go.tar.gz
+            echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
+            rm -rf go.tar.gz
+        fi
+    } > /dev/null 2>&1    
+}
 
-    if [ -z "$(command -v go)" ]; then
-        wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
-        $SUDO rm -rf /usr/local/go && $SUDO tar -C /usr/local -xzf go.tar.gz
-        echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
-        rm -rf go.tar.gz
-    fi
+install_deps
+
+if ! command -v ffmpeg &> /dev/null; then
+    install_ffmpeg
 fi
 
 install_ntgcalls

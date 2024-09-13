@@ -1,4 +1,4 @@
 [submodule "deps/speedtest-cli"]
 	path = deps/speedtest-cli
-	url = https://github.com/SantiiRepair/speedtest-cli
+	url = https://github.com/Hukeqing/speedtest-cli
 	branch = master

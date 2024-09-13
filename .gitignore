@@ -11,5 +11,6 @@
 *.binlog
 *.mtproto
 
-/logs/*.json
-/session/*.json
+deps/*
+logs/*
+session/*
