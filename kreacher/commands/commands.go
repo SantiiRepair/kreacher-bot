@@ -19,7 +19,7 @@ const (
 	LEAVE      string = "/leave"
 	ACCIO      string = "/accio"
 	PLAY_BOOK  string = "/bplay"
-	PLAY_SONG  string = "/play"
+	PLAY_AUDIO string = "/play"
 	PLAY_VIDEO string = "/vplay"
 	SH         string = "/sh"
 	LOGS       string = "/logs"
@@ -68,7 +68,7 @@ func Start() {
 		return nil
 	})
 
-	core.B.Handle(PLAY_SONG, play)
+	core.B.Handle(PLAY_AUDIO, play)
 	core.B.Handle(PLAY_VIDEO, vplay)
 
 	core.B.Handle(STREAMING, func(c tele.Context) error {

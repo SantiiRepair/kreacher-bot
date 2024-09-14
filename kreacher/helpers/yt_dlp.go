@@ -10,21 +10,22 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"errors"
 	uuid "github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 type MediaInfo struct {
-	Title     string   `json:"title"`
-	Filename  string   `json:"filename"`
-	Duration  float64  `json:"duration"`
-	Thumbnail string   `json:"thumbnail"`
-	Formats   []Format `json:"formats"`
-	Format    string   `json:"format"`
-	Width     int      `json:"width"`
-	Height    int      `json:"height"`
-	URL       string   `json:"url"`
-	Ext       string   `json:"ext"`
+	Title       string   `json:"title"`
+	Filename    string   `json:"filename"`
+	Duration    float64  `json:"duration"`
+	Thumbnail   string   `json:"thumbnail"`
+	OriginalUrl string   `json:"original_url"`
+	Formats     []Format `json:"formats"`
+	Format      string   `json:"format"`
+	Width       int      `json:"width"`
+	Height      int      `json:"height"`
+	URL         string   `json:"url"`
+	Ext         string   `json:"ext"`
 }
 
 type Format struct {
@@ -69,7 +70,8 @@ func (m *MediaInfo) GetThumbnail() (string, error) {
 	return thumbnailPath, nil
 }
 
-func Download(input string, format string) (string, error) {
+func Download(mediaInfo MediaInfo, format string) (string, error) {
+	input := mediaInfo.OriginalUrl
 	fileId := uuid.New().String()
 	tempFilePath := filepath.Join(os.TempDir(), fileId)
 
@@ -88,12 +90,6 @@ func Download(input string, format string) (string, error) {
 		return "", fmt.Errorf("error downloading video: %w", err)
 	}
 
-	var mediaInfo MediaInfo
-	err := getMediaInfo(input, &mediaInfo)
-	if err != nil {
-		return "", err
-	}
-
 	finalPath := tempFilePath + "." + mediaInfo.Ext
 	if err := os.Rename(tempFilePath, finalPath); err != nil {
 		return "", fmt.Errorf("error renaming file: %w", err)
@@ -102,8 +98,14 @@ func Download(input string, format string) (string, error) {
 	return finalPath, nil
 }
 
-func getMediaInfo(url string, mediaInfo *MediaInfo) error {
-	cmd := exec.Command("yt-dlp", "-j", "--no-warnings", url)
+func GetMediaInfo(input string, mediaInfo *MediaInfo) error {
+	var cmd *exec.Cmd
+	if isURL(input) && UrlExists(input) {
+		cmd = exec.Command("yt-dlp", "-j", "--no-warnings", input)
+	} else {
+		cmd = exec.Command("yt-dlp", "ytsearch:"+input, "-j", "--no-warnings")
+	}
+
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &out

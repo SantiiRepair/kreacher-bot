@@ -21,17 +21,16 @@ func vplay(c tele.Context) error {
 
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
-
 		peerId := helpers.ParsePeer(c.Chat().ID)
-
 		channel, err := storage.FindPeer(context.Background(), core.PDB, &tg.PeerChannel{ChannelID: peerId})
 		if err != nil {
 			return err
 		}
 
 		queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
+			Command:     PLAY_VIDEO,
 			Requester:   c.Sender().ID,
-			VideoSource: mediaInfo.URL,
+			OriginalUrl: mediaInfo.OriginalUrl,
 		})
 
 		if err != nil {

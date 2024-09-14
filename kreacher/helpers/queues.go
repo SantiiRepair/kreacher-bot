@@ -14,9 +14,9 @@ import (
 type Queue struct {
 	Active        bool   `json:"active"`
 	Requester     int64  `json:"requester"`
-	AudioSource   string `json:"audio_source"`
-	VideoSource   string `json:"video_source"`
+	OriginalUrl   string `json:"original_url"`
 	StreamType    string `json:"stream_type"`
+	Command       string `json:"command"`
 	NumberInQueue int    `json:"number_in_queue"`
 }
 
@@ -40,12 +40,6 @@ func AddToPlayList(chatId int64, data *Queue) (int, error) {
 	} else {
 		data.Active = true
 		data.NumberInQueue = 0
-	}
-
-	if data.VideoSource != "" {
-		data.StreamType = "video"
-	} else {
-		data.StreamType = "audio"
 	}
 
 	result = append(result, *data)

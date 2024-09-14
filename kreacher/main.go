@@ -14,13 +14,12 @@ import (
 	"santiirepair.dev/kreacher/callbacks"
 	"santiirepair.dev/kreacher/commands"
 	"santiirepair.dev/kreacher/core"
-	"santiirepair.dev/kreacher/helpers"
 	"santiirepair.dev/kreacher/logger"
 	"santiirepair.dev/kreacher/ntgcalls"
 )
 
 func init() {
-	tools := []string{"yt-dlp", "ffmpeg", "speedtest"}
+	tools := []string{"yt-dlp", "ffmpeg", "sox", "speedtest"}
 	for _, tool := range tools {
 		_, err := exec.LookPath(tool)
 		if err != nil {
@@ -46,38 +45,7 @@ func main() {
 		panic(err)
 	}
 
-	core.N.OnStreamEnd(func(chatId int64, streamType ntgcalls.StreamType) {
-		result, err := helpers.MovePlayList(chatId, "next")
-		if err != nil {
-			logger.Error(err.Error())
-		}
-
-		if result != nil {
-			var desc ntgcalls.MediaDescription
-			desc.Audio = &ntgcalls.AudioDescription{
-				InputMode:     ntgcalls.InputModeShell,
-				SampleRate:    96000,
-				BitsPerSample: 16,
-				ChannelCount:  2,
-				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", result.AudioSource),
-			}
-
-			if result.VideoSource != "" {
-				desc.Video = &ntgcalls.VideoDescription{
-					InputMode: ntgcalls.InputModeShell,
-					Width:     1920,
-					Height:    1080,
-					Fps:       60,
-					Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", result.VideoSource),
-				}
-			}
-
-			err = core.N.ChangeStream(chatId, desc)
-			if err != nil {
-				logger.Error(err.Error())
-			}
-		}
-	})
+	core.N.OnStreamEnd(func(chatId int64, streamType ntgcalls.StreamType) {})
 
 	core.N.OnConnectionChange(func(chatId int64, state ntgcalls.ConnectionState) {
 		switch state {

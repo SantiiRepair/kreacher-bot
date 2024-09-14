@@ -12,10 +12,6 @@ import (
 )
 
 func play(c tele.Context) error {
-
-	var err error
-	var mediaInfo helpers.MediaInfo
-
 	target := strings.Join(c.Args(), " ")
 	if target == "" {
 		return c.Reply(forgottenUsage, tele.ParseMode(tele.ModeMarkdownV2), tele.NoPreview)
@@ -27,11 +23,8 @@ func play(c tele.Context) error {
 		return err
 	}
 
-	queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
-		Requester:   c.Sender().ID,
-		AudioSource: mediaInfo.URL,
-	})
-
+	var mediaInfo helpers.MediaInfo
+	err = helpers.GetMediaInfo(target, &mediaInfo)
 	if err != nil {
 		return err
 	}
@@ -39,12 +32,22 @@ func play(c tele.Context) error {
 	if calls := core.N.Calls(); len(calls) > 0 {
 		for chat := range calls {
 			if chat == channel.Key.ID {
+				queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
+					Command:     PLAY_VIDEO,
+					Requester:   c.Sender().ID,
+					OriginalUrl: mediaInfo.OriginalUrl,
+				})
+
+				if err != nil {
+					return err
+				}
+
 				return c.Reply(fmt.Sprintf("In queue %d", queue))
 			}
 		}
 	}
 
-	filepath, err := helpers.Download(target, "bestaudio/best")
+	filepath, err := helpers.Download(mediaInfo, "bestaudio/best")
 	if err != nil {
 		return err
 	}
