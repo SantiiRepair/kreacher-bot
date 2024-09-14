@@ -15,10 +15,6 @@ import (
 )
 
 func vplay(c tele.Context) error {
-
-	var err error
-	var mediaInfo helpers.MediaInfo
-
 	target := strings.Join(c.Args(), " ")
 	if target != "" {
 		peerId := helpers.ParsePeer(c.Chat().ID)
@@ -27,12 +23,8 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
-			Command:     PLAY_VIDEO,
-			Requester:   c.Sender().ID,
-			OriginalUrl: mediaInfo.OriginalUrl,
-		})
-
+		var mediaInfo helpers.MediaInfo
+		err = helpers.GetMediaInfo(target, &mediaInfo)
 		if err != nil {
 			return err
 		}
@@ -40,9 +32,29 @@ func vplay(c tele.Context) error {
 		if calls := core.N.Calls(); len(calls) > 0 {
 			for chat := range calls {
 				if chat == channel.Key.ID {
+					queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
+						Command:     PLAY_VIDEO,
+						Requester:   c.Sender().ID,
+						OriginalUrl: mediaInfo.OriginalUrl,
+					})
+
+					if err != nil {
+						return err
+					}
+
 					return c.Reply(fmt.Sprintf("In queue %d", queue))
 				}
 			}
+		}
+
+		videoPath, err := helpers.Download(mediaInfo, "bestvideo+bestaudio/best")
+		if err != nil {
+			return err
+		}
+
+		audioPath, err := internal.MediaConverter(videoPath, internal.AUDIO)
+		if err != nil {
+			return err
 		}
 
 		params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
@@ -51,14 +63,14 @@ func vplay(c tele.Context) error {
 				BitsPerSample: 16,
 				SampleRate:    96000,
 				InputMode:     ntgcalls.InputModeShell,
-				Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k -v quiet pipe:1", mediaInfo.URL),
+				Input:         fmt.Sprintf("sox %s -t wav -r 96k -c 2 -b 16 - gain 8", audioPath),
 			},
 			Video: &ntgcalls.VideoDescription{
-				Fps:       60,
+				Fps:       30,
 				Width:     1920,
 				Height:    1080,
 				InputMode: ntgcalls.InputModeShell,
-				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 60 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 pipe:1", mediaInfo.URL),
+				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 30 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 -b:v 5000k -preset fast -bufsize 10000k pipe:1", videoPath),
 			},
 		})
 
@@ -97,5 +109,5 @@ func vplay(c tele.Context) error {
 
 	}
 
-	return err
+	return nil
 }

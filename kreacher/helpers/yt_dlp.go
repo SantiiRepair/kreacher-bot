@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 
 	"errors"
-	uuid "github.com/google/uuid"
+	"github.com/google/uuid"
 )
 
 type MediaInfo struct {
@@ -79,7 +79,7 @@ func Download(mediaInfo MediaInfo, format string) (string, error) {
 	if isURL(input) && UrlExists(input) {
 		cmd = exec.Command("yt-dlp", "-f", format, "-o", tempFilePath, input)
 	} else {
-		cmd = exec.Command("yt-dlp", "ytsearch:1:"+input, "-f", format, "-o", tempFilePath)
+		cmd = exec.Command("yt-dlp", "ytsearch:"+input, "-f", format, "-o", tempFilePath)
 	}
 
 	var out bytes.Buffer
@@ -87,14 +87,10 @@ func Download(mediaInfo MediaInfo, format string) (string, error) {
 	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("error downloading video: %w", err)
+		return "", fmt.Errorf("error downloading: %w", err)
 	}
 
 	finalPath := tempFilePath + "." + mediaInfo.Ext
-	if err := os.Rename(tempFilePath, finalPath); err != nil {
-		return "", fmt.Errorf("error renaming file: %w", err)
-	}
-
 	return finalPath, nil
 }
 

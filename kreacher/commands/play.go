@@ -47,12 +47,12 @@ func play(c tele.Context) error {
 		}
 	}
 
-	filepath, err := helpers.Download(mediaInfo, "bestaudio/best")
+	filePath, err := helpers.Download(mediaInfo, "bestaudio/best")
 	if err != nil {
 		return err
 	}
 
-	filepath, err = internal.AutoConvert(filepath)
+	audioPath, err := internal.MediaConverter(filePath, internal.AUDIO)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func play(c tele.Context) error {
 			BitsPerSample: 16,
 			SampleRate:    96000,
 			InputMode:     ntgcalls.InputModeShell,
-			Input:         fmt.Sprintf("sox %s -t wav -r 96k -c 2 -b 16 - gain 8", filepath),
+			Input:         fmt.Sprintf("sox %s -t wav -r 96k -c 2 -b 16 - gain 8", audioPath),
 		},
 	})
 

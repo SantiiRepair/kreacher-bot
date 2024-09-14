@@ -13,7 +13,7 @@ const (
 	UNKNOWN
 )
 
-func checkMediaType(filePath string) (MediaType, error) {
+func GetMediaType(filePath string) (MediaType, error) {
 	cmd := exec.Command("ffprobe", "-loglevel", "error", "-show_entries", "stream=codec_type", "-of", "json", filePath)
 	output, err := cmd.Output()
 	if err != nil {

@@ -135,7 +135,9 @@ func LeaveGroupCall(chatId int64) error {
 	return err
 }
 
-func AutoConvert(input string) (string, error) {
+func MediaConverter(input string, outputFormat MediaType) (string, error) {
+	//defer os.Remove(input)
+
 	if _, err := os.Stat(input); os.IsNotExist(err) {
 		return "", err
 	}
@@ -143,27 +145,20 @@ func AutoConvert(input string) (string, error) {
 	var cmd *exec.Cmd
 	var outputFile string
 
-	mediaType, err := checkMediaType(input)
-	if err != nil {
-		return "", err
-	}
-
-	if mediaType == VIDEO {
+	if outputFormat == VIDEO {
 		outputFile = strings.TrimSuffix(input, ".mp4") + ".mp4"
 		cmd = exec.Command("ffmpeg", "-i", input, "-c:v", "copy", "-c:a", "aac", outputFile)
-	} else if mediaType == AUDIO {
+	} else if outputFormat == AUDIO {
 		outputFile = strings.TrimSuffix(input, ".mp3") + ".mp3"
 		cmd = exec.Command("ffmpeg", "-i", input, outputFile)
 	} else {
 		return "", nil
 	}
 
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
 		return "", err
 	}
-
-	defer os.Remove(input)
 
 	return outputFile, nil
 }
