@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	tele "gopkg.in/telebot.v3"
@@ -47,15 +48,23 @@ func play(c tele.Context) error {
 		}
 	}
 
-	filePath, err := helpers.Download(mediaInfo, "bestaudio/best")
+	message, err := c.Bot().Send(c.Recipient(), helpers.EscapeMarkdownV2("*Fetching data...*"))
 	if err != nil {
-		fmt.Println("error aca 1")
 		return err
 	}
 
+	storedMessage := tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)}
+	defer c.Bot().Delete(&storedMessage)
+	
+	filePath, err := helpers.Download(mediaInfo, "bestaudio/best")
+	if err != nil {
+		return err
+	}
+
+	c.Bot().Edit(storedMessage, helpers.EscapeMarkdownV2("*Buffering media content...*"))
+
 	audioPath, err := internal.MediaConverter(filePath, internal.AUDIO)
 	if err != nil {
-		fmt.Println("error aca 2")
 		return err
 	}
 
@@ -75,10 +84,12 @@ func play(c tele.Context) error {
 
 	err = internal.StartGroupCall(channel, params, false, false)
 	if err != nil {
-		return err
+		return c.Send(fmt.Sprintf("*%v*", err))
 	}
 
-	err = c.Send("Successful joined", &tele.ReplyMarkup{
+	caption := fmt.Sprintf("*Broadcasting* \n\n *Title: %s*", mediaInfo.Title)
+	
+	return c.Send(helpers.EscapeMarkdownV2(caption), &tele.ReplyMarkup{
 		InlineKeyboard: [][]tele.InlineButton{
 			{
 				{
@@ -99,6 +110,4 @@ func play(c tele.Context) error {
 			},
 		},
 	})
-
-	return err
 }

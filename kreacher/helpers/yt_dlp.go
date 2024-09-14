@@ -76,26 +76,28 @@ func Download(mediaInfo MediaInfo, format string) (string, error) {
 	input := mediaInfo.OriginalUrl
 	fileId := uuid.New().String()
 	filePath := filepath.Join(os.TempDir(), fileId) + "." + "%(ext)s"
-	fmt.Println(filePath)
+
 	var cmd *exec.Cmd
 	if isURL(input) && UrlExists(input) {
 		cmd = exec.Command("yt-dlp", "--get-filename", "-f", format, "-o", filePath, input)
+
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		cmd.Stderr = &out
+
+		if err := cmd.Run(); err != nil {
+			return "", fmt.Errorf("error retrieving filename: %w", err)
+		}
+
+		downloadCmd := exec.Command("yt-dlp", "--quiet", "-f", format, "-o", filePath, input)
+		if err := downloadCmd.Run(); err != nil {
+			return "", fmt.Errorf("error downloading: %w", err)
+		}
+
+		return strings.TrimSpace(out.String()), nil
 	}
 
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &out
-
-	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("error retrieving filename: %w", err)
-	}
-
-	downloadCmd := exec.Command("yt-dlp", "--quiet", "-f", format, "-o", filePath, input)
-	if err := downloadCmd.Run(); err != nil {
-		return "", fmt.Errorf("error downloading: %w", err)
-	}
-
-	return strings.TrimSpace(out.String()), nil
+	return "", fmt.Errorf("invalid URL or media info")
 }
 
 func GetMediaInfo(input string, mediaInfo *MediaInfo) error {

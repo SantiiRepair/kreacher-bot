@@ -22,8 +22,8 @@ ______________________________________________________________________
 
 First we must clone the project with its respective submodules, for this execute the following command in your working directory.
 
-```sh
-$ git clone https://github.com/SantiiRepair/kreacher-bot.git --recurse-submodules
+```console
+git clone https://github.com/SantiiRepair/kreacher-bot.git --recurse-submodules
 ```
 
 ## Setting Up
@@ -31,8 +31,8 @@ First of all you must create a `.env` file that contains access keys, database c
 
 If you will be running the bot locally you can run the following command to install some necessary things:
 
-```sh
-$ bash setup.sh --sudo
+```console
+bash setup.sh --sudo
 ```
 
 This will install postgres, redis, google chrome and other things if they are not installed.
@@ -40,14 +40,14 @@ This will install postgres, redis, google chrome and other things if they are no
 ## Running
 If everything is configured you just need to run the following command to run the bot:
 
-```sh
-$ make start
+```console
+make start
 ```
 
 If you ran it in docker you can do it with:
 
-```sh
-$ make docker
+```console
+make docker
 ```
 
 ## Disclaimer

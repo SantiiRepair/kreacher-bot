@@ -26,11 +26,11 @@ func GetPeer(peerId int64) (storage.Peer, error) {
 
 func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted bool) error {
 	ctx := context.Background()
+
 	mcf, err := core.U.API().ChannelsGetFullChannel(ctx, &tg.InputChannel{
 		ChannelID:  channel.Key.ID,
 		AccessHash: channel.Key.AccessHash,
-	},
-	)
+	})
 
 	if err != nil {
 		return err
@@ -42,8 +42,8 @@ func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted b
 	}
 
 	call, ok := mcf.GetFullChat().GetCall()
-	if !ok {
-		logger.Warnf("no calls for %d found, trying to create a new one", channel.Key.ID)
+	if !ok && !channel.Channel.AdminRights.ManageCall {
+		logger.Warnf("group call closed on %d, trying to open", channel.Key.ID)
 
 		_, err := core.U.API().PhoneCreateGroupCall(ctx, &tg.PhoneCreateGroupCallRequest{
 			RandomID: rand.Int(),
@@ -68,10 +68,12 @@ func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted b
 
 		call, ok = mcf.GetFullChat().GetCall()
 		if !ok {
-			return errors.Errorf("it was not possible to create the call for %d, check logger for details", channel.Key.ID)
+			return errors.Errorf("i can't open the call on %d", channel.Key.ID)
 		}
 
-		logger.Infof("created new call for %d", channel.Key.ID)
+		logger.Infof("open call at %d", channel.Key.ID)
+	} else {
+		return errors.Errorf("I couldn't open the voice chat, am I an admin?")
 	}
 
 	updates, err := core.U.API().PhoneJoinGroupCall(ctx, &tg.PhoneJoinGroupCallRequest{
@@ -135,7 +137,7 @@ func LeaveGroupCall(chatId int64) error {
 	return err
 }
 
-func MediaConverter(input string, outputFormat MediaType) (string, error) {
+func MediaConverter(input string, oc MediaType) (string, error) {
 	//defer os.Remove(input)
 
 	if _, err := os.Stat(input); os.IsNotExist(err) {
@@ -145,10 +147,10 @@ func MediaConverter(input string, outputFormat MediaType) (string, error) {
 	var cmd *exec.Cmd
 	var outputFile string
 
-	if outputFormat == VIDEO {
+	if oc == VIDEO {
 		outputFile = strings.TrimSuffix(input, ".mp4") + ".mp4"
 		cmd = exec.Command("ffmpeg", "-i", input, "-c:v", "copy", "-c:a", "aac", outputFile)
-	} else if outputFormat == AUDIO {
+	} else if oc == AUDIO {
 		outputFile = strings.TrimSuffix(input, ".mp3") + ".mp3"
 		cmd = exec.Command("ffmpeg", "-i", input, outputFile)
 	} else {

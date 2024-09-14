@@ -15,20 +15,15 @@ func speedtest(c tele.Context) error {
 		return err
 	}
 
-	mdb := tele.StoredMessage{ChatID: msg.Chat.ID, MessageID: strconv.Itoa(msg.ID)}
-
+	storedMessage := tele.StoredMessage{ChatID: msg.Chat.ID, MessageID: strconv.Itoa(msg.ID)}
+	defer c.Bot().Delete(&storedMessage)
+	
 	st, err := helpers.Speedtest()
-
 	if err != nil {
-		c.Bot().Delete(&mdb)
-
 		return c.Send("*_A problem occurred running the speedtest_*", tele.ParseMode(tele.ModeMarkdownV2))
 	}
 
 	if st.Share != "" {
-
-		c.Bot().Delete(&mdb)
-
 		caption := fmt.Sprintf(
 			stResult,
 			st.Client.ISP,
@@ -45,14 +40,10 @@ func speedtest(c tele.Context) error {
 			Caption: caption,
 		}
 
-		err = c.Send(photo, tele.ParseMode(tele.ModeHTML))
-
-		return err
+		return c.Send(photo, tele.ParseMode(tele.ModeHTML))
 	}
 
-	err = c.Send(stErr, tele.ParseMode(tele.ModeHTML))
-
-	return err
+	return c.Send(stErr, tele.ParseMode(tele.ModeHTML))
 }
 
 var stStarted = `

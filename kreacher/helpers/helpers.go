@@ -67,3 +67,12 @@ func reverseSlice(s interface{}) interface{} {
 
 	return reversed.Interface()
 }
+
+func EscapeMarkdownV2(text string) string {
+	specialChars := []string{"_", "[", "]", "-", "(", ")", "~", ">", "#", "+", "=", "|", "{", "}", ".", "!"}
+	for _, char := range specialChars {
+		text = strings.ReplaceAll(text, char, "\\"+char)
+	}
+
+	return text
+}
