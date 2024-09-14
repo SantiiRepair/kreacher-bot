@@ -49,11 +49,13 @@ func play(c tele.Context) error {
 
 	filePath, err := helpers.Download(mediaInfo, "bestaudio/best")
 	if err != nil {
+		fmt.Println("error aca 1")
 		return err
 	}
 
 	audioPath, err := internal.MediaConverter(filePath, internal.AUDIO)
 	if err != nil {
+		fmt.Println("error aca 2")
 		return err
 	}
 

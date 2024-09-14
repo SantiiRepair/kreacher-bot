@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -18,16 +17,6 @@ const (
 	CommonURL
 	NotURL
 )
-
-func GetURLType(s string) SourceType {
-	if isYouTubeURL(s) {
-		return YoutubeURL
-	} else if isURL(s) {
-		return CommonURL
-	}
-
-	return NotURL
-}
 
 func ParsePeer(chatId int64) int64 {
 	x := strconv.FormatInt(chatId, 10)
@@ -46,7 +35,7 @@ func UnparsePeer(peerId int64) int64 {
 }
 
 func UrlExists(url string) bool {
-	resp, err := http.Head(url)
+	resp, err := http.Get(url)
 	if err != nil {
 		return false
 	}
@@ -54,11 +43,6 @@ func UrlExists(url string) bool {
 	defer resp.Body.Close()
 
 	return resp.StatusCode == http.StatusOK
-}
-
-func isYouTubeURL(s string) bool {
-	re := regexp.MustCompile(`^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+`)
-	return re.MatchString(s)
 }
 
 func isURL(s string) bool {

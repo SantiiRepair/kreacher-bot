@@ -9,8 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"errors"
+
 	"github.com/google/uuid"
 )
 
@@ -73,13 +75,11 @@ func (m *MediaInfo) GetThumbnail() (string, error) {
 func Download(mediaInfo MediaInfo, format string) (string, error) {
 	input := mediaInfo.OriginalUrl
 	fileId := uuid.New().String()
-	tempFilePath := filepath.Join(os.TempDir(), fileId)
-
+	filePath := filepath.Join(os.TempDir(), fileId) + "." + "%(ext)s"
+	fmt.Println(filePath)
 	var cmd *exec.Cmd
 	if isURL(input) && UrlExists(input) {
-		cmd = exec.Command("yt-dlp", "-f", format, "-o", tempFilePath, input)
-	} else {
-		cmd = exec.Command("yt-dlp", "ytsearch:"+input, "-f", format, "-o", tempFilePath)
+		cmd = exec.Command("yt-dlp", "--get-filename", "-f", format, "-o", filePath, input)
 	}
 
 	var out bytes.Buffer
@@ -87,11 +87,15 @@ func Download(mediaInfo MediaInfo, format string) (string, error) {
 	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("error retrieving filename: %w", err)
+	}
+
+	downloadCmd := exec.Command("yt-dlp", "--quiet", "-f", format, "-o", filePath, input)
+	if err := downloadCmd.Run(); err != nil {
 		return "", fmt.Errorf("error downloading: %w", err)
 	}
 
-	finalPath := tempFilePath + "." + mediaInfo.Ext
-	return finalPath, nil
+	return strings.TrimSpace(out.String()), nil
 }
 
 func GetMediaInfo(input string, mediaInfo *MediaInfo) error {
