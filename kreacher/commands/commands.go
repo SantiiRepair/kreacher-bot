@@ -56,23 +56,8 @@ func Start() {
 		return nil
 	})
 
-	core.B.Handle(LEAVE, func(c tele.Context) error {
-		sent := leave(c)
-		if sent != nil {
-			logger.Error("leave command", zap.Error(sent))
-		}
-
-		return nil
-	})
-
-	core.B.Handle(ACCIO, func(c tele.Context) error {
-		sent := accio(c)
-		if sent != nil {
-			logger.Error("accio command", zap.Error(sent))
-		}
-
-		return nil
-	})
+	core.B.Handle(LEAVE, leave)
+	core.B.Handle(ACCIO, accio)
 
 	core.B.Handle(PLAY_BOOK, func(c tele.Context) error {
 		sent := c.Send("Hello to you too!")
@@ -83,31 +68,8 @@ func Start() {
 		return nil
 	})
 
-	core.B.Handle(PLAY_SONG, func(c tele.Context) error {
-		if c.Chat().Type == tele.ChatPrivate {
-			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
-		}
-
-		sent := play(c)
-		if sent != nil {
-			logger.Error("play audio command", zap.Error(sent))
-		}
-
-		return nil
-	})
-
-	core.B.Handle(PLAY_VIDEO, func(c tele.Context) error {
-		if c.Chat().Type == tele.ChatPrivate {
-			return c.Send("*_This command is only for groups or channels_*", tele.ParseMode(tele.ModeMarkdownV2))
-		}
-
-		sent := vplay(c)
-		if sent != nil {
-			logger.Error("play video command", zap.Error(sent))
-		}
-
-		return nil
-	})
+	core.B.Handle(PLAY_SONG, play)
+	core.B.Handle(PLAY_VIDEO, vplay)
 
 	core.B.Handle(STREAMING, func(c tele.Context) error {
 		fmt.Println("Got a hello message")
@@ -119,32 +81,9 @@ func Start() {
 		return nil
 	})
 
-	core.B.Handle(SH, func(c tele.Context) error {
-		sent := sh(c)
-		if sent != nil {
-			logger.Error("sh command", zap.Error(sent))
-		}
-
-		return nil
-	}, onlyAdmin)
-
-	core.B.Handle(LOGS, func(c tele.Context) error {
-		sent := logs(c)
-		if sent != nil {
-			logger.Error("logs command", zap.Error(sent))
-		}
-
-		return nil
-	}, onlyAdmin)
-
-	core.B.Handle(SPEEDTEST, func(c tele.Context) error {
-		sent := speedtest(c)
-		if sent != nil {
-			logger.Error("speedtest command", zap.Error(sent))
-		}
-
-		return nil
-	}, onlyAdmin)
+	core.B.Handle(SH, sh, onlyAdmin)
+	core.B.Handle(LOGS, logs, onlyAdmin)
+	core.B.Handle(SPEEDTEST, speedtest, onlyAdmin)
 }
 
 var forgottenUsage = `

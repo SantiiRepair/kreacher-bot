@@ -2,12 +2,16 @@ package helpers
 
 import (
 	"fmt"
+
 	"net/http"
 	"net/url"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+type SourceType int
 
 const (
 	YoutubeURL SourceType = iota
@@ -23,20 +27,6 @@ func GetURLType(s string) SourceType {
 	}
 
 	return NotURL
-}
-
-func isYouTubeURL(s string) bool {
-	re := regexp.MustCompile(`^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+`)
-	return re.MatchString(s)
-}
-
-func isURL(s string) bool {
-	u, err := url.Parse(s)
-	if err != nil || u.Scheme == "" || u.Host == "" {
-		return false
-	}
-
-	return true
 }
 
 func ParsePeer(chatId int64) int64 {
@@ -63,9 +53,33 @@ func UrlExists(url string) bool {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		return true
+	return resp.StatusCode == http.StatusOK
+}
+
+func isYouTubeURL(s string) bool {
+	re := regexp.MustCompile(`^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+`)
+	return re.MatchString(s)
+}
+
+func isURL(s string) bool {
+	u, err := url.Parse(s)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
 	}
 
-	return false
+	return true
+}
+
+func reverseSlice(s interface{}) interface{} {
+	val := reflect.ValueOf(s)
+	if val.Kind() != reflect.Slice {
+		return nil
+	}
+
+	reversed := reflect.MakeSlice(val.Type(), val.Len(), val.Cap())
+	for i := 0; i < val.Len(); i++ {
+		reversed.Index(i).Set(val.Index(val.Len() - 1 - i))
+	}
+
+	return reversed.Interface()
 }

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 PIPER_VERSION="1.2.0"
-FFMPEG_VERSION="7.0.2"
 GO_VERSION=$(<.go-version)
 
 install_chrome() {
@@ -39,14 +38,6 @@ install_piper() {
     fi
 }
 
-install_ffmpeg() {
-    wget https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz -O deps/ffmpeg.tar.xz 
-    mkdir -p deps/ffmpeg && tar -xf deps/ffmpeg.tar.xz -C deps/ffmpeg --strip-components=1 && cd deps/ffmpeg
-    ./configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-libmp3lame --enable-libopus --enable-libvorbis --enable-libvpx --enable-openssl
-    make -j$(nproc) && sudo make install && cd ../..
-    rm -rf deps/ffmpeg.tar.xz 
-}
-
 install_ntgcalls() {
     LATEST_URL=$(curl -s https://api.github.com/repos/pytgcalls/ntgcalls/releases/latest | grep "browser_download_url" | grep "ntgcalls.linux-x86_64-shared_libs.zip" | cut -d '"' -f 4)
     wget "$LATEST_URL" -O ntgcalls.zip
@@ -80,31 +71,17 @@ install_deps() {
         
         $SUDO apt install -y \
             rlwrap \
-            autoconf \
-            automake \
             build-essential \
             cmake \
             git \
-            libass-dev \
-            libfdk-aac-dev \
-            libfreetype6-dev \
-            libmp3lame-dev \
-            libopus-dev \
-            libtheora-dev \
-            libtool \
-            libvorbis-dev \
-            libx264-dev \
-            libx265-dev \
-            libvpx-dev \
-            pkg-config \
-            texinfo \
             wget \
-            yasm \
             curl \
             gcc \
+            sox \
+            libsox-fmt-all \
+            ffmpeg \
             libx11-dev \
             libssl-dev \
-            libcurl4-openssl-dev \
             python3 \
             python3-pip \
             tree    
@@ -121,11 +98,6 @@ install_deps() {
 }
 
 install_deps
-
-if ! command -v ffmpeg &> /dev/null; then
-    install_ffmpeg
-fi
-
 install_ntgcalls
 install_chrome
 install_yt_dlp

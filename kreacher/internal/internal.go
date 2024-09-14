@@ -3,6 +3,9 @@ package internal
 import (
 	"context"
 	"math/rand"
+	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/gotd/contrib/storage"
 	"github.com/gotd/td/tg"
@@ -130,4 +133,37 @@ func LeaveGroupCall(chatId int64) error {
 	})
 
 	return err
+}
+
+func AutoConvert(input string) (string, error) {
+	if _, err := os.Stat(input); os.IsNotExist(err) {
+		return "", err
+	}
+
+	var cmd *exec.Cmd
+	var outputFile string
+
+	mediaType, err := checkMediaType(input)
+	if err != nil {
+		return "", err
+	}
+
+	if mediaType == VIDEO {
+		outputFile = strings.TrimSuffix(input, ".mp4") + ".mp4"
+		cmd = exec.Command("ffmpeg", "-i", input, "-c:v", "copy", "-c:a", "aac", outputFile)
+	} else if mediaType == AUDIO {
+		outputFile = strings.TrimSuffix(input, ".mp3") + ".mp3"
+		cmd = exec.Command("ffmpeg", "-i", input, outputFile)
+	} else {
+		return "", nil
+	}
+
+	err = cmd.Run()
+	if err != nil {
+		return "", err
+	}
+
+	defer os.Remove(input)
+
+	return outputFile, nil
 }

@@ -14,38 +14,14 @@ import (
 func play(c tele.Context) error {
 
 	var err error
-	var audioURL string
+	var mediaInfo helpers.MediaInfo
 
 	target := strings.Join(c.Args(), " ")
 	if target == "" {
 		return c.Reply(forgottenUsage, tele.ParseMode(tele.ModeMarkdownV2), tele.NoPreview)
 	}
 
-	switch helpers.GetURLType(target) {
-	case helpers.YoutubeURL:
-		audioURL, _, err = helpers.GetYoutubeStream(target)
-		if err != nil {
-			return err
-		}
-
-	case helpers.CommonURL:
-		audioURL = target
-	case helpers.NotURL:
-		response, err := helpers.YoutubeSearch(target)
-
-		if err != nil {
-			return nil
-		}
-
-		audioURL = response.AudioURL
-	}
-
-	if !helpers.UrlExists(audioURL) {
-		return c.Send(urlMistaken)
-	}
-
 	peerId := helpers.ParsePeer(c.Chat().ID)
-
 	channel, err := internal.GetPeer(peerId)
 	if err != nil {
 		return err
@@ -53,7 +29,7 @@ func play(c tele.Context) error {
 
 	queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
 		Requester:   c.Sender().ID,
-		AudioSource: audioURL,
+		AudioSource: mediaInfo.URL,
 	})
 
 	if err != nil {
@@ -68,13 +44,23 @@ func play(c tele.Context) error {
 		}
 	}
 
+	filepath, err := helpers.Download(target, "bestaudio/best")
+	if err != nil {
+		return err
+	}
+
+	filepath, err = internal.AutoConvert(filepath)
+	if err != nil {
+		return err
+	}
+
 	params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
 		Audio: &ntgcalls.AudioDescription{
 			ChannelCount:  2,
 			BitsPerSample: 16,
 			SampleRate:    96000,
 			InputMode:     ntgcalls.InputModeShell,
-			Input:         fmt.Sprintf("ffmpeg -i %s -f s16le -ac 2 -ar 96k pipe:1", audioURL),
+			Input:         fmt.Sprintf("sox %s -t wav -r 96k -c 2 -b 16 - gain 8", filepath),
 		},
 	})
 

@@ -100,7 +100,7 @@ func main() {
 	go func() {
 		<-sigChan
 		fmt.Println("\nReceived SIGINT, exiting...")
-
+		core.B.Close()
 		wg.Done()
 	}()
 

@@ -1,69 +1,119 @@
 package helpers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"strings"
+	"io"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+
+	uuid "github.com/google/uuid"
+	"github.com/pkg/errors"
 )
 
-func GetYoutubeStream(link string) (string, string, error) {
-	stdout, stderr := Shell("yt-dlp", "-g", "-f", "bestvideo+bestaudio/best", link)
-	if stderr != nil {
-		return "", "", stderr
-	}
-
-	output := stdout.String()
-	lines := strings.Split(output, "\n")
-	if len(lines) < 2 {
-		return "", "", fmt.Errorf("expected at least 2 lines of output, got %d", len(lines))
-	}
-
-	audioLink := lines[0]
-	videoLink := lines[1]
-	return audioLink, videoLink, nil
+type MediaInfo struct {
+	Title     string   `json:"title"`
+	Filename  string   `json:"filename"`
+	Duration  float64  `json:"duration"`
+	Thumbnail string   `json:"thumbnail"`
+	Formats   []Format `json:"formats"`
+	Format    string   `json:"format"`
+	Width     int      `json:"width"`
+	Height    int      `json:"height"`
+	URL       string   `json:"url"`
+	Ext       string   `json:"ext"`
 }
 
-func YoutubeSearch(query string, searchRange ...string) (*YoutubeSearchResult, error) {
-	var result YoutubeSearchResult
-	args := make([]string, 0)
+type Format struct {
+	Ext      string `json:"ext"`
+	FormatId string `json:"format_id"`
+	Acodec   string `json:"acodec"`
+	Vcodec   string `json:"vcodec"`
+}
 
-	args = append(args, "yt-dlp")
+func (m *MediaInfo) GetThumbnail() (string, error) {
+	if m.Thumbnail == "" {
+		return "", errors.New("no thumbnail URL provided")
+	}
 
-	if len(searchRange) > 0 {
-		args = append(args, fmt.Sprintf("ytsearch%s:'%s'", searchRange[0], query))
+	thumbId := uuid.New().String()
+
+	filename := fmt.Sprintf("", "%s.jpg", thumbId)
+	thumbnailPath := filepath.Join("", filename)
+
+	resp, err := http.Get(m.Thumbnail)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to download thumbnail: %s", resp.Status)
+	}
+
+	out, err := os.Create(thumbnailPath)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return thumbnailPath, nil
+}
+
+func Download(input string, format string) (string, error) {
+	fileId := uuid.New().String()
+	tempFilePath := filepath.Join(os.TempDir(), fileId)
+
+	var cmd *exec.Cmd
+	if isURL(input) && UrlExists(input) {
+		cmd = exec.Command("yt-dlp", "-f", format, "-o", tempFilePath, input)
 	} else {
-		args = append(args, fmt.Sprintf("ytsearch:'%s'", query))
+		cmd = exec.Command("yt-dlp", "ytsearch:1:"+input, "-f", format, "-o", tempFilePath)
 	}
 
-	args = append(args, "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best", "--get-title", "--get-url", "--get-format")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &out
 
-	stdout, err := Shell(args...)
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("error downloading video: %w", err)
+	}
+
+	var mediaInfo MediaInfo
+	err := getMediaInfo(input, &mediaInfo)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	k := strings.Split(stdout.String(), "\n")
-
-	mb, err := json.Marshal(
-		map[string]string{
-			"title":     k[0],
-			"audio_url": k[2],
-			"video_url": k[1],
-			"format":    k[3],
-		})
-
-	if err != nil {
-		return nil, err
+	finalPath := tempFilePath + "." + mediaInfo.Ext
+	if err := os.Rename(tempFilePath, finalPath); err != nil {
+		return "", fmt.Errorf("error renaming file: %w", err)
 	}
 
-	json.Unmarshal(mb, &result)
-	return &result, nil
+	return finalPath, nil
 }
 
-func YoutubeDownloader(format string, link string) error {
-	_, err := Shell("yt-dlp", "-g", "-f", fmt.Sprintf("'%s' %s", format, link))
-	if err != nil {
-		return err
+func getMediaInfo(url string, mediaInfo *MediaInfo) error {
+	cmd := exec.Command("yt-dlp", "-j", "--no-warnings", url)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &out
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("error getting media info: %w", err)
+	}
+
+	if err := json.Unmarshal(out.Bytes(), &mediaInfo); err != nil {
+		return fmt.Errorf("failed to unmarshal media info: %w", err)
 	}
 
 	return nil

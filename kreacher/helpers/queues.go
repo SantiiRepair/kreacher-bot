@@ -11,6 +11,15 @@ import (
 	"santiirepair.dev/kreacher/core"
 )
 
+type Queue struct {
+	Active        bool   `json:"active"`
+	Requester     int64  `json:"requester"`
+	AudioSource   string `json:"audio_source"`
+	VideoSource   string `json:"video_source"`
+	StreamType    string `json:"stream_type"`
+	NumberInQueue int    `json:"number_in_queue"`
+}
+
 // Adds a new item to the queue in Redis.
 func AddToPlayList(chatId int64, data *Queue) (int, error) {
 	s := strconv.FormatInt(chatId, 10)
