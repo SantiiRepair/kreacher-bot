@@ -3,6 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/gotd/contrib/storage"
@@ -29,35 +30,25 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		if calls := core.N.Calls(); len(calls) > 0 {
-			for chat := range calls {
-				if chat == channel.Key.ID {
-					queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
-						Command:     PLAY_VIDEO,
-						Requester:   c.Sender().ID,
-						OriginalUrl: mediaInfo.OriginalUrl,
-					})
-
-					if err != nil {
-						return err
-					}
-
-					return c.Reply(fmt.Sprintf("In queue %d", queue))
-				}
-			}
-		}
-
-		videoPath, err := helpers.Download(mediaInfo, "bestvideo+bestaudio/best")
+		message, err := c.Bot().Send(c.Recipient(), helpers.EscapeMarkdownV2("*Fetching data...*"))
 		if err != nil {
 			return err
 		}
+		defer c.Bot().Delete(&tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)})
+
+		videoPath, err := helpers.Download(mediaInfo, "bestaudio/best")
+		if err != nil {
+			return err
+		}
+
+		c.Bot().Edit(tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)}, helpers.EscapeMarkdownV2("*Buffering media content...*"))
 
 		audioPath, err := internal.MediaConverter(videoPath, internal.AUDIO)
 		if err != nil {
 			return err
 		}
 
-		params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
+		mediaDescription := ntgcalls.MediaDescription{
 			Audio: &ntgcalls.AudioDescription{
 				ChannelCount:  2,
 				BitsPerSample: 16,
@@ -72,35 +63,35 @@ func vplay(c tele.Context) error {
 				InputMode: ntgcalls.InputModeShell,
 				Input:     fmt.Sprintf("ffmpeg -i %s -f rawvideo -r 30 -pix_fmt yuv420p -v quiet -vf scale=1920:1080 -b:v 5000k -preset fast -bufsize 10000k pipe:1", videoPath),
 			},
-		})
-
-		if err != nil {
-			return err
 		}
 
-		err = internal.SetGroupCall(channel, params, true, false)
-		if err != nil {
-			return err
+		if calls := core.N.Calls(); len(calls) > 0 {
+			for chat := range calls {
+				if chat == channel.Key.ID {
+					if err = core.N.ChangeStream(channel.Key.ID, mediaDescription); err != nil {
+						return err
+					}
+					break
+				}
+			}
+		} else {
+			params, err := core.N.CreateCall(channel.Key.ID, mediaDescription)
+			if err != nil {
+				return err
+			}
+
+			if err = internal.SetGroupCall(channel, params, false, false); err != nil {
+				return c.Send(fmt.Sprintf("*%v*", err))
+			}
 		}
 
-		return c.Send("Successful joined", &tele.ReplyMarkup{
+		caption := fmt.Sprintf("*Broadcasting* \n\n *Title: %s*", mediaInfo.Title)
+		return c.Send(helpers.EscapeMarkdownV2(caption), &tele.ReplyMarkup{
 			InlineKeyboard: [][]tele.InlineButton{
 				{
-					{
-						Text:   "⏮",
-						Data:   "",
-						Unique: "prev",
-					},
-					{
-						Text:   "⏸️",
-						Data:   "",
-						Unique: "pause",
-					},
-					{
-						Text:   "⏭️",
-						Data:   "",
-						Unique: "next",
-					},
+					{Text: "⏮", Data: "", Unique: "prev"},
+					{Text: "⏸️", Data: "", Unique: "pause"},
+					{Text: "⏭️", Data: "", Unique: "next"},
 				},
 			},
 		})
