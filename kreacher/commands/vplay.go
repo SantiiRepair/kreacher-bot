@@ -36,7 +36,7 @@ func vplay(c tele.Context) error {
 		}
 		defer c.Bot().Delete(&tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)})
 
-		videoPath, err := helpers.Download(mediaInfo, "bestaudio/best")
+		videoPath, err := helpers.Download(mediaInfo, "bestvideo+bestaudio/best")
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ func vplay(c tele.Context) error {
 				return err
 			}
 
-			if err = internal.SetGroupCall(channel, params, false, false); err != nil {
+			if err = internal.SetGroupCall(channel, params, internal.GroupCallConfig{Muted: false, VideoStopped: false}); err != nil {
 				return c.Send(fmt.Sprintf("*%v*", err))
 			}
 		}

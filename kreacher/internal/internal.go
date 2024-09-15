@@ -13,6 +13,8 @@ import (
 	"santiirepair.dev/kreacher/core"
 )
 
+type GroupCallConfig tg.PhoneJoinGroupCallRequest
+
 func GetPeer(peerId int64) (storage.Peer, error) {
 	ctx := context.Background()
 	channel, err := storage.FindPeer(ctx, core.PDB, &tg.PeerChannel{ChannelID: peerId})
@@ -23,7 +25,7 @@ func GetPeer(peerId int64) (storage.Peer, error) {
 	return channel, nil
 }
 
-func SetGroupCall(channel storage.Peer, params string, withVideo bool, muted bool) error {
+func SetGroupCall(channel storage.Peer, params string, conf GroupCallConfig) error {
 	ctx := context.Background()
 
 	mcf, err := core.U.API().ChannelsGetFullChannel(ctx, &tg.InputChannel{
@@ -90,9 +92,9 @@ func SetGroupCall(channel storage.Peer, params string, withVideo bool, muted boo
 	var updates tg.UpdatesClass
 	if !joined {
 		updates, err = core.U.API().PhoneJoinGroupCall(ctx, &tg.PhoneJoinGroupCallRequest{
-			Muted:        muted,
-			VideoStopped: !withVideo,
 			Call:         call,
+			Muted:        conf.Muted,
+			VideoStopped: conf.VideoStopped,
 			Params: tg.DataJSON{
 				Data: params,
 			},
@@ -104,8 +106,8 @@ func SetGroupCall(channel storage.Peer, params string, withVideo bool, muted boo
 	} else {
 		updates, err = core.U.API().PhoneEditGroupCallParticipant(ctx, &tg.PhoneEditGroupCallParticipantRequest{
 			Call:         call,
-			Muted:        muted,
-			VideoStopped: !withVideo,
+			Muted:        conf.Muted,
+			VideoStopped: conf.VideoStopped,
 			Participant:  me.AsInputPeer(),
 		})
 	}

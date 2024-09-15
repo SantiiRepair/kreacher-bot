@@ -72,7 +72,7 @@ func play(c tele.Context) error {
 			return err
 		}
 
-		if err = internal.SetGroupCall(channel, params, false, false); err != nil {
+		if err = internal.SetGroupCall(channel, params, internal.GroupCallConfig{Muted: false, VideoStopped: true}); err != nil {
 			return c.Send(fmt.Sprintf("*%v*", err))
 		}
 	}
