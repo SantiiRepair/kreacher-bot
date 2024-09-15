@@ -78,12 +78,12 @@ func vplay(c tele.Context) error {
 			return err
 		}
 
-		err = internal.StartGroupCall(channel, params, true, false)
+		err = internal.SetGroupCall(channel, params, true, false)
 		if err != nil {
 			return err
 		}
 
-		err = c.Send("Successful joined", &tele.ReplyMarkup{
+		return c.Send("Successful joined", &tele.ReplyMarkup{
 			InlineKeyboard: [][]tele.InlineButton{
 				{
 					{
@@ -104,8 +104,6 @@ func vplay(c tele.Context) error {
 				},
 			},
 		})
-
-		return err
 
 	}
 

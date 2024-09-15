@@ -25,50 +25,29 @@ func play(c tele.Context) error {
 	}
 
 	var mediaInfo helpers.MediaInfo
-	err = helpers.GetMediaInfo(target, &mediaInfo)
-	if err != nil {
+	if err = helpers.GetMediaInfo(target, &mediaInfo); err != nil {
 		return err
-	}
-
-	if calls := core.N.Calls(); len(calls) > 0 {
-		for chat := range calls {
-			if chat == channel.Key.ID {
-				queue, err := helpers.AddToPlayList(peerId, &helpers.Queue{
-					Command:     PLAY_VIDEO,
-					Requester:   c.Sender().ID,
-					OriginalUrl: mediaInfo.OriginalUrl,
-				})
-
-				if err != nil {
-					return err
-				}
-
-				return c.Reply(fmt.Sprintf("In queue %d", queue))
-			}
-		}
 	}
 
 	message, err := c.Bot().Send(c.Recipient(), helpers.EscapeMarkdownV2("*Fetching data...*"))
 	if err != nil {
 		return err
 	}
+	defer c.Bot().Delete(&tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)})
 
-	storedMessage := tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)}
-	defer c.Bot().Delete(&storedMessage)
-	
 	filePath, err := helpers.Download(mediaInfo, "bestaudio/best")
 	if err != nil {
 		return err
 	}
 
-	c.Bot().Edit(storedMessage, helpers.EscapeMarkdownV2("*Buffering media content...*"))
+	c.Bot().Edit(tele.StoredMessage{ChatID: message.Chat.ID, MessageID: strconv.Itoa(message.ID)}, helpers.EscapeMarkdownV2("*Buffering media content...*"))
 
 	audioPath, err := internal.MediaConverter(filePath, internal.AUDIO)
 	if err != nil {
 		return err
 	}
 
-	params, err := core.N.CreateCall(channel.Key.ID, ntgcalls.MediaDescription{
+	mediaDescription := ntgcalls.MediaDescription{
 		Audio: &ntgcalls.AudioDescription{
 			ChannelCount:  2,
 			BitsPerSample: 16,
@@ -76,37 +55,35 @@ func play(c tele.Context) error {
 			InputMode:     ntgcalls.InputModeShell,
 			Input:         fmt.Sprintf("sox %s -t wav -r 96k -c 2 -b 16 - gain 8", audioPath),
 		},
-	})
-
-	if err != nil {
-		return err
 	}
 
-	err = internal.StartGroupCall(channel, params, false, false)
-	if err != nil {
-		return c.Send(fmt.Sprintf("*%v*", err))
+	if calls := core.N.Calls(); len(calls) > 0 {
+		for chat := range calls {
+			if chat == channel.Key.ID {
+				if err = core.N.ChangeStream(channel.Key.ID, mediaDescription); err != nil {
+					return err
+				}
+				break
+			}
+		}
+	} else {
+		params, err := core.N.CreateCall(channel.Key.ID, mediaDescription)
+		if err != nil {
+			return err
+		}
+
+		if err = internal.SetGroupCall(channel, params, false, false); err != nil {
+			return c.Send(fmt.Sprintf("*%v*", err))
+		}
 	}
 
 	caption := fmt.Sprintf("*Broadcasting* \n\n *Title: %s*", mediaInfo.Title)
-	
 	return c.Send(helpers.EscapeMarkdownV2(caption), &tele.ReplyMarkup{
 		InlineKeyboard: [][]tele.InlineButton{
 			{
-				{
-					Text:   "⏮",
-					Data:   "",
-					Unique: "prev",
-				},
-				{
-					Text:   "⏸️",
-					Data:   "",
-					Unique: "pause",
-				},
-				{
-					Text:   "⏭️",
-					Data:   "",
-					Unique: "next",
-				},
+				{Text: "⏮", Data: "", Unique: "prev"},
+				{Text: "⏸️", Data: "", Unique: "pause"},
+				{Text: "⏭️", Data: "", Unique: "next"},
 			},
 		},
 	})

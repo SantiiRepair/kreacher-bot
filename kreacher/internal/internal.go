@@ -11,7 +11,6 @@ import (
 	"github.com/gotd/td/tg"
 	"github.com/pkg/errors"
 	"santiirepair.dev/kreacher/core"
-	"santiirepair.dev/kreacher/logger"
 )
 
 func GetPeer(peerId int64) (storage.Peer, error) {
@@ -24,14 +23,13 @@ func GetPeer(peerId int64) (storage.Peer, error) {
 	return channel, nil
 }
 
-func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted bool) error {
+func SetGroupCall(channel storage.Peer, params string, withVideo bool, muted bool) error {
 	ctx := context.Background()
 
 	mcf, err := core.U.API().ChannelsGetFullChannel(ctx, &tg.InputChannel{
 		ChannelID:  channel.Key.ID,
 		AccessHash: channel.Key.AccessHash,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -42,64 +40,84 @@ func StartGroupCall(channel storage.Peer, params string, withVideo bool, muted b
 	}
 
 	call, ok := mcf.GetFullChat().GetCall()
-	if !ok && !channel.Channel.AdminRights.ManageCall {
-		logger.Warnf("group call closed on %d, trying to open", channel.Key.ID)
+	if !ok {
+		if !channel.Channel.AdminRights.ManageCall {
+			_, err := core.U.API().PhoneCreateGroupCall(ctx, &tg.PhoneCreateGroupCallRequest{
+				RandomID: rand.Int(),
+				Peer: &tg.InputPeerChannel{
+					ChannelID:  channel.Key.ID,
+					AccessHash: channel.Key.AccessHash,
+				},
+			})
+			if err != nil {
+				return err
+			}
 
-		_, err := core.U.API().PhoneCreateGroupCall(ctx, &tg.PhoneCreateGroupCallRequest{
-			RandomID: rand.Int(),
-			Peer: &tg.InputPeerChannel{
+			mcf, err = core.U.API().ChannelsGetFullChannel(ctx, &tg.InputChannel{
 				ChannelID:  channel.Key.ID,
 				AccessHash: channel.Key.AccessHash,
-			},
-		})
+			})
+			if err != nil {
+				return err
+			}
 
-		if err != nil {
-			return err
+			call, ok = mcf.GetFullChat().GetCall()
+			if !ok {
+				return errors.Errorf("I can't open the call on %d", channel.Key.ID)
+			}
+		} else {
+			return errors.Errorf("I couldn't open the voice chat, am I an admin?")
 		}
-
-		mcf, err = core.U.API().ChannelsGetFullChannel(ctx, &tg.InputChannel{
-			ChannelID:  channel.Key.ID,
-			AccessHash: channel.Key.AccessHash,
-		})
-
-		if err != nil {
-			return err
-		}
-
-		call, ok = mcf.GetFullChat().GetCall()
-		if !ok {
-			return errors.Errorf("i can't open the call on %d", channel.Key.ID)
-		}
-
-		logger.Infof("open call at %d", channel.Key.ID)
-	} else {
-		return errors.Errorf("I couldn't open the voice chat, am I an admin?")
 	}
 
-	updates, err := core.U.API().PhoneJoinGroupCall(ctx, &tg.PhoneJoinGroupCallRequest{
-		Muted:        muted,
-		VideoStopped: !withVideo,
-		Call:         call,
-		Params: tg.DataJSON{
-			Data: params,
-		},
-		JoinAs: &tg.InputPeerUser{
-			UserID:     me.ID,
-			AccessHash: me.AccessHash,
-		},
+	gc, err := core.U.API().PhoneGetGroupCall(ctx, &tg.PhoneGetGroupCallRequest{
+		Call:  call,
+		Limit: 1,
 	})
 
 	if err != nil {
 		return err
 	}
 
-	for _, update := range updates.(*tg.Updates).Updates {
-		ut, ok := update.(*tg.UpdateGroupCallConnection)
-		if !ok {
-			continue
+	joined := false
+	for _, participant := range gc.Participants {
+		if participant.Self {
+			joined = true
+			break
 		}
+	}
 
-		core.N.Connect(channel.Key.ID, ut.GetParams().Data)
+	var updates tg.UpdatesClass
+	if !joined {
+		updates, err = core.U.API().PhoneJoinGroupCall(ctx, &tg.PhoneJoinGroupCallRequest{
+			Muted:        muted,
+			VideoStopped: !withVideo,
+			Call:         call,
+			Params: tg.DataJSON{
+				Data: params,
+			},
+			JoinAs: &tg.InputPeerUser{
+				UserID:     me.ID,
+				AccessHash: me.AccessHash,
+			},
+		})
+	} else {
+		updates, err = core.U.API().PhoneEditGroupCallParticipant(ctx, &tg.PhoneEditGroupCallParticipantRequest{
+			Call:         call,
+			Muted:        muted,
+			VideoStopped: !withVideo,
+			Participant:  me.AsInputPeer(),
+		})
+	}
+
+	if err != nil {
+		return err
+	}
+
+	for _, update := range updates.(*tg.Updates).Updates {
+		if ut, ok := update.(*tg.UpdateGroupCallConnection); ok {
+			core.N.Connect(channel.Key.ID, ut.GetParams().Data)
+		}
 	}
 
 	return nil

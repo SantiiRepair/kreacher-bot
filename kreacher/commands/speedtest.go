@@ -17,7 +17,7 @@ func speedtest(c tele.Context) error {
 
 	storedMessage := tele.StoredMessage{ChatID: msg.Chat.ID, MessageID: strconv.Itoa(msg.ID)}
 	defer c.Bot().Delete(&storedMessage)
-	
+
 	st, err := helpers.Speedtest()
 	if err != nil {
 		return c.Send("*_A problem occurred running the speedtest_*", tele.ParseMode(tele.ModeMarkdownV2))

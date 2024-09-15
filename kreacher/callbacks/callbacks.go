@@ -13,7 +13,8 @@ func Start() {
 	core.B.Handle(&prevBtn, func(c tele.Context) error {
 		chatId := helpers.ParsePeer(c.Chat().ID)
 		_, err := helpers.MovePlayList(chatId, "prev")
-		if err != nil {}
+		if err != nil {
+		}
 
 		return nil
 	})
@@ -75,7 +76,8 @@ func Start() {
 	core.B.Handle(&nextBtn, func(c tele.Context) error {
 		chatId := helpers.ParsePeer(c.Chat().ID)
 		_, err := helpers.MovePlayList(chatId, "next")
-		if err != nil {}
+		if err != nil {
+		}
 
 		return nil
 	})
